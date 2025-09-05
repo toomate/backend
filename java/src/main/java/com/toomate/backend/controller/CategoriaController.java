@@ -3,6 +3,7 @@ package com.toomate.backend.controller;
 import com.toomate.backend.model.Categoria;
 import com.toomate.backend.repository.CategoriaRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.function.EntityResponse;
@@ -48,7 +49,7 @@ public class CategoriaController {
     @DeleteMapping("/{nome}")
     public ResponseEntity<Void> deletar(@PathVariable String nome){
         if(repository.existsByNome(nome)){
-            repository.deleteByNome(nome);
+            repository.deleteById(repository.findByNome(nome).getIdCategoria());
             return ResponseEntity.status(204).build();
         }
         return ResponseEntity.status(404).build();
