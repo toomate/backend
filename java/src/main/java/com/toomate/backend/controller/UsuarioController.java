@@ -29,7 +29,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> pegar(@PathVariable Integer id) {
+    public ResponseEntity<Usuario> retornarPeloId(@PathVariable Integer id) {
         return ResponseEntity.of(usuarioRepository.findById(id));
     }
 

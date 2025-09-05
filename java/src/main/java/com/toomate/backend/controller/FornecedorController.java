@@ -2,6 +2,7 @@ package com.toomate.backend.controller;
 
 import com.toomate.backend.model.Fornecedor;
 import com.toomate.backend.repository.FornecedorRepository;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,12 @@ public class FornecedorController {
         return ResponseEntity.status(200).body(fornecedores);
     }
 
-    @GetMapping("pesquisa")
+    @GetMapping("/{id}")
+    public ResponseEntity<Fornecedor> retornarPeloId(@PathVariable Integer id){
+        return ResponseEntity.of(fornecedorRepository.findById(id));
+    }
+
+    @GetMapping("/pesquisa")
     public ResponseEntity<List<Fornecedor>> filtrar(@RequestParam String razaoSocial) {
         List<Fornecedor> fornecedores = fornecedorRepository.findByRazaoSocialContainingIgnoreCase(razaoSocial);
 
