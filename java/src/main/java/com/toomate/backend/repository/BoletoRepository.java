@@ -14,6 +14,6 @@ public interface BoletoRepository extends JpaRepository <Boleto, Integer> {
 
     Boolean existsByCategoria(String categoria);
 
-    Cliente findByNome(String nome);
+  //  Cliente findByNome(String nome);
 
 }

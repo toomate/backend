@@ -3,21 +3,21 @@ package com.toomate.backend.model;
 import jakarta.persistence.*;
 
 @Entity
-public class Ingrediente {
+public class Insumo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idIngrediente;
+    private Integer idInsumo;
     private String nome;
     //    @ManyToOne
 //    @JoinColumn(name = "idCategoria")
     private Integer fkCategoria;
 
     public Integer getIdIngrediente() {
-        return idIngrediente;
+        return idInsumo;
     }
 
-    public void setIdIngrediente(Integer idIngrediente) {
-        this.idIngrediente = idIngrediente;
+    public void setIdIngrediente(Integer idInsumo) {
+        this.idInsumo = idInsumo;
     }
 
     public String getNome() {
@@ -36,12 +36,12 @@ public class Ingrediente {
         this.fkCategoria = fkCategoria;
     }
 
-    public Ingrediente(Integer idIngrediente, String nome, Integer fkCategoria) {
-        this.idIngrediente = idIngrediente;
+    public Insumo(Integer idInsumo, String nome, Integer fkCategoria) {
+        this.idInsumo = idInsumo;
         this.nome = nome;
         this.fkCategoria = fkCategoria;
     }
 
-    public Ingrediente() {
+    public Insumo() {
     }
 }

@@ -1,8 +1,7 @@
 package com.toomate.backend.controller;
 
-import com.toomate.backend.model.Categoria;
-import com.toomate.backend.model.Ingrediente;
-import com.toomate.backend.repository.IngredienteRepository;
+import com.toomate.backend.model.Insumo;
+import com.toomate.backend.repository.InsumoRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,15 +9,15 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/ingredientes")
-public class IngredienteController {
-    private final IngredienteRepository repository;
+@RequestMapping("/insumos")
+public class InsumoController {
+    private final InsumoRepository repository;
 
-    public IngredienteController(IngredienteRepository repository){this.repository=repository;}
+    public InsumoController(InsumoRepository repository){this.repository=repository;}
 
     @GetMapping
-    public ResponseEntity<List<Ingrediente>> listar(){
-        List<Ingrediente> ingredientes = repository.findAll();
+    public ResponseEntity<List<Insumo>> listar(){
+        List<Insumo> ingredientes = repository.findAll();
         if(ingredientes.isEmpty()){
             return ResponseEntity.status(204).build();
         }
@@ -26,8 +25,8 @@ public class IngredienteController {
     }
 
     @GetMapping("/por-nome")
-    public ResponseEntity<List<Ingrediente>> filtroNome(@RequestParam String nome){
-        List<Ingrediente> ingredientes = repository.findByNomeContainingIgnoreCase(nome);
+    public ResponseEntity<List<Insumo>> filtroNome(@RequestParam String nome){
+        List<Insumo> ingredientes = repository.findByNomeContainingIgnoreCase(nome);
         if(ingredientes.isEmpty()){
             return ResponseEntity.status(204).build();
         }
@@ -35,8 +34,8 @@ public class IngredienteController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> cadastrar(@RequestBody Ingrediente ingrediente){
-            Optional<Ingrediente> ingredienteCheck = repository.findByNomeAndFkCategoria(ingrediente.getNome(), ingrediente.getFkCategoria());
+    public ResponseEntity<Void> cadastrar(@RequestBody Insumo ingrediente){
+            Optional<Insumo> ingredienteCheck = repository.findByNomeAndFkCategoria(ingrediente.getNome(), ingrediente.getFkCategoria());
         if(ingredienteCheck.isPresent()){
             return ResponseEntity.status(409).build();
         }
@@ -54,7 +53,7 @@ public class IngredienteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> atualizar(@PathVariable Integer id, @RequestBody Ingrediente ingrediente){
+    public ResponseEntity<Void> atualizar(@PathVariable Integer id, @RequestBody Insumo ingrediente){
         ingrediente.setIdIngrediente(id);
         if(repository.existsById(id)){
             repository.save(ingrediente);

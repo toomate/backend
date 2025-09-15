@@ -1,8 +1,7 @@
 package com.toomate.backend.controller;
 
-import com.toomate.backend.model.Ingrediente;
-import com.toomate.backend.model.MarcaIngrediente;
-import com.toomate.backend.repository.MarcaIngredienteRepository;
+import com.toomate.backend.model.Marca;
+import com.toomate.backend.repository.MarcaRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,14 +11,14 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/marcas")
-public class MarcaIngredienteController {
-    private final MarcaIngredienteRepository repository;
+public class MarcaController {
+    private final MarcaRepository repository;
 
-    public MarcaIngredienteController(MarcaIngredienteRepository repository){this.repository = repository;}
+    public MarcaController(MarcaRepository repository){this.repository = repository;}
 
     @GetMapping
-    public ResponseEntity<List<MarcaIngrediente>> listar(){
-        List<MarcaIngrediente> marcaIngredientes = repository.findAll();
+    public ResponseEntity<List<Marca>> listar(){
+        List<Marca> marcaIngredientes = repository.findAll();
         if(marcaIngredientes.isEmpty()){
             return ResponseEntity.status(204).build();
         }
@@ -27,8 +26,8 @@ public class MarcaIngredienteController {
     }
 
     @GetMapping("/por-descricao-valor")
-    public ResponseEntity<List<MarcaIngrediente>> filtroNome(@RequestParam(required = false) String descricao, @RequestParam(required = false) Double valorMedida){
-        List<MarcaIngrediente> marcaIngredientes = new ArrayList<>();
+    public ResponseEntity<List<Marca>> filtroNome(@RequestParam(required = false) String descricao, @RequestParam(required = false) Double valorMedida){
+        List<Marca> marcaIngredientes = new ArrayList<>();
         if(descricao == null){
             marcaIngredientes = repository.findByValorMedida(valorMedida);
         }
@@ -45,12 +44,12 @@ public class MarcaIngredienteController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> cadastrar(@RequestBody MarcaIngrediente marcaIngrediente){
+    public ResponseEntity<Void> cadastrar(@RequestBody Marca marcaIngrediente){
         String descricao = marcaIngrediente.getDescricao();
         Double valorMedida = marcaIngrediente.getValorMedida();
         Integer fkIngrediente = marcaIngrediente.getFkIngrediente();
         Integer fkFornecedor = marcaIngrediente.getFkFornecedor();
-        Optional<MarcaIngrediente> marcaIngredienteCheck = repository.findByDescricaoAndValorMedidaAndFkIngredienteAndFkFornecedor(descricao, valorMedida, fkIngrediente, fkFornecedor);
+        Optional<Marca> marcaIngredienteCheck = repository.findByDescricaoAndValorMedidaAndFkInsumoAndFkFornecedor(descricao, valorMedida, fkIngrediente, fkFornecedor);
         if(marcaIngredienteCheck.isPresent()){
             return ResponseEntity.status(409).build();
         }
@@ -68,7 +67,7 @@ public class MarcaIngredienteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> atualizar(@PathVariable Integer id, @RequestBody MarcaIngrediente marcaIngrediente){
+    public ResponseEntity<Void> atualizar(@PathVariable Integer id, @RequestBody Marca marcaIngrediente){
         marcaIngrediente.setIdMarca(id);
         if(repository.existsById(id)){
             repository.save(marcaIngrediente);

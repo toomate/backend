@@ -6,14 +6,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class MarcaIngrediente {
+public class Marca {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idMarca;
     private String descricao;
     private Double valorMedida;
     private String unidadeMedida;
-    private Integer fkIngrediente;
+    private Integer fkInsumo;
     private Integer fkFornecedor;
 
     public Integer getIdMarca() {
@@ -49,11 +49,11 @@ public class MarcaIngrediente {
     }
 
     public Integer getFkIngrediente() {
-        return fkIngrediente;
+        return fkInsumo;
     }
 
-    public void setFkIngrediente(Integer fkIngrediente) {
-        this.fkIngrediente = fkIngrediente;
+    public void setFkIngrediente(Integer fkInsumo) {
+        this.fkInsumo = fkInsumo;
     }
 
     public Integer getFkFornecedor() {
@@ -64,15 +64,15 @@ public class MarcaIngrediente {
         this.fkFornecedor = fkFornecedor;
     }
 
-    public MarcaIngrediente(Integer idMarca, String descricao, Double valorMedida, String unidadeMedida, Integer fkIngrediente, Integer fkFornecedor) {
+    public Marca(Integer idMarca, String descricao, Double valorMedida, String unidadeMedida, Integer fkInsumo, Integer fkFornecedor) {
         this.idMarca = idMarca;
         this.descricao = descricao;
         this.valorMedida = valorMedida;
         this.unidadeMedida = unidadeMedida;
-        this.fkIngrediente = fkIngrediente;
+        this.fkInsumo = fkInsumo;
         this.fkFornecedor = fkFornecedor;
     }
 
-    public MarcaIngrediente() {
+    public Marca() {
     }
 }

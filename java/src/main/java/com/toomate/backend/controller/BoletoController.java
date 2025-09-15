@@ -53,7 +53,7 @@ public class BoletoController {
 
         if (boletoRepository.existsById(idBoleto)) {
             Boleto save = boletoRepository.save(boleto);
-            return ResponseEntity.status(200).body(boleto);
+            return ResponseEntity.status(200).body(save);
         }
 
         return ResponseEntity.status(404).build();

@@ -19,16 +19,16 @@ public class Divida {
     private LocalDate dataPagamento;
     private String pedido;
     private Boolean pago;
-    private Cliente cliente;
+    private Integer clienteId;
 
-    public Divida(Integer idDivida, Double valor, LocalDate dataCompra, LocalDate dataPagamento, String pedido, Boolean pago, Cliente cliente) {
+    public Divida(Integer idDivida, Double valor, LocalDate dataCompra, LocalDate dataPagamento, String pedido, Boolean pago, Integer clienteId) {
         this.idDivida = idDivida;
         this.valor = valor;
         this.dataCompra = dataCompra;
         this.dataPagamento = dataPagamento;
         this.pedido = pedido;
         this.pago = pago;
-        this.cliente = cliente;
+        this.clienteId = clienteId;
     }
 
     public Divida() {
@@ -82,11 +82,11 @@ public class Divida {
         this.pago = pago;
     }
 
-    public Cliente getCliente() {
-        return cliente;
+    public Integer getCliente() {
+        return clienteId;
     }
 
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+    public void setCliente(Integer clienteId) {
+        this.clienteId = clienteId;
     }
 }
