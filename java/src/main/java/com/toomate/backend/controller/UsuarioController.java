@@ -1,7 +1,9 @@
 package com.toomate.backend.controller;
 
+import com.toomate.backend.dto.usuario.AtualizarAdministradorDto;
+import com.toomate.backend.dto.usuario.UsuarioRequestDto;
+import com.toomate.backend.dto.usuario.UsuarioResponseDto;
 import com.toomate.backend.model.Usuario;
-import com.toomate.backend.repository.UsuarioRepository;
 import com.toomate.backend.service.UsuarioService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,18 +20,23 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> listar() {
-        return ResponseEntity.status(200).body(usuarioService.listar());
+    public ResponseEntity<List<UsuarioResponseDto>> listar() {
+        List<UsuarioResponseDto> usuarios = usuarioService.listar();
+
+        if(usuarios.isEmpty()){
+            return ResponseEntity.status(204).build();
+        }
+        return ResponseEntity.status(200).body(usuarios);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> buscarPeloId(@PathVariable Integer id) {
+    public ResponseEntity<UsuarioResponseDto> buscarPeloId(@PathVariable Integer id) {
         return ResponseEntity.status(200).body(usuarioService.buscarPorId(id));
     }
 
     @PostMapping
-    public ResponseEntity<Usuario> cadastrar(@RequestBody Usuario usuario) {
-        return ResponseEntity.status(201).body(usuarioService.cadastrar(usuario));
+    public ResponseEntity<UsuarioResponseDto> cadastrar(@RequestBody UsuarioRequestDto request) {
+        return ResponseEntity.status(201).body(usuarioService.cadastrar(request));
     }
 
     @DeleteMapping("/{id}")
@@ -40,8 +47,13 @@ public class UsuarioController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Usuario> atualizar(@PathVariable Integer id, @RequestBody Usuario usuario) {
+    public ResponseEntity<UsuarioResponseDto> atualizar(@PathVariable Integer id, @RequestBody Usuario usuario) {
         return ResponseEntity.status(200).body(usuarioService.atualizar(id, usuario));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<UsuarioResponseDto> atualizarAdministrador(@PathVariable Integer id, @RequestBody AtualizarAdministradorDto administrador){
+        return ResponseEntity.status(200).body(usuarioService.atualizarAdministrador(id, administrador));
     }
 
 }
