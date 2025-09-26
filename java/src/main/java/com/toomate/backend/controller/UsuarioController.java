@@ -24,7 +24,7 @@ public class UsuarioController {
     public ResponseEntity<List<UsuarioResponseDto>> listar() {
         List<UsuarioResponseDto> usuarios = usuarioService.listar();
 
-        if(usuarios.isEmpty()){
+        if (usuarios.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
         return ResponseEntity.status(200).body(usuarios);
@@ -33,6 +33,11 @@ public class UsuarioController {
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioResponseDto> buscarPeloId(@PathVariable Integer id) {
         return ResponseEntity.status(200).body(usuarioService.buscarPorId(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<UsuarioResponseDto> buscarPeloEmail(@RequestParam String email) {
+        return ResponseEntity.status(200).body(usuarioService.buscarPorEmail(email));
     }
 
     @PostMapping
@@ -53,7 +58,7 @@ public class UsuarioController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UsuarioResponseDto> atualizarAdministrador(@PathVariable Integer id, @RequestBody AtualizarAdministradorDto administrador){
+    public ResponseEntity<UsuarioResponseDto> atualizarAdministrador(@PathVariable Integer id, @RequestBody AtualizarAdministradorDto administrador) {
         return ResponseEntity.status(200).body(usuarioService.atualizarAdministrador(id, administrador));
     }
 

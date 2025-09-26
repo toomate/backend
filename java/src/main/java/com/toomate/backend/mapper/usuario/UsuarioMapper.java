@@ -1,7 +1,9 @@
 package com.toomate.backend.mapper.usuario;
 
+import com.toomate.backend.dto.usuario.LoginRequestDto;
 import com.toomate.backend.dto.usuario.UsuarioRequestDto;
 import com.toomate.backend.dto.usuario.UsuarioResponseDto;
+import com.toomate.backend.dto.usuario.UsuarioTokenDto;
 import com.toomate.backend.model.Usuario;
 
 import java.util.List;
@@ -19,6 +21,25 @@ public class UsuarioMapper {
         usuario.setAdministrador(usuarioRequestDto.getAdministrador());
 
         return usuario;
+    }
+
+    public static Usuario toEntity(LoginRequestDto loginRequest){
+        Usuario usuario = new Usuario();
+
+        usuario.setNome(loginRequest.getNome());
+        usuario.setSenha(loginRequest.getSenha());
+
+        return usuario;
+    }
+
+    public static UsuarioTokenDto of(Usuario usuario, String token){
+        UsuarioTokenDto usuarioTokenDto = new UsuarioTokenDto();
+
+        usuarioTokenDto.setUserId(usuario.getId());
+        usuarioTokenDto.setNome(usuario.getNome());
+        usuarioTokenDto.setToken(token);
+
+        return usuarioTokenDto;
     }
 
     public static UsuarioResponseDto toResponse(Usuario usuario){
