@@ -1,8 +1,13 @@
 package com.toomate.backend.dto.fornecedor;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class FornecedorRequestDto {
+    @NotBlank
     private String link;
+    @NotBlank
     private String razaoSocial;
+    @NotBlank
     private String telefone;
 
     public String getLink() {

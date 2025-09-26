@@ -1,8 +1,10 @@
 package com.toomate.backend.controller;
 
+import com.toomate.backend.dto.fornecedor.FornecedorRequestDto;
 import com.toomate.backend.model.Fornecedor;
 import com.toomate.backend.repository.FornecedorRepository;
 import com.toomate.backend.service.FornecedorService;
+import jakarta.validation.Valid;
 import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +49,7 @@ public class FornecedorController {
     }
 
     @PostMapping
-    public ResponseEntity<Fornecedor> cadastrar(@RequestBody Fornecedor fornecedor) {
+    public ResponseEntity<Fornecedor> cadastrar(@RequestBody @Valid FornecedorRequestDto fornecedor) {
         return ResponseEntity.status(201).body(fornecedorService.cadastrar(fornecedor));
     }
 

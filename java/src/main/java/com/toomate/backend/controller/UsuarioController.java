@@ -5,6 +5,7 @@ import com.toomate.backend.dto.usuario.UsuarioRequestDto;
 import com.toomate.backend.dto.usuario.UsuarioResponseDto;
 import com.toomate.backend.model.Usuario;
 import com.toomate.backend.service.UsuarioService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +36,7 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<UsuarioResponseDto> cadastrar(@RequestBody UsuarioRequestDto request) {
+    public ResponseEntity<UsuarioResponseDto> cadastrar(@RequestBody @Valid UsuarioRequestDto request) {
         return ResponseEntity.status(201).body(usuarioService.cadastrar(request));
     }
 
