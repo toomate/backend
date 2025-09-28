@@ -1,6 +1,6 @@
 package com.toomate.backend.dto.usuario;
 
-public class LoginRequestDto {
+public class UsuarioLoginDto {
     private String nome;
     private String senha;
 

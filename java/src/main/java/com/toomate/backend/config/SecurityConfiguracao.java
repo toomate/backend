@@ -1,0 +1,134 @@
+package com.toomate.backend.config;
+
+import com.toomate.backend.service.AutenticacaoService;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
+
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+public class SecurityConfiguracao {
+    private final AutenticacaoService autenticacaoService;
+    private final AutenticacaoEntryPoint autenticacaoEntryPoint;
+
+    public SecurityConfiguracao(AutenticacaoService autenticacaoService, AutenticacaoEntryPoint autenticacaoEntryPoint) {
+        this.autenticacaoService = autenticacaoService;
+        this.autenticacaoEntryPoint = autenticacaoEntryPoint;
+    }
+
+
+    private static final RegexRequestMatcher[] URLS_PERMITIDAS = {
+            new RegexRequestMatcher("/swagger-ui/.*", null),
+            new RegexRequestMatcher("/swagger-ui.html", null),
+            new RegexRequestMatcher("/swagger-resources.*", null),
+            new RegexRequestMatcher("/configuration/ui", null),
+            new RegexRequestMatcher("/configuration/security", null),
+            new RegexRequestMatcher("/api/public/.*", null),
+            new RegexRequestMatcher("/api/public/authenticate", null),
+            new RegexRequestMatcher("/webjars/.*", null),
+            new RegexRequestMatcher("/v3/api-docs/.*", null),
+            new RegexRequestMatcher("/actuator/.*", null),
+            new RegexRequestMatcher("/h2-console/.*", null),
+            new RegexRequestMatcher("/error", null),
+            new RegexRequestMatcher("/error/.*", null),
+            new RegexRequestMatcher("/usuarios", null),
+            new RegexRequestMatcher("/usuarios/.*", null),
+            new RegexRequestMatcher("/usuarios/login", null),
+            new RegexRequestMatcher("/usuarios/login/.*", null)
+    };
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .headers(headers -> headers
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+                .cors(Customizer.withDefaults())
+                .csrf(CsrfConfigurer<HttpSecurity>::disable)
+                .authorizeHttpRequests(authorize -> authorize.requestMatchers(URLS_PERMITIDAS)
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated()
+                )
+                .exceptionHandling(handling -> handling.authenticationEntryPoint(autenticacaoEntryPoint))
+                .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        http.addFilterBefore(jwtAutenticationFilterBean(), UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+
+    }
+
+    @Bean
+    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.authenticationProvider(new AutenticacaoProvider(autenticacaoService, passwordEncoder()));
+        return authenticationManagerBuilder.build();
+    }
+
+    @Bean
+    public AutenticacaoEntryPoint jwtAutenticationEntryPointBean() {
+        return new AutenticacaoEntryPoint();
+    }
+
+    @Bean
+    public AutenticacaoFilter jwtAutenticationFilterBean() {
+        return new AutenticacaoFilter(autenticacaoService, jwtAuthenticationUtilBean());
+    }
+
+    @Bean
+    public GerenciadorTokenJwt jwtAuthenticationUtilBean() {
+        return new GerenciadorTokenJwt();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuracao = new CorsConfiguration();
+        configuracao.applyPermitDefaultValues();
+        configuracao.setAllowedMethods(
+                Arrays.asList(
+                        HttpMethod.GET.name(),
+                        HttpMethod.POST.name(),
+                        HttpMethod.PUT.name(),
+                        HttpMethod.PATCH.name(),
+                        HttpMethod.DELETE.name(),
+                        HttpMethod.OPTIONS.name(),
+                        HttpMethod.HEAD.name(),
+                        HttpMethod.TRACE.name()));
+        configuracao.setExposedHeaders(List.of(HttpHeaders.CONTENT_DISPOSITION));
+
+        UrlBasedCorsConfigurationSource origem = new UrlBasedCorsConfigurationSource();
+        origem.registerCorsConfiguration("/**", configuracao);
+
+        return origem;
+    }
+
+
+}

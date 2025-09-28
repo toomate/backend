@@ -1,8 +1,7 @@
 package com.toomate.backend.controller;
 
-import com.toomate.backend.dto.usuario.AtualizarAdministradorDto;
-import com.toomate.backend.dto.usuario.UsuarioRequestDto;
-import com.toomate.backend.dto.usuario.UsuarioResponseDto;
+import com.toomate.backend.dto.usuario.*;
+import com.toomate.backend.mapper.usuario.UsuarioMapper;
 import com.toomate.backend.model.Usuario;
 import com.toomate.backend.service.UsuarioService;
 import jakarta.validation.Valid;
@@ -35,9 +34,9 @@ public class UsuarioController {
         return ResponseEntity.status(200).body(usuarioService.buscarPorId(id));
     }
 
-    @GetMapping
-    public ResponseEntity<UsuarioResponseDto> buscarPeloEmail(@RequestParam String email) {
-        return ResponseEntity.status(200).body(usuarioService.buscarPorEmail(email));
+    @GetMapping("/nome")
+    public ResponseEntity<UsuarioResponseDto> buscarPeloNome(@RequestParam String nome) {
+        return ResponseEntity.status(200).body(usuarioService.buscarPorNome(nome));
     }
 
     @PostMapping

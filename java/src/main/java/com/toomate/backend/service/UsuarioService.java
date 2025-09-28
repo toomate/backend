@@ -1,5 +1,6 @@
 package com.toomate.backend.service;
 
+import com.toomate.backend.config.GerenciadorTokenJwt;
 import com.toomate.backend.dto.usuario.AtualizarAdministradorDto;
 import com.toomate.backend.dto.usuario.UsuarioRequestDto;
 import com.toomate.backend.dto.usuario.UsuarioResponseDto;
@@ -24,13 +25,14 @@ import java.util.List;
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
-    private GerenciadorTokenJwt gerenciadorTokenJwt;
+    private final GerenciadorTokenJwt gerenciadorTokenJwt;
     private final AuthenticationManager authenticationManager;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, GerenciadorTokenJwt gerenciadorTokenJwt) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
+        this.gerenciadorTokenJwt = gerenciadorTokenJwt;
     }
 
     public List<UsuarioResponseDto> listar() {
@@ -43,8 +45,8 @@ public class UsuarioService {
         return UsuarioMapper.toResponse(usuario);
     }
 
-    public UsuarioResponseDto buscarPorEmail(String email){
-        Usuario usuario = usuarioRepository.findByNome(email).orElseThrow(() -> new EntidadeNaoEncontradaException("Não foi encontrado um usuário com este email!"));
+    public UsuarioResponseDto buscarPorNome(String nome){
+        Usuario usuario = usuarioRepository.findByNome(nome).orElseThrow(() -> new EntidadeNaoEncontradaException("Não foi encontrado um usuário com este nome!"));
 
         return UsuarioMapper.toResponse(usuario);
     }
@@ -61,24 +63,10 @@ public class UsuarioService {
         String senhaCriptografada = passwordEncoder.encode(request.getSenha());
         request.setSenha(senhaCriptografada);
 
-        Usuario usuario = UsuarioMapper.toEntity(request);
+        Usuario usuario = UsuarioMapper.of(request);
         usuarioRepository.save(usuario);
 
         return UsuarioMapper.toResponse(usuario);
-    }
-
-    public UsuarioTokenDto autenticar(Usuario usuario){
-        final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(usuario.getNome(), usuario.getSenha());
-
-        final Authentication authentication = authenticationManager.authenticate(credentials);
-
-        Usuario usuarioAutenticado = usuarioRepository.findByNome(usuario.getNome()).orElseThrow(() -> new EntidadeNaoEncontradaException("Não foi encontrado um usuário com este nome!"));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        final String token = gerenciadorTokenJwt.generateToken(authentication);
-
-        return UsuarioMapper.of(usuarioAutenticado, token);
     }
 
     public void deletar(Integer id) {

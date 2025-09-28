@@ -1,6 +1,6 @@
 package com.toomate.backend.mapper.usuario;
 
-import com.toomate.backend.dto.usuario.LoginRequestDto;
+import com.toomate.backend.dto.usuario.UsuarioLoginDto;
 import com.toomate.backend.dto.usuario.UsuarioRequestDto;
 import com.toomate.backend.dto.usuario.UsuarioResponseDto;
 import com.toomate.backend.dto.usuario.UsuarioTokenDto;
@@ -9,7 +9,7 @@ import com.toomate.backend.model.Usuario;
 import java.util.List;
 
 public class UsuarioMapper {
-    public static Usuario toEntity(UsuarioRequestDto usuarioRequestDto){
+    public static Usuario of(UsuarioRequestDto usuarioRequestDto){
         if (usuarioRequestDto == null){
             return null;
         }
@@ -23,7 +23,7 @@ public class UsuarioMapper {
         return usuario;
     }
 
-    public static Usuario toEntity(LoginRequestDto loginRequest){
+    public static Usuario of(UsuarioLoginDto loginRequest){
         Usuario usuario = new Usuario();
 
         usuario.setNome(loginRequest.getNome());
