@@ -44,6 +44,11 @@ public class CategoriaService  {
         return categoriaRepository.existsById(id);
     }
 
+    public Categoria categoriaPorId(Integer id) {
+        return categoriaRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrada categoria com o id %d", id)));
+    }
+
     public Categoria atualizar(Integer id, Categoria categoria) {
         if (!categoriaRepository.existsById(id)) {
             throw new EntidadeNaoEncontradaException(String.format("Não foi encontrado uma categoria com o id %d", id));
