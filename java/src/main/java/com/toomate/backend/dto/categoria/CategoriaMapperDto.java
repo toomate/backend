@@ -25,7 +25,7 @@ public class CategoriaMapperDto {
         }
 
         CategoriaResponseDto dto = new CategoriaResponseDto();
-        dto.setId(entity.getIdCategoria());
+        dto.setIdCategoria(entity.getIdCategoria());
         dto.setNome(entity.getNome());
 
         return dto;

@@ -1,15 +1,15 @@
 package com.toomate.backend.dto.categoria;
 
 public class CategoriaResponseDto {
-    private Integer id;
+    private Integer idCategoria;
     private String nome;
 
-    public Integer getId() {
-        return id;
+    public Integer getIdCategoria() {
+        return idCategoria;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setIdCategoria(Integer idCategoria) {
+        this.idCategoria = idCategoria;
     }
 
     public String getNome() {

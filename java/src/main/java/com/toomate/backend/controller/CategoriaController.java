@@ -48,14 +48,14 @@ public class CategoriaController {
         if(categoriaService.existePorNome(categoria.getNome())){
             return ResponseEntity.status(409).build();
         }
-        categoriaService.cadastrar(categoria);
-        return ResponseEntity.status(201).build();
+        Categoria corpo = categoriaService.cadastrar(categoria);
+        return ResponseEntity.status(201).body(corpo);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Integer id){
         categoriaService.deletar(id);
-        return ResponseEntity.status(404).build();
+        return ResponseEntity.status(204).build();
     }
 
     @PutMapping("/{id}")
@@ -63,7 +63,7 @@ public class CategoriaController {
         categoria.setIdCategoria(id);
         if(categoriaService.existePorId(id)){
             categoriaService.atualizar(id, categoria);
-            return ResponseEntity.status(200).build();
+            return ResponseEntity.status(204).build();
         }
         return ResponseEntity.status(404).build();
     }
