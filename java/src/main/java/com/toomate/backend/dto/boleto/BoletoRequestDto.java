@@ -1,49 +1,24 @@
-package com.toomate.backend.model;
+package com.toomate.backend.dto.boleto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
-@Entity
-public class Boleto {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idBoleto;
+public class BoletoRequestDto {
+    @NotNull
     private String descricao;
+    @NotNull
     private String categoria;
+    @NotNull
     private Boolean pago;
+    @NotNull
     private LocalDate dataVencimento;
     private LocalDate dataPagamento;
+    @NotNull
+    @DecimalMin(value = "0.0")
     private Double valor;
     private Integer idFornecedor;
-
-    public Boleto(Integer idBoleto, String descricao, String categoria, Boolean pago, LocalDate dataVencimento, LocalDate dataPagamento, Double valor, Integer idFornecedor) {
-        this.idBoleto = idBoleto;
-        this.descricao = descricao;
-        this.categoria = categoria;
-        this.pago = pago;
-        this.dataVencimento = dataVencimento;
-        this.dataPagamento = dataPagamento;
-        this.valor = valor;
-        this.idFornecedor = idFornecedor;
-    }
-
-    public Boleto() {
-    }
-
-    public Integer getIdBoleto() {
-        return idBoleto;
-    }
-
-    public void setIdBoleto(Integer idBoleto) {
-        this.idBoleto = idBoleto;
-    }
 
     public String getDescricao() {
         return descricao;
