@@ -64,4 +64,9 @@ public class InsumoService {
     public Boolean existePorId(Integer id) {
         return insumoRepository.existsById(id);
     }
+
+    public Insumo insumoPorId(Integer id) {
+        return insumoRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrado insumo com o id %d", id)));
+    }
 }
