@@ -11,6 +11,8 @@ public interface MarcaRepository extends JpaRepository<Marca, Integer> {
     Optional<Marca> findByDescricaoAndValorMedidaAndFkInsumoAndFkFornecedor(String descricao, Double valorMedida, Integer fkInsumo, Integer fkFornecedor);
     List<Marca> findByValorMedida(Double valorMedida);
     List<Marca> findByDescricaoContainingIgnoreCaseAndValorMedida(String descricao, Double valorMedida);
+    List<Marca> findByNomeMarcaContainingIgnoreCase(String nome);
+    Boolean existsByNome(String nome);
 
 
 }

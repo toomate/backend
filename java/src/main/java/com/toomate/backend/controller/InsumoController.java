@@ -47,11 +47,7 @@ public class InsumoController {
     }
 
     @PostMapping
-<<<<<<< HEAD
     public ResponseEntity<InsumoResponseDto> cadastrar(@Valid @RequestBody InsumoRequestDto insumo){
-=======
-    public ResponseEntity<Insumo> cadastrar(@Valid @RequestBody InsumoRequestDto insumo){
->>>>>>> 8444653ac17a36214bf362ff02434524a7b60c59
         if (insumoService.existePorNome(insumo.getNome())) {
             return ResponseEntity.status(409).build();
         }
@@ -59,12 +55,8 @@ public class InsumoController {
         Categoria categoria = categoriaService.categoriaPorId(insumo.getFkCategoria());
         Insumo corpo = insumoService.cadastrar(insumo, categoria);
 
-<<<<<<< HEAD
         InsumoResponseDto responseDto = InsumoMapperDto.toDto(corpo);
         return ResponseEntity.status(201).body(responseDto);
-=======
-        return ResponseEntity.status(201).body(corpo);
->>>>>>> 8444653ac17a36214bf362ff02434524a7b60c59
     }
 
     @DeleteMapping("/{id}")

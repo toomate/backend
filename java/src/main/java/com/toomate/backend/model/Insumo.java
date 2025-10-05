@@ -8,17 +8,11 @@ public class Insumo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idInsumo;
     private String nome;
-    //    @ManyToOne
-//    @JoinColumn(name = "idCategoria")
-    private Integer fkCategoria;
-
-    public Integer getIdIngrediente() {
-        return idInsumo;
-    }
-
-    public void setIdIngrediente(Integer idInsumo) {
-        this.idInsumo = idInsumo;
-    }
+    @ManyToOne
+    @JoinColumn(name = "idCategoria")
+    private Categoria categoria;
+    private Integer qtdMinima;
+    private String unidadeMedida;
 
     public String getNome() {
         return nome;
@@ -28,18 +22,44 @@ public class Insumo {
         this.nome = nome;
     }
 
-    public Integer getFkCategoria() {
-        return fkCategoria;
+    public Integer getIdInsumo() {
+        return idInsumo;
     }
 
-    public void setFkCategoria(Integer fkCategoria) {
-        this.fkCategoria = fkCategoria;
+    public void setIdInsumo(Integer idInsumo) {
+        this.idInsumo = idInsumo;
     }
 
-    public Insumo(Integer idInsumo, String nome, Integer fkCategoria) {
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
+
+    public Integer getQtdMinima() {
+        return qtdMinima;
+    }
+
+    public void setQtdMinima(Integer qtdMinima) {
+        this.qtdMinima = qtdMinima;
+    }
+
+    public String getUnidadeMedida() {
+        return unidadeMedida;
+    }
+
+    public void setUnidadeMedida(String unidadeMedida) {
+        this.unidadeMedida = unidadeMedida;
+    }
+
+    public Insumo(Integer idInsumo, String nome, Categoria categoria, Integer qtdMinima, String unidadeMedida) {
         this.idInsumo = idInsumo;
         this.nome = nome;
-        this.fkCategoria = fkCategoria;
+        this.categoria = categoria;
+        this.qtdMinima = qtdMinima;
+        this.unidadeMedida = unidadeMedida;
     }
 
     public Insumo() {

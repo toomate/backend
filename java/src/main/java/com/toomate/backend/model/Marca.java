@@ -1,18 +1,22 @@
 package com.toomate.backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Marca {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idMarca;
-    private String descricao;
-    private Double valorMedida;
-    private String unidadeMedida;
+    private String nomeMarca;
+
+    @ManyToOne
+    @JoinColumn(name = "idInsumo")
+    private Insumo insumo;
+
+    @ManyToOne
+    @JoinColumn(name = "idFornecedor")
+    private Fornecedor fornecedor;
+
     private Integer fkInsumo;
     private Integer fkFornecedor;
 
@@ -24,35 +28,35 @@ public class Marca {
         this.idMarca = idMarca;
     }
 
-    public String getDescricao() {
-        return descricao;
+    public String getNomeMarca() {
+        return nomeMarca;
     }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
+    public void setNomeMarca(String nomeMarca) {
+        this.nomeMarca = nomeMarca;
     }
 
-    public Double getValorMedida() {
-        return valorMedida;
+    public Insumo getInsumo() {
+        return insumo;
     }
 
-    public void setValorMedida(Double valorMedida) {
-        this.valorMedida = valorMedida;
+    public void setInsumo(Insumo insumo) {
+        this.insumo = insumo;
     }
 
-    public String getUnidadeMedida() {
-        return unidadeMedida;
+    public Fornecedor getFornecedor() {
+        return fornecedor;
     }
 
-    public void setUnidadeMedida(String unidadeMedida) {
-        this.unidadeMedida = unidadeMedida;
+    public void setFornecedor(Fornecedor fornecedor) {
+        this.fornecedor = fornecedor;
     }
 
-    public Integer getFkIngrediente() {
+    public Integer getFkInsumo() {
         return fkInsumo;
     }
 
-    public void setFkIngrediente(Integer fkInsumo) {
+    public void setFkInsumo(Integer fkInsumo) {
         this.fkInsumo = fkInsumo;
     }
 
@@ -62,17 +66,5 @@ public class Marca {
 
     public void setFkFornecedor(Integer fkFornecedor) {
         this.fkFornecedor = fkFornecedor;
-    }
-
-    public Marca(Integer idMarca, String descricao, Double valorMedida, String unidadeMedida, Integer fkInsumo, Integer fkFornecedor) {
-        this.idMarca = idMarca;
-        this.descricao = descricao;
-        this.valorMedida = valorMedida;
-        this.unidadeMedida = unidadeMedida;
-        this.fkInsumo = fkInsumo;
-        this.fkFornecedor = fkFornecedor;
-    }
-
-    public Marca() {
     }
 }
