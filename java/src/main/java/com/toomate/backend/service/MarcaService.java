@@ -64,7 +64,7 @@ public class MarcaService {
     }
 
     public Boolean existePorNome(String nome) {
-        return marcaRepository.existsByNome(nome);
+        return marcaRepository.existsByNomeMarca(nome);
     }
 
     public Boolean existePorId(Integer id) {

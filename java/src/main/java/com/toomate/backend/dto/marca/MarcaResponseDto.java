@@ -1,5 +1,6 @@
 package com.toomate.backend.dto.marca;
 
+import com.toomate.backend.dto.fornecedor.FornecedorResponseDto;
 import com.toomate.backend.dto.insumo.InsumoResponseDto;
 
 public class MarcaResponseDto {

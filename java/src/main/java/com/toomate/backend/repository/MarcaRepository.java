@@ -7,12 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MarcaRepository extends JpaRepository<Marca, Integer> {
-    List<Marca> findByDescricaoContainingIgnoreCase(String descricao);
-    Optional<Marca> findByDescricaoAndValorMedidaAndFkInsumoAndFkFornecedor(String descricao, Double valorMedida, Integer fkInsumo, Integer fkFornecedor);
-    List<Marca> findByValorMedida(Double valorMedida);
-    List<Marca> findByDescricaoContainingIgnoreCaseAndValorMedida(String descricao, Double valorMedida);
     List<Marca> findByNomeMarcaContainingIgnoreCase(String nome);
-    Boolean existsByNome(String nome);
-
-
+    Boolean existsByNomeMarca(String nome);
 }

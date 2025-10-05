@@ -1,5 +1,6 @@
 package com.toomate.backend.dto.marca;
 
+import com.toomate.backend.dto.fornecedor.FornecedorResponseDto;
 import com.toomate.backend.dto.insumo.InsumoResponseDto;
 import com.toomate.backend.model.Fornecedor;
 import com.toomate.backend.model.Insumo;
@@ -38,10 +39,10 @@ public class MarcaMapperDto {
         }
 
         Fornecedor fornecedor = marca.getFornecedor();
-        if (forncedor != null) {
+        if (fornecedor != null) {
             FornecedorResponseDto fornecedorDto = new FornecedorResponseDto();
-            forncedorDto.setIdFornecedor(fornecedor.getIdFornecedor());
-            dto.setForncedor(fornecedorDto);
+            fornecedorDto.setIdFornecedor(fornecedor.getId());
+            dto.setFornecedor(fornecedorDto);
         }
 
         return dto;

@@ -9,17 +9,17 @@ import jakarta.persistence.Id;
 public class Fornecedor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer idFornecedor;
     private String link;
     private String razaoSocial;
     private String telefone;
 
     public Integer getId() {
-        return id;
+        return idFornecedor;
     }
 
     public void setId(Integer id) {
-        this.id = id;
+        this.idFornecedor = id;
     }
 
     public String getLink() {
