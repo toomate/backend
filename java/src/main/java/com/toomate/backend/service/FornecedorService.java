@@ -5,6 +5,7 @@ import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.mapper.fornecedor.FornecedorMapper;
 import com.toomate.backend.model.Fornecedor;
+import com.toomate.backend.model.Insumo;
 import com.toomate.backend.repository.FornecedorRepository;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +54,11 @@ public class FornecedorService {
             throw new EntidadeNaoEncontradaException(String.format("Não foi encontrado um fornecedor com o id %d", id));
         }
         fornecedorRepository.deleteById(id);
+    }
+
+    public Fornecedor fornecedorPorId(Integer id) {
+        return fornecedorRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrado fornecedor com o id %d", id)));
     }
 }
 
