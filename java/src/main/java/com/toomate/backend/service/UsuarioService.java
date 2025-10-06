@@ -9,6 +9,7 @@ import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.exceptions.RecursoExisteException;
 import com.toomate.backend.mapper.usuario.UsuarioMapper;
+import com.toomate.backend.model.Marca;
 import com.toomate.backend.model.Usuario;
 import com.toomate.backend.repository.UsuarioRepository;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -92,6 +93,11 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
 
         return UsuarioMapper.toResponse(usuario);
+    }
+
+    public Usuario usuarioPorId(Integer id) {
+        return usuarioRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrado nenhuma marca com o id %d", id)));
     }
 
 
