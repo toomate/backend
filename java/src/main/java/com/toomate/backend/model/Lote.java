@@ -1,9 +1,6 @@
 package com.toomate.backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
@@ -16,8 +13,14 @@ public class Lote {
     private LocalDate dataEntrada;
     private Double precoUnitario;
     private Double quantidadeMedida;
-    private Integer fkInsumo;
-    private Integer fkUsuario;
+
+    @ManyToOne
+    @JoinColumn(name = "idMarca")
+    private Marca marca;
+
+    @ManyToOne
+    @JoinColumn(name = "idUsuario")
+    private Usuario usuario;
 
     public Integer getIdLote() {
         return idLote;
@@ -59,19 +62,19 @@ public class Lote {
         this.quantidadeMedida = quantidadeMedida;
     }
 
-    public Integer getFkInsumo() {
-        return fkInsumo;
+    public Marca getMarca() {
+        return marca;
     }
 
-    public void setFkInsumo(Integer fkInsumo) {
-        this.fkInsumo = fkInsumo;
+    public void setMarca(Marca marca) {
+        this.marca = marca;
     }
 
-    public Integer getFkUsuario() {
-        return fkUsuario;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setFkUsuario(Integer fkUsuario) {
-        this.fkUsuario = fkUsuario;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }
