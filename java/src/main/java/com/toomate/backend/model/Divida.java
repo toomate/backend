@@ -5,7 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
@@ -27,6 +26,8 @@ public class Divida {
     private String pedido;
     @Schema(description = "Booleano que sinaliza se está pago ou não", example = "Frango assado")
     private Boolean pago;
+    @Schema(description = "Id númerico do cliente(incrementa automaticamente)", example = "1")
+    private Integer clienteId;
 
     @ManyToOne
     @JoinColumn(name = "fkCliente")

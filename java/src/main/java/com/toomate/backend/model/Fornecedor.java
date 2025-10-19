@@ -11,6 +11,9 @@ public class Fornecedor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Id númerico do fornecedor(incrementa automaticamente)", example = "1")
+    private Integer id;
+    @Schema(description = "Link para redirecionamento para o Whatsapp")
+    @Schema(description = "Id númerico do fornecedor(incrementa automaticamente)", example = "1")
     private Integer idFornecedor;
     @Schema(description = "Link para redirecionamento para o Whatsapp")
     private String link;
