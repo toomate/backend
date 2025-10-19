@@ -1,5 +1,6 @@
 package com.toomate.backend.model;
 
+import io.swagger.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,17 +11,26 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
+@Schema(description = "Representa um boleto que o restaurante tem que pegar")
 public class Boleto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Id númerico do boleto(incrementa automaticamente)", example = "1")
     private Integer idBoleto;
+    @Schema(description = "Descrição do boleto", example = "Boleto do fornecedor de arroz")
     private String descricao;
+    @Schema(description = "Categoria do boleto", example = "fornecedor, água")
     private String categoria;
+    @Schema(description = "Status de pagament do boleto", example = "Pago ou não")
     private Boolean pago;
+    @Schema(description = "Data de vencimento do boleto", example = "03/10/2025")
     private LocalDate dataVencimento;
+    @Schema(description = "Data de pagamento do boleto", example = "03/10/2025")
     private LocalDate dataPagamento;
+    @Schema(description = "Valor do boleto", example = "R$ 20,99")
     private Double valor;
+    @Schema(description = "Id númerico do fornecedor")
     private Integer idFornecedor;
 
     public Boleto(Integer idBoleto, String descricao, String categoria, Boolean pago, LocalDate dataVencimento, LocalDate dataPagamento, Double valor, Integer idFornecedor) {

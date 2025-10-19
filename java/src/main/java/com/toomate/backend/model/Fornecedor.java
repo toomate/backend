@@ -1,5 +1,6 @@
 package com.toomate.backend.model;
 
+import io.swagger.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,9 +10,13 @@ import jakarta.persistence.Id;
 public class Fornecedor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Id númerico do fornecedor(incrementa automaticamente)", example = "1")
     private Integer idFornecedor;
+    @Schema(description = "Link para redirecionamento para o Whatsapp")
     private String link;
+    @Schema(description = "Razão social do fornecedor", example = "Atacado São Paulo")
     private String razaoSocial;
+    @Schema(description = "Telefone do fornecedor", example = "11987654321")
     private String telefone;
 
     public Integer getId() {

@@ -1,12 +1,15 @@
 package com.toomate.backend.model;
 
+import io.swagger.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 @Entity
 public class Insumo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Id númerico do insumo(incrementa automaticamente)", example = "1")
     private Integer idInsumo;
+    @Schema(description = "Nome do insumo(incrementa automaticamente)", example = "Arroz")
     private String nome;
     @ManyToOne
     @JoinColumn(name = "idCategoria")
