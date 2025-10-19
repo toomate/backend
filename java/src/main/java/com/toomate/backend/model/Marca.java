@@ -1,12 +1,24 @@
 package com.toomate.backend.model;
 
+import io.swagger.oas.annotations.media.Schema;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.*;
 
 @Entity
 public class Marca {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Id númerico da marca(incrementa automaticamente)", example = "1")
     private Integer idMarca;
+    @Schema(description = "descricao", example = "camil")
+    private String descricao;
+    @Schema(description = "valor da medida", example = "200.5")
+    private Double valorMedida;
+    @Schema(description = "unidade da medida", example = "kg")
+    private String unidadeMedida;
     private String nomeMarca;
 
     @ManyToOne

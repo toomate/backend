@@ -1,5 +1,10 @@
 package com.toomate.backend.model;
 
+import io.swagger.oas.annotations.media.Schema;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -8,10 +13,15 @@ import java.time.LocalDate;
 public class Lote {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Id númerico do lote(incrementa automaticamente)", example = "1")
     private Integer idLote;
+    @Schema(description = "data de validade)", example = "2025-10-19")
     private LocalDate dataValidade;
+    @Schema(description = "data de entrada)", example = "2025-10-19")
     private LocalDate dataEntrada;
+    @Schema(description = "preço unitário)", example = "25.99")
     private Double precoUnitario;
+    @Schema(description = "quantidade da medida)", example = "25.99")
     private Double quantidadeMedida;
 
     @ManyToOne
