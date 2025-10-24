@@ -1,10 +1,7 @@
 package com.toomate.backend.service;
 
 import com.toomate.backend.config.GerenciadorTokenJwt;
-import com.toomate.backend.dto.usuario.AtualizarAdministradorDto;
-import com.toomate.backend.dto.usuario.UsuarioRequestDto;
-import com.toomate.backend.dto.usuario.UsuarioResponseDto;
-import com.toomate.backend.dto.usuario.UsuarioTokenDto;
+import com.toomate.backend.dto.usuario.*;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.exceptions.RecursoExisteException;
@@ -13,6 +10,9 @@ import com.toomate.backend.model.Marca;
 import com.toomate.backend.model.Usuario;
 import com.toomate.backend.repository.UsuarioRepository;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
@@ -35,6 +36,8 @@ public class UsuarioService {
         this.authenticationManager = authenticationManager;
         this.gerenciadorTokenJwt = gerenciadorTokenJwt;
     }
+
+
 
     public List<UsuarioResponseDto> listar() {
         return UsuarioMapper.toResponse(usuarioRepository.findAll());
@@ -100,5 +103,47 @@ public class UsuarioService {
                 .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrado nenhuma marca com o id %d", id)));
     }
 
+    public UsuarioTokenDto autenticar(Usuario usuario){
+
+        final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(
+                usuario.getNome(), usuario.getSenha()
+        );
+
+        final Authentication authentication = this.authenticationManager.authenticate(credentials);
+
+        Optional<Usuario> usuarioAutenticado = usuarioRepository.findByNome(usuario.getNome());
+
+        if (usuarioAutenticado.isEmpty()){
+            throw new EntidadeNaoEncontradaException("Usuario não encontrado");
+        }
+
+        SecurityContextHolder.getContext().setAuthentication((authentication));
+
+        final String token = gerenciadorTokenJwt.generateToken(authentication);
+
+        return UsuarioMapper.of(usuarioAutenticado.get(), token);
+    }
+
+    @Service
+    public class AutenticacaoService implements UserDetailsService{
+
+        private UsuarioRepository usuarioRepository;
+
+        public AutenticacaoService(UsuarioRepository usuarioRepository){
+            this.usuarioRepository = usuarioRepository;
+        }
+
+
+        @Override
+        public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+            Optional<Usuario> usuarioOpt = usuarioRepository.findByNome(username);
+
+            if (usuarioOpt.isEmpty()){
+                throw new UsernameNotFoundException(String.format("Usuario %s não encontrado.", username));
+            }
+
+            return new UsuarioDetalhesDto(usuarioOpt.get());
+        }
+    }
 
 }

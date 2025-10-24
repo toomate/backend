@@ -1,42 +1,47 @@
 package com.toomate.backend.controller;
 
 
+import com.toomate.backend.dto.cliente.ClienteRequestDto;
+import com.toomate.backend.dto.cliente.ClientesResponseDto;
 import com.toomate.backend.model.Cliente;
-import com.toomate.backend.repository.ClienteRepository;
+import com.toomate.backend.service.ClienteService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.function.EntityResponse;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/clientes")
-public class ClienteController {
+public class  ClienteController {
 
-    private final ClienteRepository clienteRepository ;
+    private final ClienteService clienteService ;
 
-    public ClienteController(ClienteRepository clienteRepository) {
-        this.clienteRepository = clienteRepository;
+    public ClienteController(ClienteService clienteService) {
+        this.clienteService = clienteService;
     }
 
     @GetMapping
-    public ResponseEntity<List<Cliente>> listar() {
+    public ResponseEntity<List<ClientesResponseDto>> listar() {
 
-        List<Cliente> clientes = clienteRepository.findAll();
+        List<ClientesResponseDto> clientes = clienteService.listar();
 
         if (clientes.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
-
-        return ResponseEntity.status(201).body(clientes);
-
+        return ResponseEntity.status(200).body(clientes);
     }
 
-    @GetMapping("/{id}")
+    @PostMapping
+    public ResponseEntity<Cliente> cadastrar (@Valid ClienteRequestDto dto){
+        return ResponseEntity.status(201).body(clienteService.cadastrar(dto));
+    }
+
+    @GetMapping("/{idCliente}")
     public ResponseEntity<Cliente> buscarPorId(@PathVariable Integer idCliente) {
 
-        Optional<Cliente> clienteOpt = clienteRepository.findById(idCliente);
+        Optional<Cliente> clienteOpt = clienteService.buscarPorId(idCliente);
 
         if (clienteOpt.isPresent()) {
             Cliente cliente = clienteOpt.get();
@@ -47,43 +52,27 @@ public class ClienteController {
 
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Cliente> atualizar(@PathVariable Integer idCliente, @RequestBody Cliente cliente) {
-
-        cliente.setIdCliente(idCliente);
-
-        if (clienteRepository.existsById(idCliente)) {
-            Cliente save = clienteRepository.save(cliente);
-            return ResponseEntity.status(200).body(cliente);
-        }
-
-        return ResponseEntity.status(404).build();
-
+    @PutMapping("/{idCliente}")
+    public ResponseEntity<Cliente> atualizar(@PathVariable Integer idCliente,@Valid @RequestBody Cliente cliente) {
+            return ResponseEntity.status(200).body(clienteService.atualizar(idCliente, cliente));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{idCliente}")
     public ResponseEntity<Void> deletarPorId(@PathVariable Integer idCliente) {
-
-        if (clienteRepository.existsById(idCliente)) {
-            clienteRepository.deleteById(idCliente);
+            clienteService.deletarPorId(idCliente);
             return ResponseEntity.status(204).build();
-        }
-
-        return ResponseEntity.status(404).build();
-
     }
 
     @GetMapping("/por-nome")
-    public ResponseEntity<List<Cliente>> buscarPorNome(@RequestParam String nome) {
+    public ResponseEntity<List<ClientesResponseDto>> buscarPorNome(@RequestParam String nome) {
 
-        List<Cliente> clientesEncontrados = clienteRepository.findByNomeContainingIgnoreCase(nome);
+        List<ClientesResponseDto> clientesEncontrados = clienteService.buscarPorNome(nome);
 
         if (clientesEncontrados.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
 
         return ResponseEntity.status(200).body(clientesEncontrados);
-
     }
 
 }

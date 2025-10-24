@@ -1,9 +1,9 @@
-package com.toomate.backend.model;
+    package com.toomate.backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Cliente {
@@ -17,18 +17,29 @@ public class Cliente {
     private String cep;
     private String logradouro;
     private String bairro;
+    
+    @OneToMany(mappedBy = "cliente")
+    private List<Divida> dividas;
 
-
-    public Cliente(Integer idCliente, String nome, String telefone, String cep, String logradouro, String bairro) {
-        this.idCliente = idCliente;
+    public Cliente(String nome, String telefone, String cep, String logradouro, String bairro) {
         this.nome = nome;
         this.telefone = telefone;
         this.cep = cep;
         this.logradouro = logradouro;
         this.bairro = bairro;
+        dividas = new ArrayList<>();
+    }
+
+    public List<Divida> getDividas() {
+        return dividas;
+    }
+
+    public void setDividas(List<Divida> dividas) {
+        this.dividas = dividas;
     }
 
     public Cliente() {
+        dividas = new ArrayList<>();
     }
 
     public Integer getIdCliente() {

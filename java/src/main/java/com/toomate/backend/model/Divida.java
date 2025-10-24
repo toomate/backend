@@ -1,9 +1,6 @@
 package com.toomate.backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
@@ -19,16 +16,24 @@ public class Divida {
     private LocalDate dataPagamento;
     private String pedido;
     private Boolean pago;
-    private Integer clienteId;
 
-    public Divida(Integer idDivida, Double valor, LocalDate dataCompra, LocalDate dataPagamento, String pedido, Boolean pago, Integer clienteId) {
-        this.idDivida = idDivida;
+    @ManyToOne
+    @JoinColumn(name = "fkCliente")
+    private Cliente cliente;
+
+
+
+    public Divida(Double valor, LocalDate dataCompra, LocalDate dataPagamento, String pedido, Boolean pago, Cliente cliente) {
         this.valor = valor;
         this.dataCompra = dataCompra;
         this.dataPagamento = dataPagamento;
         this.pedido = pedido;
         this.pago = pago;
-        this.clienteId = clienteId;
+        this.cliente = cliente;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
     }
 
     public Divida() {
@@ -82,11 +87,7 @@ public class Divida {
         this.pago = pago;
     }
 
-    public Integer getCliente() {
-        return clienteId;
-    }
-
-    public void setCliente(Integer clienteId) {
-        this.clienteId = clienteId;
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 }
