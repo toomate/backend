@@ -8,6 +8,9 @@ import com.toomate.backend.dto.marca.MarcaResponseDto;
 import com.toomate.backend.model.*;
 import com.toomate.backend.repository.LoteRepository;
 import com.toomate.backend.service.*;
+import io.swagger.oas.annotations.Operation;
+import io.swagger.oas.annotations.media.Content;
+import io.swagger.oas.annotations.responses.ApiResponse;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +31,14 @@ public class LoteController {
         this.marcaService = marcaService;
     }
 
+
+    @Operation(summary = "Listar lote",
+            description = "Retorna uma lista de lotes(codigo 200) ou codigo 204 se não houver lotes",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de lotes",
+                            content = @Content(mediaType = "application/json")),
+                    @ApiResponse(responseCode = "204", description = "Sem conteúdo")
+            })
     @GetMapping
     public ResponseEntity<List<LoteResponseDto>> listar(){
         List<LoteResponseDto> lote = LoteMapperDto.toDto(loteService.listar());
@@ -39,6 +50,13 @@ public class LoteController {
         return ResponseEntity.status(200).body(lote);
     }
 
+    @Operation(summary = "Busca um lote pelo id",
+            description = "Retorna um lote(codigo 200) ou lança um exceção com código 404 se não encontrar o lote",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lote",
+                            content = @Content(mediaType = "application/json")),
+                    @ApiResponse(responseCode = "404", description = "Não encontrado")
+            })
     @GetMapping("/{id}")
     public ResponseEntity<LoteResponseDto> pegarPorId(@PathVariable Integer id){
         Lote lote = loteService.listarPorId(id);
@@ -47,6 +65,13 @@ public class LoteController {
         return ResponseEntity.status(200).body(loteDto);
     }
 
+    @Operation(summary = "Cadastrar lote",
+            description = "Retorna o lote cadastrado(codigo 201) ou lança uma exceção de codigo 409 se o lote já estiver cadastrado",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Lote cadastrado",
+                            content = @Content(mediaType = "application/json")),
+                    @ApiResponse(responseCode = "409", description = "Conflito no cadastro")
+            })
     @PostMapping
     public ResponseEntity<LoteResponseDto> cadastrar(@RequestBody LoteRequestDto lote){
         if(lote == null){
@@ -61,12 +86,24 @@ public class LoteController {
         return ResponseEntity.status(201).body(loteResponse);
     }
 
+    @Operation(summary = "Deletar lote por id",
+            description = "Retorna o codigo 204 ou lança uma exceção de codigo 404 se o lote não for encontrado",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Sem conteúdo"),
+                    @ApiResponse(responseCode = "404", description = "Não encontrado")
+            })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Integer id){
        loteService.deletar(id);
        return ResponseEntity.status(204).build();
     }
 
+    @Operation(summary = "Atualizar lote",
+            description = "Retorna o código 204 ou lança uma exceção de codigo 404 se o lote não for encontrado",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Sem conteúdo"),
+                    @ApiResponse(responseCode = "404", description = "Não encontrado")
+            })
     @PutMapping("/{id}")
     public ResponseEntity<Lote> atualizar(@RequestBody LoteRequestDto lote, @PathVariable Integer id){
 

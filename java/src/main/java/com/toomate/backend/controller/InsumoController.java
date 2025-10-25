@@ -64,7 +64,7 @@ public class InsumoController {
     }
 
     @Operation(summary = "Cadastrar insumo",
-            description = "Retorna o insumo(codigo 201) ou codigo 409 se não houver insumos",
+            description = "Retorna o insumo(codigo 201) ou codigo 409 se o insumo já estiver cadastrado",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Insumo",
                             content = @Content(mediaType = "application/json")),
