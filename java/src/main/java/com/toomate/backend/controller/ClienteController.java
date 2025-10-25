@@ -1,5 +1,6 @@
 package com.toomate.backend.controller;
 
+
 import com.toomate.backend.dto.cliente.ClienteRequestDto;
 import com.toomate.backend.dto.cliente.ClientesResponseDto;
 import com.toomate.backend.model.Cliente;
@@ -50,7 +51,7 @@ public class ClienteController {
                             content = @Content(mediaType = "application/json"))
             })
     @PostMapping
-    public ResponseEntity<Cliente> cadastrar(@Valid ClienteRequestDto dto) {
+    public ResponseEntity<Cliente> cadastrar (@Valid @RequestBody ClienteRequestDto dto){
         return ResponseEntity.status(201).body(clienteService.cadastrar(dto));
     }
 
@@ -96,6 +97,18 @@ public class ClienteController {
     public ResponseEntity<Void> deletarPorId(@PathVariable Integer idCliente) {
         clienteService.deletarPorId(idCliente);
         return ResponseEntity.status(204).build();
+    }
+
+    @GetMapping("/por-nome")
+    public ResponseEntity<List<ClientesResponseDto>> buscarPorNome(@RequestParam String nome) {
+
+        List<ClientesResponseDto> clientesEncontrados = clienteService.buscarPorNome(nome);
+
+        if (clientesEncontrados.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+
+        return ResponseEntity.status(200).body(clientesEncontrados);
     }
 
 }

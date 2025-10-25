@@ -21,7 +21,7 @@ public class ClienteMapper {
 
     public static Cliente toEntity(ClienteRequestDto dto){
         if (Objects.isNull(dto)){
-            throw new EntradaInvalidaException("Cliente  nulo");
+            throw new EntradaInvalidaException("Cliente nulo");
         }
         return new Cliente(
                 dto.getNome(),
