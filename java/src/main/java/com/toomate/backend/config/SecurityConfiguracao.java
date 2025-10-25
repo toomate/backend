@@ -1,6 +1,8 @@
 package com.toomate.backend.config;
 
 import com.toomate.backend.service.AutenticacaoService;
+import io.swagger.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -43,6 +45,7 @@ public class SecurityConfiguracao {
             "/swagger-ui/**",
             "/swagger-ui.html",
             "/swagger-resources**",
+            "/docs/**",
             "/configuration/ui",
             "/configuration/security",
             "/api/public/**",

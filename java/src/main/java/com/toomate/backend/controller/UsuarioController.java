@@ -7,6 +7,7 @@ import com.toomate.backend.service.UsuarioService;
 import io.swagger.oas.annotations.Operation;
 import io.swagger.oas.annotations.media.Content;
 import io.swagger.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -84,6 +85,7 @@ public class UsuarioController {
                     @ApiResponse(responseCode = "404", description = "Não encontrado")
             })
     @PostMapping("/login")
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<UsuarioTokenDto> login(@RequestBody @Valid UsuarioLoginDto usuarioLoginDto){
         final Usuario usuario = UsuarioMapper.of(usuarioLoginDto);
         UsuarioTokenDto usuarioTokenDto = this.usuarioService.autenticar(usuario);
