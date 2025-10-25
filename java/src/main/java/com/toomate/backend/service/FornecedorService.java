@@ -5,7 +5,6 @@ import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.mapper.fornecedor.FornecedorMapper;
 import com.toomate.backend.model.Fornecedor;
-import com.toomate.backend.model.Insumo;
 import com.toomate.backend.repository.FornecedorRepository;
 import org.springframework.stereotype.Service;
 

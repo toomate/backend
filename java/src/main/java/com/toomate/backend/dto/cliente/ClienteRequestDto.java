@@ -9,7 +9,7 @@ public class ClienteRequestDto {
     private String nome;
     @NotBlank
     private String telefone;
-    @Pattern(regexp = "//d{5}-//d{3}")
+    @Pattern(regexp = "\\d{5}-\\d{3}")
     private String cep;
     private String logradouro;
     private String bairro;

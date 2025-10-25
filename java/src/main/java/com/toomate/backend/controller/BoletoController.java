@@ -64,8 +64,8 @@ public class BoletoController {
                             content = @Content(mediaType = "application/json"))
             })
     @GetMapping("/{id}")
-    public ResponseEntity<Boleto> buscarPorId(@PathVariable Integer idBoleto) {
-        return ResponseEntity.status(200).body(boletoService.buscarPorId(idBoleto));
+    public ResponseEntity<Boleto> buscarPorId(@PathVariable Integer id) {
+        return ResponseEntity.status(200).body(boletoService.buscarPorId(id));
     }
 
     @Operation(summary = "Editar boleto",
@@ -75,9 +75,9 @@ public class BoletoController {
                             content = @Content(mediaType = "application/json"))
             })
     @PutMapping("/{id}")
-    public ResponseEntity<Boleto> editar(@PathVariable Integer idBoleto, @RequestBody Boleto boleto) {
+    public ResponseEntity<Boleto> editar(@PathVariable Integer id, @RequestBody Boleto boleto) {
 
-        return ResponseEntity.status(200).body(boletoService.editar(idBoleto, boleto));
+        return ResponseEntity.status(200).body(boletoService.editar(id, boleto));
     }
 
     @Operation(summary = "Deletar boleto por id",
@@ -86,8 +86,8 @@ public class BoletoController {
                     @ApiResponse(responseCode = "204", description = "Sem conteúdo")
             })
     @DeleteMapping("/{id}")
-    public  ResponseEntity<Void> deletarPorId(@PathVariable Integer idBoleto) {
-        boletoService.deletarPorId(idBoleto);
+    public  ResponseEntity<Void> deletarPorId(@PathVariable Integer id) {
+        boletoService.deletarPorId(id);
         return ResponseEntity.status(204).build();
     }
 

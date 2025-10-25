@@ -39,24 +39,21 @@ public class SecurityConfiguracao {
     }
 
 
-    private static final RegexRequestMatcher[] URLS_PERMITIDAS = {
-            new RegexRequestMatcher("/swagger-ui/.*", null),
-            new RegexRequestMatcher("/swagger-ui.html", null),
-            new RegexRequestMatcher("/swagger-resources.*", null),
-            new RegexRequestMatcher("/configuration/ui", null),
-            new RegexRequestMatcher("/configuration/security", null),
-            new RegexRequestMatcher("/api/public/.*", null),
-            new RegexRequestMatcher("/api/public/authenticate", null),
-            new RegexRequestMatcher("/webjars/.*", null),
-            new RegexRequestMatcher("/v3/api-docs/.*", null),
-            new RegexRequestMatcher("/actuator/.*", null),
-            new RegexRequestMatcher("/h2-console/.*", null),
-            new RegexRequestMatcher("/error", null),
-            new RegexRequestMatcher("/error/.*", null),
-            new RegexRequestMatcher("/usuarios", null),
-            new RegexRequestMatcher("/usuarios/.*", null),
-            new RegexRequestMatcher("/usuarios/login", null),
-            new RegexRequestMatcher("/usuarios/login/.*", null)
+    private static final String[] URLS_PERMITIDAS = {
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/swagger-resources**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/api/public/**",
+            "/api/public/authenticate",
+            "/webjars/**",
+            "/v3/api-docs/**",
+            "/actuator/**",
+            "/h2-console/**",
+            "/error",
+            "/error/**",
+            "/usuarios/**"
     };
 
     @Bean
