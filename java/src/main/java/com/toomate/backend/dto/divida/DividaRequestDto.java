@@ -1,6 +1,5 @@
 package com.toomate.backend.dto.divida;
 
-import jakarta.persistence.JoinColumn;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
@@ -21,58 +20,55 @@ public class DividaRequestDto {
     @NotNull
     private Integer idCliente;
 
-    @Null
     private LocalDate dataPagamento;
     private Boolean pago;
 
-    public void setValor(Double valor) {
-        this.valor = valor;
-    }
-
-    public void setDataCompra(LocalDate dataCompra) {
-        this.dataCompra = dataCompra;
-    }
-
-    public void setDataPagamento(LocalDate dataPagamento) {
-        this.dataPagamento = dataPagamento;
-    }
-
-    public void setPedido(String pedido) {
-        this.pedido = pedido;
-    }
-
-    public void setPago(Boolean pago) {
-        this.pago = pago;
-    }
-
-    public void setClienteId(Integer clienteId) {
-        this.clienteId = clienteId;
-    }
 
     public Double getValor() {
         return valor;
+    }
+
+    public void setValor(Double valor) {
+        this.valor = valor;
     }
 
     public LocalDate getDataCompra() {
         return dataCompra;
     }
 
-    public LocalDate getDataPagamento() {
-        return dataPagamento;
+    public void setDataCompra(LocalDate dataCompra) {
+        this.dataCompra = dataCompra;
     }
 
     public String getPedido() {
         return pedido;
     }
 
+    public void setPedido(String pedido) {
+        this.pedido = pedido;
+    }
+
+    public Integer getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(Integer idCliente) {
+        this.idCliente = idCliente;
+    }
+
+    public LocalDate getDataPagamento() {
+        return dataPagamento;
+    }
+
+    public void setDataPagamento(LocalDate dataPagamento) {
+        this.dataPagamento = dataPagamento;
+    }
+
     public Boolean getPago() {
         return pago;
     }
 
-    public Integer getClienteId() {
-        return clienteId;
+    public void setPago(Boolean pago) {
+        this.pago = pago;
     }
-
-    @NotBlank
-    private Integer clienteId;
 }

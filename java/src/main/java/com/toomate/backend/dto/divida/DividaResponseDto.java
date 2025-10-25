@@ -1,50 +1,29 @@
-package com.toomate.backend.model;
+package com.toomate.backend.dto.divida;
 
-import io.swagger.oas.annotations.media.Schema;
-import jakarta.persistence.*;
+import com.toomate.backend.dto.cliente.ClientesResponseDto;
+import com.toomate.backend.model.Cliente;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 import java.time.LocalDate;
 
-@Entity
-@Schema(description = "Representa uma divida de um cliente.")
-public class Divida {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "Id númerico da divida(incrementa automaticamente)", example = "1")
+public class DividaResponseDto {
     private Integer idDivida;
-    @Schema(description = "Valor da dívida do cliente", example = "R$ 20,99")
     private Double valor;
-    @Schema(description = "Data em que a dívida foi feita", example = "03/10/2025")
     private LocalDate dataCompra;
-    @Schema(description = "Data em que a dívida foi paga", example = "03/10/2025")
     private LocalDate dataPagamento;
-    @Schema(description = "Descrição do que foi o pedido", example = "true ou false")
     private String pedido;
-    @Schema(description = "Booleano que sinaliza se está pago ou não", example = "Frango assado")
     private Boolean pago;
-    @Schema(description = "Id númerico do cliente(incrementa automaticamente)", example = "1")
-    private Integer clienteId;
+    private ClientesResponseDto cliente;
 
-    @ManyToOne
-    @JoinColumn(name = "fkCliente")
-    private Cliente cliente;
-
-
-    public Divida(Double valor, LocalDate dataCompra, LocalDate dataPagamento, String pedido, Boolean pago, Cliente cliente) {
+    public DividaResponseDto(Integer idDivida, Double valor, LocalDate dataCompra, LocalDate dataPagamento, String pedido, Boolean pago, ClientesResponseDto cliente) {
+        this.idDivida = idDivida;
         this.valor = valor;
         this.dataCompra = dataCompra;
         this.dataPagamento = dataPagamento;
         this.pedido = pedido;
         this.pago = pago;
         this.cliente = cliente;
-    }
-
-    public Divida() {
-    }
-
-    public Cliente getCliente() {
-        return cliente;
     }
 
     public Integer getIdDivida() {
@@ -95,7 +74,11 @@ public class Divida {
         this.pago = pago;
     }
 
-    public void setCliente(Cliente cliente) {
+    public ClientesResponseDto getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(ClientesResponseDto cliente) {
         this.cliente = cliente;
     }
 }

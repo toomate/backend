@@ -1,6 +1,7 @@
 package com.toomate.backend.controller;
 
 import com.toomate.backend.dto.divida.DividaRequestDto;
+import com.toomate.backend.dto.divida.DividaResponseDto;
 import com.toomate.backend.dto.divida.DividaResponseModalDto;
 import com.toomate.backend.model.Divida;
 import com.toomate.backend.service.DividaService;
@@ -31,7 +32,7 @@ public class DividaController {
                     @ApiResponse(responseCode = "409", description = "Conflito no cadastro")
             })
     @PostMapping()
-    public ResponseEntity<Divida> cadastrar(@Valid @RequestBody DividaRequestDto divida){
+    public ResponseEntity<DividaResponseDto> cadastrar(@Valid @RequestBody DividaRequestDto divida){
     return ResponseEntity.status(201).body(dividaService.cadastrar(divida));
     }
 
@@ -60,7 +61,7 @@ public class DividaController {
                     @ApiResponse(responseCode = "404", description = "Não encontrado")
             })
     @PutMapping("/atualizarEstado/{idDivida}")
-    public ResponseEntity<Divida> atualizarEstado(@PathVariable Integer idDivida){
+    public ResponseEntity<DividaResponseDto> atualizarEstado(@PathVariable Integer idDivida){
 
         if (dividaService.existePorId(idDivida)){
         return ResponseEntity.status(201).body(dividaService.atualizarEstado(idDivida));
@@ -75,7 +76,7 @@ public class DividaController {
                     @ApiResponse(responseCode = "404", description = "Não encontrado")
             })
     @PutMapping("/{idDivida}")
-    public ResponseEntity<Void> atualizar(@PathVariable Integer idDivida, @Valid @RequestBody DividaRequestDto dividaRequestDto){
+    public ResponseEntity<DividaResponseDto> atualizar(@PathVariable Integer idDivida, @Valid @RequestBody DividaRequestDto dividaRequestDto){
         if (dividaService.existePorId(idDivida)){
             dividaService.atualizar(idDivida, dividaRequestDto);
             return ResponseEntity.status(204).build();

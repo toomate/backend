@@ -1,7 +1,9 @@
 package com.toomate.backend.mapper.Divida;
 
+import com.toomate.backend.dto.cliente.ClientesResponseDto;
 import com.toomate.backend.dto.divida.DividaRequestDto;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
+import com.toomate.backend.mapper.cliente.ClienteMapper;
 import com.toomate.backend.model.Cliente;
 import com.toomate.backend.model.Divida;
 import com.toomate.backend.dto.divida.*;
@@ -34,6 +36,24 @@ public class DividaMapper {
                 entity.getValor(),
                 entity.getDataCompra(),
                 entity.getPedido()
+        );
+    }
+
+    public static DividaResponseDto toResponse(Divida entity, Cliente cliente){
+        if (Objects.isNull(entity) || Objects.isNull(cliente)){
+            throw new EntradaInvalidaException("Divida e/ou cliente inválidos!");
+        }
+
+        ClientesResponseDto clienteResponse = ClienteMapper.toResponses(cliente);
+
+        return new DividaResponseDto(
+                entity.getIdDivida(),
+                entity.getValor(),
+                entity.getDataCompra(),
+                entity.getDataPagamento(),
+                entity.getPedido(),
+                entity.getPago(),
+                clienteResponse
         );
     }
 }
