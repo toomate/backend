@@ -79,7 +79,6 @@ public class LoteController {
         if(lote == null){
             return null;
         }
-
         Usuario usuario = usuarioService.usuarioPorId(lote.getFkUsuario());
         Marca marca = marcaService.marcaPorId(lote.getFkMarca());
         Lote corpo = loteService.cadastrar(lote, usuario, marca);

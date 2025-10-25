@@ -9,6 +9,16 @@ public class MarcaResponseDto {
     private InsumoResponseDto insumo;
     private FornecedorResponseDto fornecedor;
 
+    public MarcaResponseDto() {
+    }
+
+    public MarcaResponseDto(Integer idMarca, String nome, InsumoResponseDto insumo, FornecedorResponseDto fornecedor) {
+        this.idMarca = idMarca;
+        this.nome = nome;
+        this.insumo = insumo;
+        this.fornecedor = fornecedor;
+    }
+
     public Integer getIdMarca() {
         return idMarca;
     }

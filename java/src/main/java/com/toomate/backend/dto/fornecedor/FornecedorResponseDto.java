@@ -8,7 +8,6 @@ public class FornecedorResponseDto {
     private String linkWhatsapp;
     private String razaoSocial;
     private String telefone;
-    private Boleto  boleto;
 
     public Integer getIdFornecedor() {
         return idFornecedor;
@@ -42,11 +41,4 @@ public class FornecedorResponseDto {
         this.telefone = telefone;
     }
 
-    public Boleto getBoleto() {
-        return boleto;
-    }
-
-    public void setBoleto(Boleto boleto) {
-        this.boleto = boleto;
-    }
 }

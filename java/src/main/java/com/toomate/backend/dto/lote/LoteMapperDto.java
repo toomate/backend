@@ -1,7 +1,9 @@
 package com.toomate.backend.dto.lote;
 
+import com.toomate.backend.dto.marca.MarcaMapperDto;
 import com.toomate.backend.dto.marca.MarcaResponseDto;
 import com.toomate.backend.dto.usuario.UsuarioResponseDto;
+import com.toomate.backend.mapper.usuario.UsuarioMapper;
 import com.toomate.backend.model.Lote;
 import com.toomate.backend.model.Marca;
 import com.toomate.backend.model.Usuario;
@@ -36,25 +38,13 @@ public class LoteMapperDto {
         dto.setDataValidade(lote.getDataValidade());
         dto.setPrecoUnitario(lote.getPrecoUnitario());
         dto.setQuantidadeMedida(lote.getQuantidadeMedida());
-
-        Usuario usuario = lote.getUsuario();
-        if (usuario != null) {
-            UsuarioResponseDto usuarioDto = new UsuarioResponseDto();
-            usuarioDto.setId(usuario.getId());
-            dto.setUsuario(usuarioDto);
-        }
-
-        Marca marca = lote.getMarca();
-        if (marca != null) {
-            MarcaResponseDto marcaDto = new MarcaResponseDto();
-            marcaDto.setIdMarca(marca.getIdMarca());
-            dto.setMarca(marcaDto);
-        }
+        dto.setUsuario(UsuarioMapper.toResponse(lote.getUsuario()));
+        dto.setMarca(MarcaMapperDto.toDto(lote.getMarca()));
 
         return dto;
     }
 
     public static List<LoteResponseDto> toDto(List<Lote> entity) {
-        return entity.stream().map(LoteMapperDto::toDto).toList();
+        return entity.stream().map(lote -> new LoteResponseDto(lote.getIdLote(), lote.getDataValidade(), lote.getPrecoUnitario(), lote.getQuantidadeMedida(), lote.getDataEntrada(), UsuarioMapper.toResponse(lote.getUsuario()), MarcaMapperDto.toDto(lote.getMarca()))).toList();
     }
 }

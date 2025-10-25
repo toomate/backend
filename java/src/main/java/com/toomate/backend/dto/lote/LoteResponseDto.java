@@ -14,6 +14,18 @@ public class LoteResponseDto {
     private UsuarioResponseDto usuario;
     private MarcaResponseDto marca;
 
+    public LoteResponseDto(){}
+
+    public LoteResponseDto(Integer idLote, LocalDate dataValidade, Double precoUnitario, Double quantidadeMedida, LocalDate dataEntrada, UsuarioResponseDto usuario, MarcaResponseDto marca) {
+        this.idLote = idLote;
+        this.dataValidade = dataValidade;
+        this.precoUnitario = precoUnitario;
+        this.quantidadeMedida = quantidadeMedida;
+        this.dataEntrada = dataEntrada;
+        this.usuario = usuario;
+        this.marca = marca;
+    }
+
     public Integer getIdLote() {
         return idLote;
     }
