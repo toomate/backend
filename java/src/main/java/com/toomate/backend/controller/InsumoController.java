@@ -7,9 +7,10 @@ import com.toomate.backend.model.Categoria;
 import com.toomate.backend.model.Insumo;
 import com.toomate.backend.service.CategoriaService;
 import com.toomate.backend.service.InsumoService;
-import io.swagger.oas.annotations.Operation;
-import io.swagger.oas.annotations.media.Content;
-import io.swagger.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/insumos")
+@SecurityRequirement(name = "Bearer")
 public class InsumoController {
     private final InsumoService insumoService;
     private final CategoriaService categoriaService;

@@ -4,9 +4,9 @@ import com.toomate.backend.dto.usuario.*;
 import com.toomate.backend.mapper.usuario.UsuarioMapper;
 import com.toomate.backend.model.Usuario;
 import com.toomate.backend.service.UsuarioService;
-import io.swagger.oas.annotations.Operation;
-import io.swagger.oas.annotations.media.Content;
-import io.swagger.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/usuarios")
+@SecurityRequirement(name = "Bearer")
 public class UsuarioController {
     private final UsuarioService usuarioService;
 
@@ -85,7 +86,6 @@ public class UsuarioController {
                     @ApiResponse(responseCode = "404", description = "Não encontrado")
             })
     @PostMapping("/login")
-    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<UsuarioTokenDto> login(@RequestBody @Valid UsuarioLoginDto usuarioLoginDto){
         final Usuario usuario = UsuarioMapper.of(usuarioLoginDto);
         UsuarioTokenDto usuarioTokenDto = this.usuarioService.autenticar(usuario);

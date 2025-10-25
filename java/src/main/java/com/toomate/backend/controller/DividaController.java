@@ -5,9 +5,10 @@ import com.toomate.backend.dto.divida.DividaResponseDto;
 import com.toomate.backend.dto.divida.DividaResponseModalDto;
 import com.toomate.backend.model.Divida;
 import com.toomate.backend.service.DividaService;
-import io.swagger.oas.annotations.Operation;
-import io.swagger.oas.annotations.media.Content;
-import io.swagger.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/dividas")
+@SecurityRequirement(name = "Bearer")
 public class DividaController {
 
     private final DividaService dividaService;

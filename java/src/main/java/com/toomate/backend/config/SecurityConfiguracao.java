@@ -1,8 +1,8 @@
 package com.toomate.backend.config;
 
 import com.toomate.backend.service.AutenticacaoService;
-import io.swagger.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -31,6 +31,12 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@SecurityScheme(
+        name = "Bearer",
+        type = SecuritySchemeType.HTTP,
+        scheme = "bearer",
+        bearerFormat = "JWT"
+)
 public class SecurityConfiguracao {
     private final AutenticacaoService autenticacaoService;
     private final AutenticacaoEntryPoint autenticacaoEntryPoint;

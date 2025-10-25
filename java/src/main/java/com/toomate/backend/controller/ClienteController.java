@@ -5,9 +5,10 @@ import com.toomate.backend.dto.cliente.ClienteRequestDto;
 import com.toomate.backend.dto.cliente.ClientesResponseDto;
 import com.toomate.backend.model.Cliente;
 import com.toomate.backend.service.ClienteService;
-import io.swagger.oas.annotations.Operation;
-import io.swagger.oas.annotations.media.Content;
-import io.swagger.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/clientes")
+@SecurityRequirement(name = "Bearer")
 public class ClienteController {
 
     private final ClienteService clienteService;

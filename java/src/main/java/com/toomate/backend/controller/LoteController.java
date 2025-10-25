@@ -8,9 +8,10 @@ import com.toomate.backend.dto.marca.MarcaResponseDto;
 import com.toomate.backend.model.*;
 import com.toomate.backend.repository.LoteRepository;
 import com.toomate.backend.service.*;
-import io.swagger.oas.annotations.Operation;
-import io.swagger.oas.annotations.media.Content;
-import io.swagger.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/lotes")
+@SecurityRequirement(name = "Bearer")
 public class LoteController {
     private final LoteService loteService;
     private final UsuarioService usuarioService;

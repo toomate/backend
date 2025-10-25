@@ -5,9 +5,10 @@ import com.toomate.backend.dto.categoria.CategoriaRequestDto;
 import com.toomate.backend.dto.categoria.CategoriaResponseDto;
 import com.toomate.backend.model.Categoria;
 import com.toomate.backend.service.CategoriaService;
-import io.swagger.oas.annotations.Operation;
-import io.swagger.oas.annotations.media.Content;
-import io.swagger.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -20,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/categorias")
+@SecurityRequirement(name = "Bearer")
 public class CategoriaController {
 
     private final CategoriaService categoriaService;

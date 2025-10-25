@@ -4,9 +4,10 @@ import com.toomate.backend.dto.fornecedor.FornecedorRequestDto;
 import com.toomate.backend.model.Fornecedor;
 import com.toomate.backend.repository.FornecedorRepository;
 import com.toomate.backend.service.FornecedorService;
-import io.swagger.oas.annotations.Operation;
-import io.swagger.oas.annotations.media.Content;
-import io.swagger.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/fornecedores")
+@SecurityRequirement(name = "Bearer")
 public class FornecedorController {
     private final FornecedorService fornecedorService;
 

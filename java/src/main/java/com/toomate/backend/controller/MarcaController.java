@@ -11,9 +11,10 @@ import com.toomate.backend.repository.MarcaRepository;
 import com.toomate.backend.service.FornecedorService;
 import com.toomate.backend.service.InsumoService;
 import com.toomate.backend.service.MarcaService;
-import io.swagger.oas.annotations.Operation;
-import io.swagger.oas.annotations.media.Content;
-import io.swagger.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/marcas")
+@SecurityRequirement(name = "Bearer")
 public class MarcaController {
     private final MarcaService marcaService;
     private final FornecedorService fornecedorService;

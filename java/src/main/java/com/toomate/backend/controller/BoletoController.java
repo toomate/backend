@@ -5,11 +5,12 @@ import com.toomate.backend.model.Boleto;
 import com.toomate.backend.model.Cliente;
 import com.toomate.backend.repository.BoletoRepository;
 import com.toomate.backend.service.BoletoService;
-import io.swagger.oas.annotations.Operation;
-import io.swagger.oas.annotations.media.ArraySchema;
-import io.swagger.oas.annotations.media.Content;
-import io.swagger.oas.annotations.media.Schema;
-import io.swagger.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/boletos")
+@SecurityRequirement(name = "Bearer")
 public class BoletoController {
 
     private final BoletoService boletoService;
