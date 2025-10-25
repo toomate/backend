@@ -13,9 +13,6 @@ public class Fornecedor {
     @Schema(description = "Id númerico do fornecedor(incrementa automaticamente)", example = "1")
     private Integer id;
     @Schema(description = "Link para redirecionamento para o Whatsapp")
-    @Schema(description = "Id númerico do fornecedor(incrementa automaticamente)", example = "1")
-    private Integer idFornecedor;
-    @Schema(description = "Link para redirecionamento para o Whatsapp")
     private String link;
     @Schema(description = "Razão social do fornecedor", example = "Atacado São Paulo")
     private String razaoSocial;
@@ -23,11 +20,11 @@ public class Fornecedor {
     private String telefone;
 
     public Integer getId() {
-        return idFornecedor;
+        return id;
     }
 
     public void setId(Integer id) {
-        this.idFornecedor = id;
+        this.id = id;
     }
 
     public String getLink() {

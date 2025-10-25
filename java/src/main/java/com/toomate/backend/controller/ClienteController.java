@@ -1,14 +1,12 @@
 package com.toomate.backend.controller;
 
-
 import com.toomate.backend.dto.cliente.ClienteRequestDto;
 import com.toomate.backend.dto.cliente.ClientesResponseDto;
 import com.toomate.backend.model.Cliente;
-import com.toomate.backend.repository.ClienteRepository;
+import com.toomate.backend.service.ClienteService;
 import io.swagger.oas.annotations.Operation;
 import io.swagger.oas.annotations.media.Content;
 import io.swagger.oas.annotations.responses.ApiResponse;
-import com.toomate.backend.service.ClienteService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +16,9 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/clientes")
-public class  ClienteController {
+public class ClienteController {
 
-    private final ClienteService clienteService ;
+    private final ClienteService clienteService;
 
     public ClienteController(ClienteService clienteService) {
         this.clienteService = clienteService;
@@ -45,10 +43,14 @@ public class  ClienteController {
         return ResponseEntity.status(200).body(clientes);
     }
 
-        return ResponseEntity.status(200).body(clientes);
-
+    @Operation(summary = "Cadastrar cliente",
+            description = "Retorna o cliente (codigo 201) após o cadastro",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Cliente",
+                            content = @Content(mediaType = "application/json"))
+            })
     @PostMapping
-    public ResponseEntity<Cliente> cadastrar (@Valid ClienteRequestDto dto){
+    public ResponseEntity<Cliente> cadastrar(@Valid ClienteRequestDto dto) {
         return ResponseEntity.status(201).body(clienteService.cadastrar(dto));
     }
 
@@ -59,7 +61,6 @@ public class  ClienteController {
                             content = @Content(mediaType = "application/json")),
                     @ApiResponse(responseCode = "404", description = "Não encontrado")
             })
-    @GetMapping("/{id}")
     @GetMapping("/{idCliente}")
     public ResponseEntity<Cliente> buscarPorId(@PathVariable Integer idCliente) {
 
@@ -74,67 +75,27 @@ public class  ClienteController {
 
     }
 
-    @PutMapping("/{idCliente}")
-    public ResponseEntity<Cliente> atualizar(@PathVariable Integer idCliente,@Valid @RequestBody Cliente cliente) {
-            return ResponseEntity.status(200).body(clienteService.atualizar(idCliente, cliente));
-    }
-
-    @DeleteMapping("/{idCliente}")
     @Operation(summary = "Atualizar cliente",
-            description = "Retorna o cliente (codigo 200) ou codigo 404 se não encontrar o cliente",
+            description = "Retorna o cliente (codigo 200) ou lança uma exceção com código 404 se não encontrar o cliente",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Cliente",
-                            content = @Content(mediaType = "application/json")),
+                    @ApiResponse(responseCode = "200", description = "Cliente"),
                     @ApiResponse(responseCode = "404", description = "Não encontrado")
             })
-    @PutMapping("/{id}")
-    public ResponseEntity<Cliente> atualizar(@PathVariable Integer idCliente, @RequestBody Cliente cliente) {
-
-        cliente.setIdCliente(idCliente);
-
-        if (clienteRepository.existsById(idCliente)) {
-            Cliente save = clienteRepository.save(cliente);
-            return ResponseEntity.status(200).body(cliente);
-        }
-
-        return ResponseEntity.status(404).build();
-
+    @PutMapping("/{idCliente}")
+    public ResponseEntity<Cliente> atualizar(@PathVariable Integer idCliente, @Valid @RequestBody Cliente cliente) {
+        return ResponseEntity.status(200).body(clienteService.atualizar(idCliente, cliente));
     }
 
     @Operation(summary = "Deletar cliente por id",
-            description = "Retorna codigo 204 após o cliente ser deleatdo ou codigo 404 se não encontrar o cliente",
+            description = "Retorna codigo 204 após o cliente ser deletado lança uma exceção com codigo 404 se não encontrar o cliente",
             responses = {
-                    @ApiResponse(responseCode = "204", description = "Sem conteúdo",
-                            content = @Content(mediaType = "application/json")),
+                    @ApiResponse(responseCode = "204", description = "Sem conteúdo"),
                     @ApiResponse(responseCode = "404", description = "Não encontrado")
             })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarPorId(@PathVariable Integer idCliente) {
-            clienteService.deletarPorId(idCliente);
-            return ResponseEntity.status(204).build();
-    }
-
-        return ResponseEntity.status(404).build();
-
-    }
-
-    @Operation(summary = "Buscar clientes por nome",
-            description = "Retorna uma lista de clientes (codigo 200) ou codigo 204 se não houver clientes",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Lista de clientes",
-                            content = @Content(mediaType = "application/json")),
-                    @ApiResponse(responseCode = "204", description = "Sem conteúdo")
-            })
-    @GetMapping("/por-nome")
-    public ResponseEntity<List<ClientesResponseDto>> buscarPorNome(@RequestParam String nome) {
-
-        List<ClientesResponseDto> clientesEncontrados = clienteService.buscarPorNome(nome);
-
-        if (clientesEncontrados.isEmpty()) {
-            return ResponseEntity.status(204).build();
-        }
-
-        return ResponseEntity.status(200).body(clientesEncontrados);
+        clienteService.deletarPorId(idCliente);
+        return ResponseEntity.status(204).build();
     }
 
 }

@@ -91,8 +91,7 @@ public class CategoriaController {
     @Operation(summary = "Atualizar categoria",
             description = "Retorna categoria atualizada (codigo 204) ou codigo 404 se não encontar a categoria pelo id",
             responses = {
-                    @ApiResponse(responseCode = "204", description = "Categoria editada",
-                            content = @Content(mediaType = "application/json")),
+                    @ApiResponse(responseCode = "204", description = "Categoria editada"),
                     @ApiResponse(responseCode = "404", description = "Não encontrado")
             })
     @PutMapping("/{id}")

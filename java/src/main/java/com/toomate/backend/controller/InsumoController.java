@@ -7,6 +7,9 @@ import com.toomate.backend.model.Categoria;
 import com.toomate.backend.model.Insumo;
 import com.toomate.backend.service.CategoriaService;
 import com.toomate.backend.service.InsumoService;
+import io.swagger.oas.annotations.Operation;
+import io.swagger.oas.annotations.media.Content;
+import io.swagger.oas.annotations.responses.ApiResponse;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +29,13 @@ public class InsumoController {
         this.categoriaService = categoriaService;
     }
 
+    @Operation(summary = "Listar insumo",
+            description = "Retorna uma lista de insumos (codigo 200) ou codigo 204 se não houver insumos",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de insumos",
+                            content = @Content(mediaType = "application/json")),
+                    @ApiResponse(responseCode = "204", description = "Sem conteúdo")
+            })
     @GetMapping
     public ResponseEntity<List<InsumoResponseDto>> listar(){
         List<InsumoResponseDto> insumos = InsumoMapperDto.toDto(insumoService.listar());
@@ -37,6 +47,13 @@ public class InsumoController {
         return ResponseEntity.status(200).body(insumos);
     }
 
+    @Operation(summary = "Listar insumos filtrados pelo nome",
+            description = "Retorna uma lista de insumos(codigo 200) ou codigo 204 se não houver insumos",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de insumos",
+                            content = @Content(mediaType = "application/json")),
+                    @ApiResponse(responseCode = "204", description = "Sem conteúdo")
+            })
     @GetMapping("/por-nome")
     public ResponseEntity<List<Insumo>> filtroNome(@RequestParam String nome){
         List<Insumo> insumos = insumoService.listarPorNome(nome);
@@ -46,6 +63,13 @@ public class InsumoController {
         return ResponseEntity.status(200).body(insumos);
     }
 
+    @Operation(summary = "Cadastrar insumo",
+            description = "Retorna o insumo(codigo 201) ou codigo 409 se não houver insumos",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Insumo",
+                            content = @Content(mediaType = "application/json")),
+                    @ApiResponse(responseCode = "409", description = "Conflito no cadastro")
+            })
     @PostMapping
     public ResponseEntity<InsumoResponseDto> cadastrar(@Valid @RequestBody InsumoRequestDto insumo){
         if (insumoService.existePorNome(insumo.getNome())) {
@@ -59,12 +83,24 @@ public class InsumoController {
         return ResponseEntity.status(201).body(responseDto);
     }
 
+    @Operation(summary = "Deletar insumo pelo id",
+            description = "Retorna codigo 204 ou lança uma exceção com codigo 404 se não encontrar o insumo",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Sem conteúdo"),
+                    @ApiResponse(responseCode = "404", description = "Não encontrado")
+            })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Integer id){
         insumoService.deletar(id);
         return ResponseEntity.status(204).build();
     }
 
+    @Operation(summary = "Atualizar insumo",
+            description = "Retorna codigo 204 ou codigo 404 se não encontrar o insumo",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Sem conteúdo"),
+                    @ApiResponse(responseCode = "404", description = "Não encontrado")
+            })
     @PutMapping("/{id}")
     public ResponseEntity<Void> atualizar(@PathVariable Integer id, @RequestBody InsumoRequestDto insumo){
         if(insumoService.existePorId(id)){
