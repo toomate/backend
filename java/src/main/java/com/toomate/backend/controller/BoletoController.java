@@ -5,6 +5,11 @@ import com.toomate.backend.model.Boleto;
 import com.toomate.backend.model.Cliente;
 import com.toomate.backend.repository.BoletoRepository;
 import com.toomate.backend.service.BoletoService;
+import io.swagger.oas.annotations.Operation;
+import io.swagger.oas.annotations.media.ArraySchema;
+import io.swagger.oas.annotations.media.Content;
+import io.swagger.oas.annotations.media.Schema;
+import io.swagger.oas.annotations.responses.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,11 +26,24 @@ public class BoletoController {
         this.boletoService = boletoService;
     }
 
+    @Operation(summary = "Cadastrar boleto",
+            description = "Retorna o boleto (codigo 201) após o cadastro",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Boleto",
+                            content = @Content(mediaType = "application/json"))
+            })
     @PostMapping
     public ResponseEntity<Boleto> cadastrar(@RequestBody BoletoRequestDto request) {
         return ResponseEntity.status(201).body(boletoService.cadastrar(request));
     }
 
+    @Operation(summary = "Listar ingredientes",
+            description = "Retorna lista de boletos (codigo 200) ou codigo 204 se não houver boletos",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de boletos",
+                            content = @Content(mediaType = "application/json")),
+                    @ApiResponse(responseCode = "204", description = "Sem conteúdo")
+            })
     @GetMapping
     public ResponseEntity<List<Boleto>> listar() {
 
@@ -35,27 +53,51 @@ public class BoletoController {
             return ResponseEntity.status(204).build();
         }
 
-        return ResponseEntity.status(201).body(boletos);
+        return ResponseEntity.status(200).body(boletos);
 
     }
 
+    @Operation(summary = "Buscar boleto por id",
+            description = "Retorna boleto (codigo 200)",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Boleto",
+                            content = @Content(mediaType = "application/json"))
+            })
     @GetMapping("/{id}")
     public ResponseEntity<Boleto> buscarPorId(@PathVariable Integer idBoleto) {
         return ResponseEntity.status(200).body(boletoService.buscarPorId(idBoleto));
     }
 
+    @Operation(summary = "Editar boleto",
+            description = "Retorna boleto(codigo 200) após editar o boleto",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Boleto",
+                            content = @Content(mediaType = "application/json"))
+            })
     @PutMapping("/{id}")
     public ResponseEntity<Boleto> editar(@PathVariable Integer idBoleto, @RequestBody Boleto boleto) {
 
         return ResponseEntity.status(200).body(boletoService.editar(idBoleto, boleto));
     }
 
+    @Operation(summary = "Deletar boleto por id",
+            description = "Retorna codigo 204 após deletar o boleto",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Sem conteúdo")
+            })
     @DeleteMapping("/{id}")
     public  ResponseEntity<Void> deletarPorId(@PathVariable Integer idBoleto) {
         boletoService.deletarPorId(idBoleto);
         return ResponseEntity.status(204).build();
     }
 
+    @Operation(summary = "Buscar boletos por categoria",
+            description = "Retorna lista de boletos (codigo 200) ou codigo 204 se não houver boletos",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de boletos",
+                            content = @Content(mediaType = "application/json")),
+                    @ApiResponse(responseCode = "204", description = "Sem conteúdo")
+            })
     @GetMapping("/por-categoria")
     public ResponseEntity<List<Boleto>> buscarPorCategoria(@RequestParam String categoria) {
 
@@ -69,6 +111,14 @@ public class BoletoController {
 
     }
 
+
+    @Operation(summary = "Buscar boletos pelo id do fornecedor",
+            description = "Retorna lista de boletos (codigo 200) ou codigo 204 se não houver boletos",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de boletos",
+                            content = @Content(mediaType = "application/json")),
+                    @ApiResponse(responseCode = "204", description = "Sem conteúdo")
+            })
     @GetMapping("/fornecedores/{idFornecedor}")
     public ResponseEntity<List<Boleto>> buscarPorFornecedor(@PathVariable Integer idFornecedor) {
 

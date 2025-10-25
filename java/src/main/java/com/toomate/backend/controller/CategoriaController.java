@@ -5,6 +5,9 @@ import com.toomate.backend.dto.categoria.CategoriaRequestDto;
 import com.toomate.backend.dto.categoria.CategoriaResponseDto;
 import com.toomate.backend.model.Categoria;
 import com.toomate.backend.service.CategoriaService;
+import io.swagger.oas.annotations.Operation;
+import io.swagger.oas.annotations.media.Content;
+import io.swagger.oas.annotations.responses.ApiResponse;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -23,6 +26,14 @@ public class CategoriaController {
 
     public CategoriaController(CategoriaService categoriaService){this.categoriaService = categoriaService;}
 
+
+    @Operation(summary = "Listar categorias",
+            description = "Retorna lista de categorias (codigo 200) ou codigo 204 se não houver categorias",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de categorias",
+                            content = @Content(mediaType = "application/json")),
+                    @ApiResponse(responseCode = "204", description = "Sem conteúdo")
+            })
     @GetMapping
     public ResponseEntity<List<CategoriaResponseDto>> listar(){
         List<CategoriaResponseDto> dtos = CategoriaMapperDto.toResponseDto(categoriaService.listar());
@@ -34,6 +45,13 @@ public class CategoriaController {
         return ResponseEntity.status(200).body(dtos);
     }
 
+    @Operation(summary = "Filtrar categorias por nome",
+            description = "Retorna lista de categorias filtradas por nome (codigo 200) ou codigo 204 se não houver categorias",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de categorias",
+                            content = @Content(mediaType = "application/json")),
+                    @ApiResponse(responseCode = "204", description = "Sem conteúdo")
+            })
     @GetMapping("/por-nome")
     public ResponseEntity<List<Categoria>> filtroNome(@RequestParam String nome){
         List<Categoria> categorias = categoriaService.listarPorNome(nome);
@@ -43,6 +61,13 @@ public class CategoriaController {
         return ResponseEntity.status(200).body(categorias);
     }
 
+    @Operation(summary = "Cadastrar categoria",
+            description = "Retorna a categoria cadastrada (codigo 201) ou codigo 409 se a categoria já existir",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de categorias",
+                            content = @Content(mediaType = "application/json")),
+                    @ApiResponse(responseCode = "204", description = "Sem conteúdo")
+            })
     @PostMapping
     public ResponseEntity<Categoria> cadastrar(@Valid @RequestBody CategoriaRequestDto categoria){
         if(categoriaService.existePorNome(categoria.getNome())){
@@ -52,12 +77,24 @@ public class CategoriaController {
         return ResponseEntity.status(201).body(corpo);
     }
 
+    @Operation(summary = "Deletar categoria",
+            description = "Deleta categoria por id e retorna o codigo 204",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Sem conteúdo")
+            })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Integer id){
         categoriaService.deletar(id);
         return ResponseEntity.status(204).build();
     }
 
+    @Operation(summary = "Atualizar categoria",
+            description = "Retorna categoria atualizada (codigo 204) ou codigo 404 se não encontar a categoria pelo id",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Categoria editada",
+                            content = @Content(mediaType = "application/json")),
+                    @ApiResponse(responseCode = "404", description = "Não encontrado")
+            })
     @PutMapping("/{id}")
     public ResponseEntity<Categoria> atualizar(@PathVariable Integer id, @RequestBody Categoria categoria){
         categoria.setIdCategoria(id);
