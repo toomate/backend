@@ -2,11 +2,16 @@ package com.toomate.backend.dto.marca;
 
 import com.toomate.backend.dto.fornecedor.FornecedorResponseDto;
 import com.toomate.backend.dto.insumo.InsumoResponseDto;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class MarcaResponseDto {
+    @Schema(description = "Id númerico da marca(incrementa automaticamente)", example = "1")
     private Integer idMarca;
+    @Schema(description = "nome da marca", example = "camil")
     private String nome;
+    @Schema(description = "Insumo do qual a marca pertence")
     private InsumoResponseDto insumo;
+    @Schema(description = "Insumo do qual a marca pertence")
     private FornecedorResponseDto fornecedor;
 
     public MarcaResponseDto() {

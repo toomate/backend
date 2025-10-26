@@ -2,18 +2,26 @@ package com.toomate.backend.dto.divida;
 
 import com.toomate.backend.dto.cliente.ClientesResponseDto;
 import com.toomate.backend.model.Cliente;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 import java.time.LocalDate;
 
 public class DividaResponseDto {
+    @Schema(description = "Id da divida", example = "1")
     private Integer idDivida;
+    @Schema(description = "Valor da divida", example = "20.99")
     private Double valor;
+    @Schema(description = "Data da divida", example = "2025-10-25")
     private LocalDate dataCompra;
+    @Schema(description = "Data de pagamento da divida", example = "2025-10-25")
     private LocalDate dataPagamento;
+    @Schema(description = "Pedido da divida", example = "feijoada")
     private String pedido;
+    @Schema(description = "Status de pagamento da divida", example = "true")
     private Boolean pago;
+    @Schema(description = "Cliente que tem a dívida")
     private ClientesResponseDto cliente;
 
     public DividaResponseDto(Integer idDivida, Double valor, LocalDate dataCompra, LocalDate dataPagamento, String pedido, Boolean pago, ClientesResponseDto cliente) {

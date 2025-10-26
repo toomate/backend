@@ -30,6 +30,7 @@ public class Cliente {
     private String bairro;
 
     @OneToMany(mappedBy = "cliente")
+    @Schema(description = "Lista de dividas do cliente")
     private List<Divida> dividas;
 
     public Cliente(String nome, String telefone, String cep, String logradouro, String bairro) {

@@ -21,16 +21,19 @@ public class Lote {
     private LocalDate dataEntrada;
     @Schema(description = "preço unitário)", example = "25.99")
     private Double precoUnitario;
-    @Schema(description = "quantidade da medida)", example = "25.99")
+    @Schema(description = "quantidade da medida)", example = "5")
     private Double quantidadeMedida;
 
     @ManyToOne
     @JoinColumn(name = "idMarca")
+    @Schema(description = "Marca dos insumos do lote")
     private Marca marca;
 
     @ManyToOne
     @JoinColumn(name = "idUsuario")
+    @Schema(description = "Usuario que cadastrou o lote")
     private Usuario usuario;
+
 
     public Integer getIdLote() {
         return idLote;

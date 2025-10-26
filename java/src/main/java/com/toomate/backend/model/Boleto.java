@@ -16,21 +16,21 @@ public class Boleto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "Id númerico do boleto(incrementa automaticamente)", example = "1")
+    @Schema(description = "Id", example = "1")
     private Integer idBoleto;
     @Schema(description = "Descrição do boleto", example = "Boleto do fornecedor de arroz")
     private String descricao;
-    @Schema(description = "Categoria do boleto", example = "fornecedor, água")
+    @Schema(description = "Categoria do boleto", example = "fornecedor")
     private String categoria;
-    @Schema(description = "Status de pagament do boleto", example = "Pago ou não")
+    @Schema(description = "Status de pagamento do boleto", example = "true")
     private Boolean pago;
-    @Schema(description = "Data de vencimento do boleto", example = "03/10/2025")
+    @Schema(description = "Data de vencimento do boleto", example = "2025-10-03")
     private LocalDate dataVencimento;
-    @Schema(description = "Data de pagamento do boleto", example = "03/10/2025")
+    @Schema(description = "Data de pagamento do boleto", example = "2025-10-03")
     private LocalDate dataPagamento;
     @Schema(description = "Valor do boleto", example = "R$ 20,99")
     private Double valor;
-    @Schema(description = "Id númerico do fornecedor")
+    @Schema(description = "Id númerico do fornecedor", example = "1")
     private Integer idFornecedor;
 
     public Boleto(Integer idBoleto, String descricao, String categoria, Boolean pago, LocalDate dataVencimento, LocalDate dataPagamento, Double valor, Integer idFornecedor) {

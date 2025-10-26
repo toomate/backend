@@ -1,14 +1,18 @@
 package com.toomate.backend.dto.usuario;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public class UsuarioRequestDto {
     @NotBlank
+    @Schema(description = "nome do usário", example = "lucas")
     private String nome;
     @NotBlank
+    @Schema(description = "senha do usuário", example = "lucas123")
     private String senha;
     @NotNull
+    @Schema(description = "usuário administrador", example = "1")
     private Boolean administrador;
 
     public String getNome() {

@@ -12,7 +12,7 @@ public class Fornecedor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Id númerico do fornecedor(incrementa automaticamente)", example = "1")
     private Integer id;
-    @Schema(description = "Link para redirecionamento para o Whatsapp")
+    @Schema(description = "Link para redirecionamento para o Whatsapp", example = "https://web.whatsapp.com/")
     private String link;
     @Schema(description = "Razão social do fornecedor", example = "Atacado São Paulo")
     private String razaoSocial;

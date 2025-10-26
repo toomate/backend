@@ -13,21 +13,20 @@ public class Divida {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Id númerico da divida(incrementa automaticamente)", example = "1")
     private Integer idDivida;
-    @Schema(description = "Valor da dívida do cliente", example = "R$ 20,99")
+    @Schema(description = "Valor da dívida do cliente", example = "20.99")
     private Double valor;
-    @Schema(description = "Data em que a dívida foi feita", example = "03/10/2025")
+    @Schema(description = "Data em que a dívida foi feita", example = "2025-10-03")
     private LocalDate dataCompra;
-    @Schema(description = "Data em que a dívida foi paga", example = "03/10/2025")
+    @Schema(description = "Data em que a dívida foi paga", example = "2025-10-03")
     private LocalDate dataPagamento;
-    @Schema(description = "Descrição do que foi o pedido", example = "true ou false")
+    @Schema(description = "Descrição do que foi o pedido", example = "true")
     private String pedido;
     @Schema(description = "Booleano que sinaliza se está pago ou não", example = "Frango assado")
     private Boolean pago;
-    @Schema(description = "Id númerico do cliente(incrementa automaticamente)", example = "1")
-    private Integer clienteId;
 
     @ManyToOne
     @JoinColumn(name = "fkCliente")
+    @Schema(description = "Booleano que sinaliza se está pago ou não", example = "Frango assado")
     private Cliente cliente;
 
 

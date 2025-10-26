@@ -19,18 +19,18 @@ public class Marca {
     private Double valorMedida;
     @Schema(description = "unidade da medida", example = "kg")
     private String unidadeMedida;
+    @Schema(description = "nome da marca", example = "camil")
     private String nomeMarca;
 
     @ManyToOne
     @JoinColumn(name = "idInsumo")
+    @Schema(description = "Insumo do qual a marca pertence")
     private Insumo insumo;
 
     @ManyToOne
     @JoinColumn(name = "idFornecedor")
+    @Schema(description = "Fornecedor do qual a marca pertence")
     private Fornecedor fornecedor;
-
-    private Integer fkInsumo;
-    private Integer fkFornecedor;
 
     public Integer getIdMarca() {
         return idMarca;
@@ -64,19 +64,4 @@ public class Marca {
         this.fornecedor = fornecedor;
     }
 
-    public Integer getFkInsumo() {
-        return fkInsumo;
-    }
-
-    public void setFkInsumo(Integer fkInsumo) {
-        this.fkInsumo = fkInsumo;
-    }
-
-    public Integer getFkFornecedor() {
-        return fkFornecedor;
-    }
-
-    public void setFkFornecedor(Integer fkFornecedor) {
-        this.fkFornecedor = fkFornecedor;
-    }
 }
