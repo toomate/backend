@@ -13,7 +13,7 @@ public class InsumoResponseDto {
     private Integer qtdMinima;
     @Schema(description = "Quantidade de medida do insumo", example = "kg")
     private String unidadeMedida;
-    @Schema(description = "Categoria do insumo", example = "proteina")
+    @Schema(description = "Categoria do insumo", example = "carboidrato")
     private CategoriaResponseDto categoria;
 
     public Integer getIdInsumo() {

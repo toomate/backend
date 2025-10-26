@@ -13,7 +13,7 @@ public class Insumo {
     private String nome;
     @ManyToOne
     @JoinColumn(name = "idCategoria")
-    @Schema(description = "Categoria do insumo", example = "proteina")
+    @Schema(description = "Categoria do insumo", example = "carboidrato")
     private Categoria categoria;
     @Schema(description = "Quantidade minima de insumo para alertar", example = "5")
     private Integer qtdMinima;
