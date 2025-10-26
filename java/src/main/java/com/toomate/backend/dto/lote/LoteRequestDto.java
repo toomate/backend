@@ -18,6 +18,15 @@ public class LoteRequestDto {
     @Schema(description = "data de entrada)", example = "2025-10-19")
     private LocalDate dataEntrada;
 
+    public LoteRequestDto(LocalDate dataValidade, Double precoUnitario, Double quantidadeMedida, LocalDate dataEntrada, Integer fkMarca, Integer fkUsuario) {
+        this.dataValidade = dataValidade;
+        this.precoUnitario = precoUnitario;
+        this.quantidadeMedida = quantidadeMedida;
+        this.dataEntrada = dataEntrada;
+        this.fkMarca = fkMarca;
+        this.fkUsuario = fkUsuario;
+    }
+
     public Integer getFkMarca() {
         return fkMarca;
     }

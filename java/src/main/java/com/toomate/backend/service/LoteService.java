@@ -55,7 +55,9 @@ public class LoteService implements LoteListener {
         }
 
         Lote lote = LoteMapperDto.toEntity(request, usuario, marca);
-        return loteRepository.save(lote);
+        lote = loteRepository.save(lote);
+        notificarMudanca(lote.getMarca().getInsumo());
+        return lote;
     }
 
     public void deletar(Integer id) {
@@ -63,8 +65,8 @@ public class LoteService implements LoteListener {
             throw new EntidadeNaoEncontradaException(String.format("Não foi encontrado lote com o id %d", id));
         }
 
-        notificarMudanca(loteRepository.findById(id).get().getMarca().getInsumo());
         loteRepository.deleteById(id);
+        notificarMudanca(loteRepository.findById(id).get().getMarca().getInsumo());
     }
 
     public Lote atualizar(Integer id, Lote lote) {
@@ -73,8 +75,9 @@ public class LoteService implements LoteListener {
         }
 
         lote.setIdLote(id);
+        lote = loteRepository.save(lote);
         notificarMudanca(lote.getMarca().getInsumo());
-        return loteRepository.save(lote);
+        return lote;
     }
 
     public Boolean existePorId(Integer id) {
@@ -92,6 +95,10 @@ public class LoteService implements LoteListener {
         }
 
         Lote lote = loteRepository.findById(id).get();
+        if (lote.getQuantidadeMedida() - quantidadeMedida < 0){
+            throw new EntradaInvalidaException("Quantidade medida não pode ser negativa");
+        }
+
         lote.removerQuantidadeMedida(quantidadeMedida);
         loteRepository.save(lote);
         notificarMudanca(lote.getMarca().getInsumo());

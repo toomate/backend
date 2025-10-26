@@ -13,11 +13,11 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Id númerico do usuário(incrementa automaticamente)", example = "1")
     private Integer id;
-    @Schema(description = "nome do usário", example = "lucas")
+    @Schema(description = "nome do usário", example = "admin")
 
     @NotBlank
     private String nome;
-    @Schema(description = "senha do usuário", example = "lucas123")
+    @Schema(description = "senha do usuário", example = "123")
     @NotBlank
 
     private String senha;

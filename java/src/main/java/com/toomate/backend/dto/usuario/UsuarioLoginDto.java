@@ -3,9 +3,9 @@ package com.toomate.backend.dto.usuario;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class UsuarioLoginDto {
-    @Schema(description = "senha do usuário", example = "lucas")
+    @Schema(description = "senha do usuário", example = "admin")
     private String nome;
-    @Schema(description = "senha do usuário", example = "lucas123")
+    @Schema(description = "senha do usuário", example = "123")
     private String senha;
 
     public String getNome() {
