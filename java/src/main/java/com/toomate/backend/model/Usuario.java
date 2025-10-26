@@ -30,6 +30,10 @@ public class Usuario {
         this.administrador = administrador;
     }
 
+    public Usuario() {
+
+    }
+
     public Integer getId() {
         return id;
     }

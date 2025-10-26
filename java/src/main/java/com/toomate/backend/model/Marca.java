@@ -13,7 +13,6 @@ public class Marca{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Id númerico da marca(incrementa automaticamente)", example = "1")
     private Integer idMarca;
-<<<<<<< Updated upstream
     @Schema(description = "descricao", example = "camil")
     private String descricao;
     @Schema(description = "valor da medida", example = "200.5")
@@ -21,9 +20,6 @@ public class Marca{
     @Schema(description = "unidade da medida", example = "kg")
     private String unidadeMedida;
     @Schema(description = "nome da marca", example = "camil")
-=======
-    @Schema(description = "nomeMarca", example = "camil")
->>>>>>> Stashed changes
     private String nomeMarca;
 
     @ManyToOne

@@ -21,9 +21,6 @@ public class MarcaRequestDto {
 //    private Fornecedor fornecedor;
     @Schema(description = "Fk do insumo do qual a marca pertence", example = "1")
     private Integer fkInsumo;
-<<<<<<< Updated upstream
-=======
-    private Integer fkFornecedor;
 
     public MarcaRequestDto(String nome, Integer fkInsumo, Integer fkFornecedor) {
         this.nome = nome;
@@ -38,7 +35,6 @@ public class MarcaRequestDto {
     public void setNome(String nome) {
         this.nome = nome;
     }
->>>>>>> Stashed changes
 
     public Integer getFkInsumo() {
         return fkInsumo;
@@ -59,12 +55,5 @@ public class MarcaRequestDto {
     @Schema(description = "Fk do fornecedor do qual a marca pertence", example = "1")
     private Integer fkFornecedor;
 
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
 
 }
