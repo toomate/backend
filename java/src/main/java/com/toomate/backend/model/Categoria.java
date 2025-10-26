@@ -13,7 +13,7 @@ public class Categoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Id númerico da categoria(incrementa automaticamente)", example = "1")
     private Integer idCategoria;
-    @Schema(description = "Nome da categoria", example = "Proteína")
+    @Schema(description = "Nome da categoria", example = "carboidrato")
     private String nome;
 
     public Integer getIdCategoria() {
