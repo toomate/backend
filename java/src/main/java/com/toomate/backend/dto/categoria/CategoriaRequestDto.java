@@ -8,6 +8,10 @@ public class CategoriaRequestDto {
     @Schema(description = "nome do fornecedor", example = "lucas")
     private String nome;
 
+    public CategoriaRequestDto(String nome) {
+        this.nome = nome;
+    }
+
     public String getNome() {
         return nome;
     }

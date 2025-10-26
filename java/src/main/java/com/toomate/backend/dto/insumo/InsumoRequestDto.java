@@ -14,6 +14,13 @@ public class InsumoRequestDto {
     private String unidadeMedida;
     private Integer fkCategoria;
 
+    public InsumoRequestDto(String nome, Integer qtdMinima, String unidadeMedida, Integer fkCategoria) {
+        this.nome = nome;
+        this.qtdMinima = qtdMinima;
+        this.unidadeMedida = unidadeMedida;
+        this.fkCategoria = fkCategoria;
+    }
+
     public String getNome() {
         return nome;
     }

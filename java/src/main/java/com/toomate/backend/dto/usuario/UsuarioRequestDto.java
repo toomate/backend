@@ -35,6 +35,12 @@ public class UsuarioRequestDto {
         return administrador;
     }
 
+    public UsuarioRequestDto(String nome, String senha, Boolean administrador) {
+        this.nome = nome;
+        this.senha = senha;
+        this.administrador = administrador;
+    }
+
     public void setAdministrador(Boolean administrador) {
         this.administrador = administrador;
     }

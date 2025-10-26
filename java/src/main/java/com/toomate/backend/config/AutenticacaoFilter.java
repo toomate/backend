@@ -1,5 +1,6 @@
 package com.toomate.backend.config;
 
+import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import io.jsonwebtoken.ExpiredJwtException;
 import com.toomate.backend.service.AutenticacaoService;
 import jakarta.servlet.FilterChain;

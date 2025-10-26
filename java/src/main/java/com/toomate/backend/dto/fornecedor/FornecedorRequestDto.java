@@ -14,6 +14,12 @@ public class FornecedorRequestDto {
     @Schema(description = "Link do whatsapp do fornecedor", example = "11987654321")
     private String telefone;
 
+    public FornecedorRequestDto(String link, String razaoSocial, String telefone) {
+        this.link = link;
+        this.razaoSocial = razaoSocial;
+        this.telefone = telefone;
+    }
+
     public String getLink() {
         return link;
     }

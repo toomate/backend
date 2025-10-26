@@ -113,7 +113,25 @@ public class LoteController {
             Marca marca = marcaService.marcaPorId(lote.getFkMarca());
             Lote loteAtualizado = LoteMapperDto.toEntity(lote, usuario, marca);
             loteService.atualizar(id, loteAtualizado);
-            return ResponseEntity.status(204).build();
+            return ResponseEntity.status(201).build();
+        }
+        return ResponseEntity.status(404).build();
+    }
+
+    @PutMapping("/adicionarEstoque/{id}")
+    public ResponseEntity<Lote> adicionar(@RequestBody Double quantidadeMedida, @PathVariable Integer id){
+        if (loteService.existePorId(id)) {
+            loteService.adicionarQuantidade(id,quantidadeMedida);
+            return ResponseEntity.status(201).build();
+        }
+        return ResponseEntity.status(404).build();
+    }
+
+    @PutMapping("/removerEstoque/{id}")
+    public ResponseEntity<Lote> remover(@RequestBody Double quantidadeMedida, @PathVariable Integer id){
+        if (loteService.existePorId(id)) {
+            loteService.removerQuantidade(id,quantidadeMedida);
+            return ResponseEntity.status(201).build();
         }
         return ResponseEntity.status(404).build();
     }

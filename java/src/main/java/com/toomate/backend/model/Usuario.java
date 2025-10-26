@@ -24,6 +24,12 @@ public class Usuario {
     @Schema(description = "usuário administrador", example = "1")
     private Boolean administrador;
 
+    public Usuario(String nome, String senha, Boolean administrador) {
+        this.nome = nome;
+        this.senha = senha;
+        this.administrador = administrador;
+    }
+
     public Integer getId() {
         return id;
     }

@@ -75,6 +75,14 @@ public class Lote {
         this.quantidadeMedida = quantidadeMedida;
     }
 
+    public void adicionarQuantidadeMedida(Double quantidadeMedida){
+        this.quantidadeMedida += quantidadeMedida;
+    }
+
+    public void removerQuantidadeMedida(Double quantidadeMedida){
+        this.quantidadeMedida -= quantidadeMedida;
+    }
+
     public Marca getMarca() {
         return marca;
     }
