@@ -1,16 +1,13 @@
 package com.toomate.backend.service;
 
-import com.toomate.backend.dto.rotina.DiaSemanaRequestDto;
 import com.toomate.backend.dto.rotina.RotinaRequestDto;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
-import com.toomate.backend.mapper.rotina.DiaRotinaMapper;
 import com.toomate.backend.mapper.rotina.RotinaMapper;
-import com.toomate.backend.model.DiaRotina;
-import com.toomate.backend.model.DiaSemana;
 import com.toomate.backend.model.Insumo;
 import com.toomate.backend.model.Rotina;
-import com.toomate.backend.repository.DiaRotinaRepository;
+import com.toomate.backend.model.RotinaInsumo;
+import com.toomate.backend.repository.RotinaInsumoRepository;
 import com.toomate.backend.repository.RotinaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -22,14 +19,12 @@ import java.util.Optional;
 public class RotinaService {
     private final RotinaRepository rotinaRepository;
     private final InsumoService insumoService;
-    private final DiaSemanaService diaSemanaService;
-    private final DiaRotinaRepository diaRotinaRepository;
+    private final RotinaInsumoRepository rotinaInsumoRepository;
 
-    public RotinaService(RotinaRepository rotinaRepository, InsumoService insumoService, DiaSemanaService diaSemanaService, DiaRotinaRepository diaRotinaRepository) {
+    public RotinaService(RotinaRepository rotinaRepository, InsumoService insumoService, RotinaInsumoRepository rotinaInsumoRepository) {
         this.rotinaRepository = rotinaRepository;
         this.insumoService = insumoService;
-        this.diaSemanaService = diaSemanaService;
-        this.diaRotinaRepository = diaRotinaRepository;
+        this.rotinaInsumoRepository = rotinaInsumoRepository;
     }
 
     public List<Rotina> listar() {
@@ -40,21 +35,24 @@ public class RotinaService {
         return rotinaRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrada uma rotina com este id %d", id)));
     }
 
-    @Transactional
     public Rotina cadastrar(RotinaRequestDto request) {
         if (request == null) {
             throw new EntradaInvalidaException("A rotina não pode ser nula!");
         }
-        Insumo insumo = insumoService.insumoPorId(request.getIdInsumo());
-        Rotina rotina = RotinaMapper.toEntity(request, insumo);
+        Rotina rotina = RotinaMapper.toEntity(request);
         rotinaRepository.save(rotina);
-
-        DiaSemana diaSemana = diaSemanaService.buscarPeloDia(request.getDiaSemana().getDesc());
-
-        DiaRotina diaRotina = DiaRotinaMapper.toEntity(rotina, diaSemana);
-        diaRotinaRepository.save(diaRotina);
-
         return rotina;
+    }
+
+    public RotinaInsumo associarInsumo(Integer idInsumo, Integer idRotina){
+        Insumo insumo = insumoService.insumoPorId(idInsumo);
+        Rotina rotina = rotinaRepository.findById(idRotina).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrada uma rotina com o id %d", idRotina)));
+
+        RotinaInsumo rotinaInsumo = new RotinaInsumo();
+        rotinaInsumo.setRotina(rotina);
+        rotinaInsumo.setInsumo(insumo);
+
+        return rotinaInsumoRepository.save(rotinaInsumo);
     }
 
     public void deletar(Integer id) {
@@ -74,7 +72,7 @@ public class RotinaService {
             throw new EntidadeNaoEncontradaException(String.format("Não foi encontrada uma rotina com este id %d", id));
         }
 
-        Rotina rotinaParaAtualizar = RotinaMapper.toEntity(rotina, rotinaExiste.get().getInsumo());
+        Rotina rotinaParaAtualizar = RotinaMapper.toEntity(rotina);
         return rotinaRepository.save(rotinaParaAtualizar);
     }
 

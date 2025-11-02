@@ -2,18 +2,13 @@ package com.toomate.backend.model;
 
 import jakarta.persistence.*;
 
-import java.time.LocalTime;
-
 @Entity
 public class Rotina {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @ManyToOne
-    @JoinColumn(name = "fkInsumo")
-    private Insumo insumo;
-    private Integer quantidadeMinima;
-    private LocalTime periodo;
+    private String titulo;
+    private Integer quantidadeMedida;
 
     public Integer getId() {
         return id;
@@ -23,27 +18,20 @@ public class Rotina {
         this.id = id;
     }
 
-    public Insumo getInsumo() {
-        return insumo;
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void setInsumo(Insumo insumo) {
-        this.insumo = insumo;
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
-    public Integer getQuantidadeMinima() {
-        return quantidadeMinima;
+    public Integer getQuantidadeMedida() {
+        return quantidadeMedida;
     }
 
-    public void setQuantidadeMinima(Integer quantidadeMinima) {
-        this.quantidadeMinima = quantidadeMinima;
+    public void setQuantidadeMedida(Integer quantidadeMedida) {
+        this.quantidadeMedida = quantidadeMedida;
     }
 
-    public LocalTime getPeriodo() {
-        return periodo;
-    }
-
-    public void setPeriodo(LocalTime periodo) {
-        this.periodo = periodo;
-    }
 }

@@ -3,16 +3,16 @@ package com.toomate.backend.model;
 import jakarta.persistence.*;
 
 @Entity
-public class DiaRotina {
+public class RotinaInsumo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne
-    @JoinColumn(name = "fkDiaSemana")
-    private DiaSemana diaSemana;
-    @ManyToOne
     @JoinColumn(name = "fkRotina")
     private Rotina rotina;
+    @ManyToOne
+    @JoinColumn(name = "fkInsumo")
+    private Insumo insumo;
 
     public Integer getId() {
         return id;
@@ -22,19 +22,19 @@ public class DiaRotina {
         this.id = id;
     }
 
-    public DiaSemana getDiaSemana() {
-        return diaSemana;
-    }
-
-    public void setDiaSemana(DiaSemana diaSemana) {
-        this.diaSemana = diaSemana;
-    }
-
     public Rotina getRotina() {
         return rotina;
     }
 
     public void setRotina(Rotina rotina) {
         this.rotina = rotina;
+    }
+
+    public Insumo getInsumo() {
+        return insumo;
+    }
+
+    public void setInsumo(Insumo insumo) {
+        this.insumo = insumo;
     }
 }

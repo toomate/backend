@@ -2,6 +2,7 @@ package com.toomate.backend.controller;
 
 import com.toomate.backend.dto.rotina.RotinaRequestDto;
 import com.toomate.backend.model.Rotina;
+import com.toomate.backend.model.RotinaInsumo;
 import com.toomate.backend.service.RotinaService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,11 @@ public class RotinaController {
     @PostMapping
     public ResponseEntity<Rotina> cadastrar(@RequestBody RotinaRequestDto request){
         return ResponseEntity.status(201).body(rotinaService.cadastrar(request));
+    }
+
+    @PostMapping("/{idRotina}/insumos")
+    public ResponseEntity<RotinaInsumo> associar(@RequestBody Integer idInsumo, @PathVariable Integer idRotina){
+        return ResponseEntity.status(201).body(rotinaService.associarInsumo(idInsumo, idRotina));
     }
 
     @PutMapping("/{id}")

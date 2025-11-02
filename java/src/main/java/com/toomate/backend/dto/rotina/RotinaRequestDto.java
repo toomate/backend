@@ -1,50 +1,26 @@
 package com.toomate.backend.dto.rotina;
 
-import com.toomate.backend.enums.Dia;
-import com.toomate.backend.model.Insumo;
 import jakarta.validation.constraints.NotNull;
-
-import java.time.LocalTime;
 
 public class RotinaRequestDto {
     @NotNull
-    private Integer idInsumo;
+    private String titulo;
     @NotNull
-    private Integer quantidadeMinima;
-    @NotNull
-    private LocalTime periodo;
-    @NotNull
-    private Dia diaSemana;
+    private Integer quantidadeMedida;
 
-    public Integer getIdInsumo() {
-        return idInsumo;
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void setIdInsumo(Integer idInsumo) {
-        this.idInsumo = idInsumo;
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
-    public Integer getQuantidadeMinima() {
-        return quantidadeMinima;
+    public Integer getQuantidadeMedida() {
+        return quantidadeMedida;
     }
 
-    public void setQuantidadeMinima(Integer quantidadeMinima) {
-        this.quantidadeMinima = quantidadeMinima;
-    }
-
-    public LocalTime getPeriodo() {
-        return periodo;
-    }
-
-    public void setPeriodo(LocalTime periodo) {
-        this.periodo = periodo;
-    }
-
-    public Dia getDiaSemana() {
-        return diaSemana;
-    }
-
-    public void setDiaSemana(Dia diaSemana) {
-        this.diaSemana = diaSemana;
+    public void setQuantidadeMedida(Integer quantidadeMedida) {
+        this.quantidadeMedida = quantidadeMedida;
     }
 }
