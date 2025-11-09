@@ -33,6 +33,7 @@ public class FornecedorController {
                             content = @Content(mediaType = "application/json")),
                     @ApiResponse(responseCode = "204", description = "Sem conteúdo")
             })
+
     @GetMapping
     public ResponseEntity<List<Fornecedor>> listar() {
         List<Fornecedor> fornecedores = fornecedorService.listar();
@@ -50,6 +51,7 @@ public class FornecedorController {
                     @ApiResponse(responseCode = "200", description = "Fornecedor",
                             content = @Content(mediaType = "application/json"))
             })
+
     @GetMapping("/{id}")
     public ResponseEntity<Fornecedor> retornarPeloId(@PathVariable Integer id){
         return ResponseEntity.status(200).body(fornecedorService.retornarPeloId(id));
@@ -81,6 +83,7 @@ public class FornecedorController {
                             content = @Content(mediaType = "application/json")),
                     @ApiResponse(responseCode = "409", description = "Conflito no cadastro")
             })
+
     @PostMapping
     public ResponseEntity<Fornecedor> cadastrar(@RequestBody @Valid FornecedorRequestDto fornecedor) {
         return ResponseEntity.status(201).body(fornecedorService.cadastrar(fornecedor));
@@ -93,6 +96,7 @@ public class FornecedorController {
                             content = @Content(mediaType = "application/json")),
                     @ApiResponse(responseCode = "404", description = "Não encontrado")
             })
+
     @PutMapping("/{id}")
     public ResponseEntity<Fornecedor> atualizar(@PathVariable Integer id, @RequestBody Fornecedor fornecedor) {
         return ResponseEntity.status(200).body(fornecedorService.atualizar(id, fornecedor));
@@ -104,6 +108,7 @@ public class FornecedorController {
                     @ApiResponse(responseCode = "204", description = "Sem conteúdo"),
                     @ApiResponse(responseCode = "404", description = "Não encontrado")
             })
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Integer id) {
         fornecedorService.deletar(id);
