@@ -14,6 +14,7 @@ public class Arquivo {
     private Integer id;
     private String nomeOriginal;
     private String nomeUsuario;
+    private String chave;
     private String nomeBucket;
     private LocalDate dtCriacao;
     private LocalDate dtAlteracao;
@@ -49,6 +50,14 @@ public class Arquivo {
 
     public void setNomeBucket(String nomeBucket) {
         this.nomeBucket = nomeBucket;
+    }
+
+    public String getChave() {
+        return chave;
+    }
+
+    public void setChave(String chave) {
+        this.chave = chave;
     }
 
     public LocalDate getDtCriacao() {
