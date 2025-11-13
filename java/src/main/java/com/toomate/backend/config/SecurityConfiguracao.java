@@ -62,7 +62,7 @@ public class SecurityConfiguracao {
             "/h2-console/**",
             "/error",
             "/error/**",
-            "/usuarios/**"
+            "/usuarios/login"
     };
 
     @Bean
