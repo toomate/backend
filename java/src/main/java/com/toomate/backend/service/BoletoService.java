@@ -71,5 +71,9 @@ public class BoletoService {
 
     }
 
+    public Boolean existePorId(Integer id){
+        return boletoRepository.existsById(id);
+    }
+
 
 }

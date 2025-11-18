@@ -1,5 +1,6 @@
 package com.toomate.backend.controller;
 
+import com.toomate.backend.dto.arquivo_relacionamento.ArquivoRelacionamentoRequestDto;
 import com.toomate.backend.integration.S3Uploader;
 import com.toomate.backend.model.Arquivo;
 import com.toomate.backend.service.ArquivoService;
@@ -45,8 +46,8 @@ public class ArquivoController {
     }
 
     @PostMapping(value = "/{bucket}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Arquivo> cadastrar(@RequestParam("arquivo") MultipartFile arquivo, @PathVariable String bucket) {
-        return ResponseEntity.status(201).body(arquivoService.cadastrarArquivo(arquivo, bucket));
+    public ResponseEntity<Arquivo> cadastrar(@RequestPart("arquivo") MultipartFile arquivo, @PathVariable String bucket, @RequestPart("relacionamento")ArquivoRelacionamentoRequestDto relacionamento) {
+        return ResponseEntity.status(201).body(arquivoService.cadastrarArquivo(arquivo, bucket, relacionamento));
     }
 
     @DeleteMapping("/{id}")
@@ -55,8 +56,8 @@ public class ArquivoController {
         return ResponseEntity.status(204).build();
     }
 
-    @PatchMapping("/{bucket}/{chave}")
-    public ResponseEntity<byte[]> atualizar(@PathVariable String bucket, @PathVariable String chave, @RequestBody byte[] novoArquivo){
-        return ResponseEntity.status(200).body(arquivoService.atualizarImagem(bucket, chave, novoArquivo));
+    @PatchMapping(value = "/{bucket}/{chave}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<byte[]> atualizar(@PathVariable String bucket, @PathVariable String chave, @RequestPart("arquivo") byte[] arquivo){
+        return ResponseEntity.status(200).header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"imagem.png\"").contentType(MediaType.IMAGE_PNG).body(arquivoService.atualizarImagem(bucket, chave, arquivo));
     }
 }

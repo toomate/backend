@@ -53,8 +53,8 @@ public class S3Uploader {
                 .build();
 
         exceptionHandling(() -> {
-        s3Client.putObject(object, RequestBody.fromBytes(archive));
-        System.out.println("Imagem enviada com sucesso!");
+            s3Client.putObject(object, RequestBody.fromBytes(archive));
+            System.out.println("Imagem enviada com sucesso!");
         });
     }
 
@@ -85,7 +85,6 @@ public class S3Uploader {
             System.out.println("Imagem deletada com sucesso!");
         });
     }
-
     private static Boolean alreadyExists(String bucketName, String objectKey) {
         try {
             HeadObjectRequest headObjectRequest = HeadObjectRequest.builder()
@@ -95,7 +94,7 @@ public class S3Uploader {
 
             s3Client.headObject(headObjectRequest);
             return true;
-        } catch (NoSuchKeyException e) {
+        } catch (S3Exception e) {
             return false;
         }
     }

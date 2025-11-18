@@ -13,12 +13,10 @@ public class Arquivo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nomeOriginal;
-    private String nomeUsuario;
     private String chave;
     private String nomeBucket;
     private LocalDate dtCriacao;
     private LocalDate dtAlteracao;
-    private Integer comprovante;
 
     public Integer getId() {
         return id;
@@ -34,14 +32,6 @@ public class Arquivo {
 
     public void setNomeOriginal(String nomeOriginal) {
         this.nomeOriginal = nomeOriginal;
-    }
-
-    public String getNomeUsuario() {
-        return nomeUsuario;
-    }
-
-    public void setNomeUsuario(String nomeUsuario) {
-        this.nomeUsuario = nomeUsuario;
     }
 
     public String getNomeBucket() {
@@ -74,13 +64,5 @@ public class Arquivo {
 
     public void setDtAlteracao(LocalDate dtAlteracao) {
         this.dtAlteracao = dtAlteracao;
-    }
-
-    public Integer getComprovante() {
-        return comprovante;
-    }
-
-    public void setComprovante(Integer comprovante) {
-        this.comprovante = comprovante;
     }
 }

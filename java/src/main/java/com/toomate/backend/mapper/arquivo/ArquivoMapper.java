@@ -1,8 +1,7 @@
-package com.toomate.backend.mapper;
+package com.toomate.backend.mapper.arquivo;
 
 import com.toomate.backend.dto.arquivo.ArquivoRequestDto;
 import com.toomate.backend.model.Arquivo;
-import com.toomate.backend.model.Boleto;
 
 import java.time.LocalDate;
 
@@ -14,12 +13,10 @@ public class ArquivoMapper {
 
         Arquivo arquivo = new Arquivo();
 
-        arquivo.setNomeUsuario(request.getNomeUsuario());
         arquivo.setNomeOriginal(request.getNomeOriginal());
         arquivo.setNomeBucket(request.getNomeBucket());
         arquivo.setChave(request.getChave());
         arquivo.setDtCriacao(LocalDate.now());
-        arquivo.setComprovante(request.getIdBoleto());
 
         return arquivo;
     }
