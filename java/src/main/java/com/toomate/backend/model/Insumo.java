@@ -12,7 +12,7 @@ public class Insumo {
     @Schema(description = "Nome do insumo(incrementa automaticamente)", example = "Arroz")
     private String nome;
     @ManyToOne
-    @JoinColumn(name = "idCategoria")
+    @JoinColumn(name = "fkCategoria", referencedColumnName = "idCategoria")
     @Schema(description = "Categoria do insumo", example = "carboidrato")
     private Categoria categoria;
     @Schema(description = "Quantidade minima de insumo para alertar", example = "5")

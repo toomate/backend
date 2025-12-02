@@ -23,12 +23,12 @@ public class Marca{
     private String nomeMarca;
 
     @ManyToOne
-    @JoinColumn(name = "idInsumo")
+    @JoinColumn(name = "fkInsumo", referencedColumnName = "idInsumo")
     @Schema(description = "Insumo do qual a marca pertence")
     private Insumo insumo;
 
     @ManyToOne
-    @JoinColumn(name = "idFornecedor")
+    @JoinColumn(name = "fkFornecedor", referencedColumnName = "idFornecedor")
     @Schema(description = "Fornecedor do qual a marca pertence")
     private Fornecedor fornecedor;
 

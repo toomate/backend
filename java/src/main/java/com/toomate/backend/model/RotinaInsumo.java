@@ -3,15 +3,16 @@ package com.toomate.backend.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "rotinaInsumo")
 public class RotinaInsumo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne
-    @JoinColumn(name = "fkRotina")
+    @JoinColumn(name = "fkRotina", referencedColumnName = "idRotina")
     private Rotina rotina;
     @ManyToOne
-    @JoinColumn(name = "fkInsumo")
+    @JoinColumn(name = "fkInsumo", referencedColumnName = "idInsumo")
     private Insumo insumo;
 
     public Integer getId() {

@@ -25,12 +25,12 @@ public class Lote {
     private Double quantidadeMedida;
 
     @ManyToOne
-    @JoinColumn(name = "idMarca")
+    @JoinColumn(name = "fkMarca", referencedColumnName = "idMarca")
     @Schema(description = "Marca dos insumos do lote")
     private Marca marca;
 
     @ManyToOne
-    @JoinColumn(name = "idUsuario")
+    @JoinColumn(name = "fkUsuario", referencedColumnName = "idUsuario")
     @Schema(description = "Usuario que cadastrou o lote")
     private Usuario usuario;
 

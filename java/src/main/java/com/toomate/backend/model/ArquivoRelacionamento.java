@@ -1,15 +1,16 @@
 package com.toomate.backend.model;
 
-import com.toomate.backend.enums.TipoEntidade;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "arquivoRelacionamento")
 public class ArquivoRelacionamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
     @ManyToOne
-    @JoinColumn(name = "fkArquivo")
+    @JoinColumn(name = "fkArquivo", referencedColumnName = "idArquivo")
     private Arquivo arquivo;
     private Integer idEntidade;
     private String tipoEntidade;

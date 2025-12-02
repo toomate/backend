@@ -25,7 +25,7 @@ public class Divida {
     private Boolean pago;
 
     @ManyToOne
-    @JoinColumn(name = "fkCliente")
+    @JoinColumn(name = "fkCliente", referencedColumnName = "idCliente")
     @Schema(description = "Booleano que sinaliza se está pago ou não", example = "Frango assado")
     private Cliente cliente;
 

@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 public class Rotina {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idRotina")
     private Integer id;
     private String titulo;
     private Integer quantidadeMedida;
