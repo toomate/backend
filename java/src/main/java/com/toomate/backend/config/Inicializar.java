@@ -60,10 +60,10 @@ public class Inicializar implements CommandLineRunner  {
         Insumo insumoFeijao = insumoService.cadastrar(insumoFeijaoCadastrar);
 
         MarcaRequestDto marcaARequestDto = new MarcaRequestDto("Camil", insumoArroz.getIdInsumo(), fornecedor.getId());
-        Marca marcaArroz = marcaService.cadastrar(marcaARequestDto, fornecedor, insumoArroz);
+        Marca marcaArroz = marcaService.cadastrar(marcaARequestDto);
 
         MarcaRequestDto marcaFRequestDto = new MarcaRequestDto("Feijao Joao", insumoFeijao.getIdInsumo(), fornecedor.getId());
-        Marca marcaFeijao = marcaService.cadastrar(marcaFRequestDto, fornecedor, insumoFeijao);
+        Marca marcaFeijao = marcaService.cadastrar(marcaFRequestDto);
 
         for (int i = 1; i <= 3; i++){
             LocalDate dataCompra = LocalDate.of(2025, i * 3,i * 7);
