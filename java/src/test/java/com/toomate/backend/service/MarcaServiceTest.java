@@ -42,7 +42,7 @@ class MarcaServiceTest {
     @Nested
     class CadastroTest{
         @Test
-        @DisplayName("Deve cadastrar uma marca com sucesso!")
+        @DisplayName("Deve cadastrar uma marca com sucesso")
         void deveCadastrarUmaMarca(){
             MarcaRequestDto dto = new MarcaRequestDto("teste", 1, 2);
             Marca marca = MarcaMapperDto.toEntity(dto);
@@ -60,6 +60,7 @@ class MarcaServiceTest {
             Marca esperado = marcaService.cadastrar(dto);
             assertEquals(dto.getNome(), esperado.getNomeMarca());
             assertNotNull(esperado.getFornecedor());
+            assertNotNull(esperado.getInsumo());
         }
 
         @Test
