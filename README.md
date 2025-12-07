@@ -1,6 +1,7 @@
 <div align="center">
-  <img src="./src/main/resources/img/LogoToomate.png" width="250px" alt="Logo Toomate">
+  <img src="./java/src/main/resources/img/LogoToomate.png" width="250px" alt="Logo Toomate">
 </div>
+
 # Toomate
 
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
@@ -50,7 +51,6 @@ Certifique-se de ter instalado em sua máquina:
 - [Java JDK 21](https://www.oracle.com/java/technologies/downloads/)
 - [Maven](https://maven.apache.org/)
 - [MySQL](https://dev.mysql.com/downloads/mysql/)
-- Git
 
 ### 2. Configuração do Banco de Dados
 Crie um banco de dados no MySQL com o nome desejado:
