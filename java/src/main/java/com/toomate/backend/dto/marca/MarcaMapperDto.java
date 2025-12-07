@@ -11,6 +11,17 @@ import com.toomate.backend.model.Marca;
 import java.util.List;
 
 public class MarcaMapperDto {
+    public static Marca toEntity(MarcaRequestDto dto) {
+        if (dto == null) {
+            return null;
+        }
+
+        Marca entity = new Marca();
+        entity.setNomeMarca(dto.getNome());
+
+        return entity;
+    }
+
     public static Marca toEntity(MarcaRequestDto dto, Insumo insumo, Fornecedor fornecedor) {
         if (dto == null) {
             return null;
@@ -18,8 +29,8 @@ public class MarcaMapperDto {
 
         Marca entity = new Marca();
         entity.setNomeMarca(dto.getNome());
-        entity.setInsumo(insumo);
         entity.setFornecedor(fornecedor);
+        entity.setInsumo(insumo);
 
         return entity;
     }

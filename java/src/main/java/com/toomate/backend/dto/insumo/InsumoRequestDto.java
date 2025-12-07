@@ -21,6 +21,9 @@ public class InsumoRequestDto {
         this.fkCategoria = fkCategoria;
     }
 
+    public InsumoRequestDto() {
+    }
+
     public String getNome() {
         return nome;
     }

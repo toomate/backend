@@ -81,16 +81,10 @@ public class MarcaController {
                     @ApiResponse(responseCode = "409", description = "Conflito no cadastro")
             })
     @PostMapping
-    public ResponseEntity<MarcaResponseDto> cadastrar(@Valid @RequestBody MarcaRequestDto marca){
-        if (marcaService.existePorNome(marca.getNome())){
-            return ResponseEntity.status(409).build();
-        }
+    public ResponseEntity<MarcaResponseDto> cadastrar(@Valid @RequestBody MarcaRequestDto request){
+        Marca entity = marcaService.cadastrar(request);
 
-        Insumo insumo = insumoService.insumoPorId(marca.getFkInsumo());
-        Fornecedor fornecedor = fornecedorService.fornecedorPorId(marca.getFkFornecedor());
-        Marca corpo = marcaService.cadastrar(marca, fornecedor, insumo);
-
-        MarcaResponseDto responseDto = MarcaMapperDto.toDto(corpo);
+        MarcaResponseDto responseDto = MarcaMapperDto.toDto(entity);
         return ResponseEntity.status(201).body(responseDto);
     }
 

@@ -29,15 +29,11 @@ public class InsumoService {
         return insumoRepository.findByNomeContainingIgnoreCase(nome);
     }
 
-    public Insumo cadastrar(InsumoRequestDto request, Categoria categoria) {
-        if (request == null) {
+    public Insumo cadastrar(Insumo insumo) {
+        if (insumo == null) {
             throw new EntradaInvalidaException("O insumo não pode ser nulo!");
         }
-        if (categoria == null) {
-            throw new EntradaInvalidaException("A categoria não pode ser nula!");
-        }
 
-        Insumo insumo = InsumoMapperDto.toEntity(request, categoria);
         return insumoRepository.save(insumo);
     }
 
