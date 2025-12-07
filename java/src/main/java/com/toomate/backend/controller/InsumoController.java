@@ -77,9 +77,9 @@ public class InsumoController {
         if (insumoService.existePorNome(insumo.getNome())) {
             return ResponseEntity.status(409).build();
         }
-
         Categoria categoria = categoriaService.categoriaPorId(insumo.getFkCategoria());
-        Insumo corpo = insumoService.cadastrar(insumo, categoria);
+        Insumo insumoCadastrar = InsumoMapperDto.toEntity(insumo, categoria);
+        Insumo corpo = insumoService.cadastrar(insumoCadastrar);
 
         InsumoResponseDto responseDto = InsumoMapperDto.toDto(corpo);
         return ResponseEntity.status(201).body(responseDto);

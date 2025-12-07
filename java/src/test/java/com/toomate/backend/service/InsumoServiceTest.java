@@ -109,12 +109,12 @@ class InsumoServiceTest {
             insumo.setQtdMinima(insumoRequestDto.getQtdMinima());
             insumo.setUnidadeMedida(insumoRequestDto.getUnidadeMedida());
             when(repository.save(insumo)).thenReturn(insumo);
-            Insumo atual = service.cadastrar(insumoRequestDto, categoria);
+            Insumo atual = service.cadastrar(insumo);
             assertEquals(atual, insumo);
         }
 
         @Test
-        void DeveLancarExcecaoEntradaInvalidaComInsumoRequestNull(){
+        void DeveLancarExcecaoEntradaInvalidaComInsumoNull(){
             InsumoRequestDto insumoRequestDto = new InsumoRequestDto();
             insumoRequestDto.setNome("aaa");
             insumoRequestDto.setFkCategoria(1);
@@ -129,52 +129,25 @@ class InsumoServiceTest {
             insumo.setNome(insumoRequestDto.getNome());
             insumo.setQtdMinima(insumoRequestDto.getQtdMinima());
             insumo.setUnidadeMedida(insumoRequestDto.getUnidadeMedida());
-            assertThrows(EntradaInvalidaException.class, ()->service.cadastrar(null, categoria));
-        }
-
-        @Test
-        void DeveLancarExcecaoEntradaInvalidaComCategoriaNull(){
-            InsumoRequestDto insumoRequestDto = new InsumoRequestDto();
-            insumoRequestDto.setNome("aaa");
-            insumoRequestDto.setFkCategoria(1);
-            insumoRequestDto.setQtdMinima(5);
-            insumoRequestDto.setUnidadeMedida("kg");
-            Categoria categoria = new Categoria();
-            categoria.setIdCategoria(1);
-            categoria.setNome("lucas");
-            Insumo insumo = new Insumo();
-            insumo.setIdInsumo(1);
-            insumo.setCategoria(categoria);
-            insumo.setNome(insumoRequestDto.getNome());
-            insumo.setQtdMinima(insumoRequestDto.getQtdMinima());
-            insumo.setUnidadeMedida(insumoRequestDto.getUnidadeMedida());
-            assertThrows(EntradaInvalidaException.class, ()->service.cadastrar(insumoRequestDto, null));
-        }
-
-        @Test
-        void DeveLancarExcecaoEntradaInvalidaComInsumoRequestNullECategoriaNull(){
-            InsumoRequestDto insumoRequestDto = new InsumoRequestDto();
-            insumoRequestDto.setNome("aaa");
-            insumoRequestDto.setFkCategoria(1);
-            insumoRequestDto.setQtdMinima(5);
-            insumoRequestDto.setUnidadeMedida("kg");
-            Categoria categoria = new Categoria();
-            categoria.setIdCategoria(1);
-            categoria.setNome("lucas");
-            Insumo insumo = new Insumo();
-            insumo.setIdInsumo(1);
-            insumo.setCategoria(categoria);
-            insumo.setNome(insumoRequestDto.getNome());
-            insumo.setQtdMinima(insumoRequestDto.getQtdMinima());
-            insumo.setUnidadeMedida(insumoRequestDto.getUnidadeMedida());
-            assertThrows(EntradaInvalidaException.class, ()->service.cadastrar(null, null));
+            assertThrows(EntradaInvalidaException.class, ()->service.cadastrar(null));
         }
     }
 
     @Nested
     class deletar{
 
-        //@Test
+        @Test
+        void DeveChamarRepositoryApenasUmaVez(){
+            when(repository.existsById(anyInt()))
+                    .thenReturn(true);
+
+            doNothing().when(repository).deleteById(anyInt());
+
+            service.deletar(1);
+
+            verify(repository, times(1)).existsById(1);
+            verify(repository, times(1)).deleteById(1);
+        }
 
      @Test
         void DeveLancarExcecaoNaoEncontrada(){
@@ -202,6 +175,7 @@ class InsumoServiceTest {
             insumo.setNome(insumoRequestDto.getNome());
             insumo.setQtdMinima(insumoRequestDto.getQtdMinima());
             insumo.setUnidadeMedida(insumoRequestDto.getUnidadeMedida());
+            when(repository.existsById(1)).thenReturn(true);
             when(repository.save(insumo)).thenReturn(insumo);
             Insumo atual = service.atualizar(insumo.getIdInsumo(), insumo);
             assertEquals(atual, insumo);

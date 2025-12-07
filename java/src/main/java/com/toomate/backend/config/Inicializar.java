@@ -2,6 +2,7 @@ package com.toomate.backend.config;
 
 import com.toomate.backend.dto.categoria.CategoriaRequestDto;
 import com.toomate.backend.dto.fornecedor.FornecedorRequestDto;
+import com.toomate.backend.dto.insumo.InsumoMapperDto;
 import com.toomate.backend.dto.insumo.InsumoRequestDto;
 import com.toomate.backend.dto.lote.LoteRequestDto;
 import com.toomate.backend.dto.lote.LoteResponseDto;
@@ -51,10 +52,12 @@ public class Inicializar implements CommandLineRunner  {
         Fornecedor fornecedor = fornecedorService.cadastrar(fornecedorRequestDto);
 
         InsumoRequestDto arrozRequestDto = new InsumoRequestDto("Arroz", 20, "kilos", categoria.getIdCategoria());
-        Insumo insumoArroz = insumoService.cadastrar(arrozRequestDto, categoria);
+        Insumo insumoArrozCadastrar = InsumoMapperDto.toEntity(arrozRequestDto, categoria);
+        Insumo insumoArroz = insumoService.cadastrar(insumoArrozCadastrar);
 
         InsumoRequestDto feijaoRequestDto = new InsumoRequestDto("Feijao", 15, "kilos", categoria.getIdCategoria());
-        Insumo insumoFeijao = insumoService.cadastrar(feijaoRequestDto, categoria);
+        Insumo insumoFeijaoCadastrar = InsumoMapperDto.toEntity(feijaoRequestDto, categoria);
+        Insumo insumoFeijao = insumoService.cadastrar(insumoFeijaoCadastrar);
 
         MarcaRequestDto marcaARequestDto = new MarcaRequestDto("Camil", insumoArroz.getIdInsumo(), fornecedor.getId());
         Marca marcaArroz = marcaService.cadastrar(marcaARequestDto, fornecedor, insumoArroz);
