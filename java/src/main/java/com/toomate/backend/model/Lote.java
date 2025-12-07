@@ -34,7 +34,6 @@ public class Lote {
     @Schema(description = "Usuario que cadastrou o lote")
     private Usuario usuario;
 
-
     public Integer getIdLote() {
         return idLote;
     }

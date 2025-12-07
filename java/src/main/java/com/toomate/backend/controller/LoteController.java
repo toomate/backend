@@ -81,7 +81,7 @@ public class LoteController {
         }
         Usuario usuario = usuarioService.usuarioPorId(lote.getFkUsuario());
         Marca marca = marcaService.marcaPorId(lote.getFkMarca());
-        Lote corpo = loteService.cadastrar(lote, usuario, marca);
+        Lote corpo = loteService.cadastrar(LoteMapperDto.toEntity(lote, usuario, marca));
 
         LoteResponseDto loteResponse = LoteMapperDto.toDto(corpo);
         return ResponseEntity.status(201).body(loteResponse);

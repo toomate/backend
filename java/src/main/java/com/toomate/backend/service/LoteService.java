@@ -41,20 +41,31 @@ public class LoteService implements LoteListener {
                         String.format("Não foi encontrado lote com o id %d", id)));
     }
 
-    public Lote cadastrar(LoteRequestDto request, Usuario usuario, Marca marca) {
-        if (request == null) {
-            throw new EntradaInvalidaException("O lote não pode ser nula!");
+    public Lote cadastrar(Lote lote) {
+        if (lote == null) {
+            throw new EntradaInvalidaException("O lote não pode ser nulo!");
         }
 
-        if (usuario == null) {
+        if (lote.getUsuario() == null) {
             throw new EntradaInvalidaException("O fornecedor não pode ser nulo!");
         }
 
-        if (marca == null) {
+        if (lote.getMarca() == null) {
             throw new EntradaInvalidaException("O insumo não pode ser nulo!");
         }
 
-        Lote lote = LoteMapperDto.toEntity(request, usuario, marca);
+        if(lote.getQuantidadeMedida() <= 0){
+            throw new EntradaInvalidaException("A quantidade não pode ser igual ou menor que zero.");
+        }
+
+        if(lote.getPrecoUnitario() <= 0 ){
+            throw new EntradaInvalidaException("A quantidade não pode ser igual ou menor que zero.");
+        }
+
+        if(lote.getPrecoUnitario() >= 999 ){
+            throw new EntradaInvalidaException("A quantidade não pode ser maior ou igual a 999,99R$.");
+        }
+
         lote = loteRepository.save(lote);
         notificarMudanca(lote.getMarca().getInsumo());
         return lote;
