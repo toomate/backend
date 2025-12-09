@@ -9,10 +9,6 @@ import jakarta.persistence.Id;
 @Entity
 @Schema(description = "Representa uma categoria de alimento.")
 public class Categoria {
-    public Categoria(Integer idCategoria, String nome) {
-        this.idCategoria = idCategoria;
-        this.nome = nome;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

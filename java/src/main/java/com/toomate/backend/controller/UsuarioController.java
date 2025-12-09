@@ -16,7 +16,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/usuarios")
-@SecurityRequirement(name = "Bearer")
 public class UsuarioController {
     private final UsuarioService usuarioService;
 
@@ -31,7 +30,9 @@ public class UsuarioController {
                             content = @Content(mediaType = "application/json")),
                     @ApiResponse(responseCode = "204", description = "Sem conteúdo")
             })
+
     @GetMapping
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<List<UsuarioResponseDto>> listar() {
         List<UsuarioResponseDto> usuarios = usuarioService.listar();
 
@@ -49,7 +50,8 @@ public class UsuarioController {
                     @ApiResponse(responseCode = "404", description = "Não encontrado")
             })
     @GetMapping("/{id}")
-    public ResponseEntity<UsuarioResponseDto> buscarPeloId(@PathVariable Integer id) {
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<Usuario> buscarPeloId(@PathVariable Integer id) {
         return ResponseEntity.status(200).body(usuarioService.buscarPorId(id));
     }
 
@@ -61,6 +63,7 @@ public class UsuarioController {
                     @ApiResponse(responseCode = "404", description = "Não encontrado")
             })
     @GetMapping("/nome")
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<UsuarioResponseDto> buscarPeloNome(@RequestParam String nome) {
         return ResponseEntity.status(200).body(usuarioService.buscarPorNome(nome));
     }
@@ -100,6 +103,7 @@ public class UsuarioController {
                     @ApiResponse(responseCode = "404", description = "Não encontrado")
             })
     @DeleteMapping("/{id}")
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<Void> deletar(@PathVariable Integer id) {
         usuarioService.deletar(id);
         return ResponseEntity.status(204).build();
@@ -112,6 +116,7 @@ public class UsuarioController {
                     @ApiResponse(responseCode = "404", description = "Não encontrado")
             })
     @PutMapping("/{id}")
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<UsuarioResponseDto> atualizar(@PathVariable Integer id, @RequestBody Usuario usuario) {
         return ResponseEntity.status(200).body(usuarioService.atualizar(id, usuario));
     }
@@ -123,6 +128,7 @@ public class UsuarioController {
                     @ApiResponse(responseCode = "404", description = "Não encontrado")
             })
     @PatchMapping("/{id}")
+    @SecurityRequirement(name = "Bearer")
     public ResponseEntity<UsuarioResponseDto> atualizarAdministrador(@PathVariable Integer id, @RequestBody AtualizarAdministradorDto administrador) {
         return ResponseEntity.status(200).body(usuarioService.atualizarAdministrador(id, administrador));
     }
