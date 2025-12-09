@@ -51,7 +51,7 @@ public class UsuarioController {
             })
     @GetMapping("/{id}")
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<Usuario> buscarPeloId(@PathVariable Integer id) {
+    public ResponseEntity<UsuarioResponseDto> buscarPeloId(@PathVariable Integer id) {
         return ResponseEntity.status(200).body(usuarioService.buscarPorId(id));
     }
 
