@@ -19,6 +19,11 @@ public class Categoria {
 
     private Boolean rotatividade;
 
+    public Categoria(Integer idCategoria, String nome) {
+        this.idCategoria = idCategoria;
+        this.nome = nome;
+    }
+
     public Boolean getRotatividade() {
         return rotatividade;
     }
