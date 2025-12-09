@@ -63,7 +63,7 @@ public class SecurityConfiguracao {
             "/error",
             "/error/**",
             "/usuarios/login",
-            "/usuarios/cadastrar"
+            "/usuarios"
     };
 
     @Bean
