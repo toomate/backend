@@ -1,7 +1,8 @@
 package com.toomate.backend.service;
 
-import com.toomate.backend.dto.lote.LoteMapperDto;
-import com.toomate.backend.dto.lote.LoteRequestDto;
+import com.toomate.backend.dto.estoque_grupo.EstoqueGeral;
+import com.toomate.backend.dto.estoque_grupo.EstoqueGrupo;
+import com.toomate.backend.dto.estoque_grupo.InsumoAgrupado;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.integration.EnviarNotificacao;
@@ -10,7 +11,10 @@ import com.toomate.backend.observer.LoteListener;
 import com.toomate.backend.repository.LoteRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class LoteService implements LoteListener {
@@ -26,7 +30,7 @@ public class LoteService implements LoteListener {
     @Override
     public void notificarMudanca(Insumo insumo) {
         Double total = loteRepository.getEstoqueInsumo(insumo.getIdInsumo());
-        if (total < insumo.getQtdMinima()){
+        if (total < insumo.getQtdMinima()) {
             enviarNotificacao.enviarNotif(insumo, total);
         }
     }
@@ -54,15 +58,15 @@ public class LoteService implements LoteListener {
             throw new EntradaInvalidaException("O insumo não pode ser nulo!");
         }
 
-        if(lote.getQuantidadeMedida() <= 0){
+        if (lote.getQuantidadeMedida() <= 0) {
             throw new EntradaInvalidaException("A quantidade não pode ser igual ou menor que zero.");
         }
 
-        if(lote.getPrecoUnitario() <= 0 ){
+        if (lote.getPrecoUnitario() <= 0) {
             throw new EntradaInvalidaException("A quantidade não pode ser igual ou menor que zero.");
         }
 
-        if(lote.getPrecoUnitario() >= 999 ){
+        if (lote.getPrecoUnitario() >= 999) {
             throw new EntradaInvalidaException("A quantidade não pode ser maior ou igual a 999,99R$.");
         }
 
@@ -100,13 +104,13 @@ public class LoteService implements LoteListener {
                 .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrado nenhuma marca com o id %d", id)));
     }
 
-    public void removerQuantidade(Integer id, Double quantidadeMedida){
+    public void removerQuantidade(Integer id, Double quantidadeMedida) {
         if (!loteRepository.existsById(id)) {
             throw new EntidadeNaoEncontradaException(String.format("Não foi encontrado lote com o id %d", id));
         }
 
         Lote lote = loteRepository.findById(id).get();
-        if (lote.getQuantidadeMedida() - quantidadeMedida < 0){
+        if (lote.getQuantidadeMedida() - quantidadeMedida < 0) {
             throw new EntradaInvalidaException("Quantidade medida não pode ser negativa");
         }
 
@@ -116,7 +120,7 @@ public class LoteService implements LoteListener {
 
     }
 
-    public void adicionarQuantidade(Integer id, Double quantidadeMedida){
+    public void adicionarQuantidade(Integer id, Double quantidadeMedida) {
         if (!loteRepository.existsById(id)) {
             throw new EntidadeNaoEncontradaException(String.format("Não foi encontrado lote com o id %d", id));
         }
@@ -126,5 +130,33 @@ public class LoteService implements LoteListener {
         loteRepository.save(lote);
         notificarMudanca(lote.getMarca().getInsumo());
 
+    }
+
+    public List<EstoqueGrupo> getEstoque() {
+        Map<Integer, EstoqueGrupo> mapa = new LinkedHashMap<>();
+        List<EstoqueGeral> estoque = loteRepository.buscarEstoque();
+
+        for (EstoqueGeral item : estoque) {
+            Integer fkInsumo = item.getIdInsumo();
+            String nomeCategoria = item.getNomeCategoria();
+
+            if (!mapa.containsKey(fkInsumo)) {
+                EstoqueGrupo grupo = new EstoqueGrupo();
+
+                grupo.setFkInsumo(fkInsumo);
+                grupo.setFkCategoria(item.getIdCategoria());
+                grupo.setCategoria(nomeCategoria);
+                grupo.setInsumo(item.getNomeInsumo());
+                grupo.setMedida(item.getUnidadeMedida());
+                grupo.setItens(new ArrayList<>());
+
+                mapa.put(fkInsumo, grupo);
+            }
+            mapa.get(fkInsumo).getItens().add(new InsumoAgrupado(item.getIdInsumo(), item.getNomeMarca(), item.getQuantidadeMedida(), item.getUnidadeMedida(), item.getDataValidade()));
+            mapa.get(fkInsumo).calcularQtdTotal();
+            mapa.get(fkInsumo).calcularMenorData();
+        }
+
+        return new ArrayList<>(mapa.values());
     }
 }

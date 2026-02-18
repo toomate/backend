@@ -1,6 +1,6 @@
 package com.toomate.backend.repository;
 
-import com.toomate.backend.model.Insumo;
+import com.toomate.backend.dto.estoque_grupo.EstoqueGeral;
 import com.toomate.backend.model.Lote;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,4 +13,21 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
     @Query("select  COALESCE(SUM(L.quantidadeMedida), 0) from Lote L JOIN L.marca M JOIN M.insumo I WHERE I.idInsumo = :idInsumo")
     Double getEstoqueInsumo(@Param("idInsumo") Integer idInsumo);
 
+    @Query("""
+            SELECT new com.toomate.backend.dto.estoque_grupo.EstoqueGeral (
+            c.idCategoria,
+            c.nome,
+            i.idInsumo,
+            i.nome,
+            m.nomeMarca,
+            l.quantidadeMedida,
+            i.unidadeMedida,
+            l.dataValidade
+            )
+            FROM Lote l
+            JOIN l.marca m
+            JOIN m.insumo i
+            JOIN i.categoria c
+            """)
+    List<EstoqueGeral> buscarEstoque();
 }

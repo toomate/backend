@@ -1,5 +1,7 @@
 package com.toomate.backend.controller;
 
+import com.toomate.backend.dto.estoque_grupo.EstoqueGrupo;
+import com.toomate.backend.dto.estoque_grupo.InsumoAgrupado;
 import com.toomate.backend.dto.lote.LoteMapperDto;
 import com.toomate.backend.dto.lote.LoteRequestDto;
 import com.toomate.backend.dto.lote.LoteResponseDto;
@@ -65,6 +67,17 @@ public class LoteController {
 
         LoteResponseDto loteDto = LoteMapperDto.toDto(lote);
         return ResponseEntity.status(200).body(loteDto);
+    }
+
+    @GetMapping("/estoque")
+    public ResponseEntity<List<EstoqueGrupo>> buscarEstoque(){
+        List<EstoqueGrupo> estoque = loteService.getEstoque();
+
+        if (estoque.isEmpty()){
+            return ResponseEntity.status(204).build();
+        }
+
+        return ResponseEntity.status(200).body(estoque);
     }
 
     @Operation(summary = "Cadastrar lote",
