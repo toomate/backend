@@ -148,6 +148,14 @@ public class LoteService implements LoteListener {
         return new ArrayList<>(estoqueResponse.values());
     }
 
+    public List<EstoqueGrupo> pesquisarEstoquePorInsumo(String insumo) {
+        List<EstoqueGeral> estoque = loteRepository.pesquisarEstoquePorInsumo(insumo);
+
+        Map<Integer, EstoqueGrupo> estoqueResponse = estruturarJson(estoque);
+
+        return new ArrayList<>(estoqueResponse.values());
+    }
+
 
     private Map<Integer, EstoqueGrupo> estruturarJson(List<EstoqueGeral> estoque) {
         Map<Integer, EstoqueGrupo> mapa = new LinkedHashMap<>();

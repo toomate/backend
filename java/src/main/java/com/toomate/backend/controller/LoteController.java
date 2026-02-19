@@ -38,10 +38,10 @@ public class LoteController {
                     @ApiResponse(responseCode = "204", description = "Sem conteúdo")
             })
     @GetMapping
-    public ResponseEntity<List<LoteResponseDto>> listar(){
+    public ResponseEntity<List<LoteResponseDto>> listar() {
         List<LoteResponseDto> lote = LoteMapperDto.toDto(loteService.listar());
 
-        if(lote.isEmpty()) {
+        if (lote.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
 
@@ -56,7 +56,7 @@ public class LoteController {
                     @ApiResponse(responseCode = "404", description = "Não encontrado")
             })
     @GetMapping("/{id}")
-    public ResponseEntity<LoteResponseDto> pegarPorId(@PathVariable Integer id){
+    public ResponseEntity<LoteResponseDto> pegarPorId(@PathVariable Integer id) {
         Lote lote = loteService.listarPorId(id);
 
         LoteResponseDto loteDto = LoteMapperDto.toDto(lote);
@@ -64,21 +64,32 @@ public class LoteController {
     }
 
     @GetMapping("/estoque")
-    public ResponseEntity<List<EstoqueGrupo>> buscarEstoque(){
+    public ResponseEntity<List<EstoqueGrupo>> buscarEstoque() {
         List<EstoqueGrupo> estoque = loteService.buscarEstoque();
 
-        if (estoque.isEmpty()){
+        if (estoque.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
 
         return ResponseEntity.status(200).body(estoque);
     }
 
-   @GetMapping("/estoque/{categoria}")
-    public ResponseEntity<List<EstoqueGrupo>> buscarEstoquePorCategoria(@PathVariable String categoria){
+    @GetMapping("/estoque/{categoria}")
+    public ResponseEntity<List<EstoqueGrupo>> buscarEstoquePorCategoria(@PathVariable String categoria) {
         List<EstoqueGrupo> estoque = loteService.buscarEstoquePorCategoria(categoria);
 
-        if (estoque.isEmpty()){
+        if (estoque.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+
+        return ResponseEntity.status(200).body(estoque);
+    }
+
+    @GetMapping("/estoque/search")
+    public ResponseEntity<List<EstoqueGrupo>> pesquisarEstoquePorInsumo(@RequestParam String insumo) {
+        List<EstoqueGrupo> estoque = loteService.pesquisarEstoquePorInsumo(insumo);
+
+        if (estoque.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
 
@@ -93,8 +104,8 @@ public class LoteController {
                     @ApiResponse(responseCode = "409", description = "Conflito no cadastro")
             })
     @PostMapping
-    public ResponseEntity<LoteResponseDto> cadastrar(@RequestBody LoteRequestDto lote){
-        if(lote == null){
+    public ResponseEntity<LoteResponseDto> cadastrar(@RequestBody LoteRequestDto lote) {
+        if (lote == null) {
             return null;
         }
         Usuario usuario = usuarioService.usuarioPorId(lote.getFkUsuario());
@@ -112,9 +123,9 @@ public class LoteController {
                     @ApiResponse(responseCode = "404", description = "Não encontrado")
             })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Integer id){
-       loteService.deletar(id);
-       return ResponseEntity.status(204).build();
+    public ResponseEntity<Void> deletar(@PathVariable Integer id) {
+        loteService.deletar(id);
+        return ResponseEntity.status(204).build();
     }
 
     @Operation(summary = "Atualizar lote",
@@ -124,7 +135,7 @@ public class LoteController {
                     @ApiResponse(responseCode = "404", description = "Não encontrado")
             })
     @PutMapping("/{id}")
-    public ResponseEntity<Lote> atualizar(@RequestBody LoteRequestDto lote, @PathVariable Integer id){
+    public ResponseEntity<Lote> atualizar(@RequestBody LoteRequestDto lote, @PathVariable Integer id) {
 
         if (loteService.existePorId(id)) {
             Usuario usuario = usuarioService.usuarioPorId(lote.getFkUsuario());
@@ -137,18 +148,18 @@ public class LoteController {
     }
 
     @PutMapping("/adicionarEstoque/{id}")
-    public ResponseEntity<Lote> adicionar(@RequestBody Double quantidadeMedida, @PathVariable Integer id){
+    public ResponseEntity<Lote> adicionar(@RequestBody Double quantidadeMedida, @PathVariable Integer id) {
         if (loteService.existePorId(id)) {
-            loteService.adicionarQuantidade(id,quantidadeMedida);
+            loteService.adicionarQuantidade(id, quantidadeMedida);
             return ResponseEntity.status(201).build();
         }
         return ResponseEntity.status(404).build();
     }
 
     @PutMapping("/removerEstoque/{id}")
-    public ResponseEntity<Lote> remover(@RequestBody Double quantidadeMedida, @PathVariable Integer id){
+    public ResponseEntity<Lote> remover(@RequestBody Double quantidadeMedida, @PathVariable Integer id) {
         if (loteService.existePorId(id)) {
-            loteService.removerQuantidade(id,quantidadeMedida);
+            loteService.removerQuantidade(id, quantidadeMedida);
             return ResponseEntity.status(201).build();
         }
         return ResponseEntity.status(404).build();

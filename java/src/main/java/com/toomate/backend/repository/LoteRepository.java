@@ -50,4 +50,24 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
             WHERE c.nome = :categoria
             """)
     List<EstoqueGeral> buscarEstoquePorCategoria(String categoria);
+
+    @Query("""
+            SELECT new com.toomate.backend.dto.estoque_grupo.EstoqueGeral (
+            c.idCategoria,
+            c.nome,
+            i.idInsumo,
+            i.nome,
+            m.nomeMarca,
+            l.quantidadeMedida,
+            i.unidadeMedida,
+            l.dataValidade
+            )
+            FROM Lote l
+            JOIN l.marca m
+            JOIN m.insumo i
+            JOIN i.categoria c
+            WHERE i.nome LIKE %:insumo%
+            """)
+    List<EstoqueGeral> pesquisarEstoquePorInsumo(String insumo);
+
 }
