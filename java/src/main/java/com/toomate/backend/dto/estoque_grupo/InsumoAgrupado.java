@@ -5,13 +5,15 @@ import java.time.LocalDate;
 public class InsumoAgrupado {
     private Integer idInsumo;
     private String nomeMarca;
+    private Integer idLote;
     private Double quantidadeMedida; // vai vir do Lote
     private String unidadeMedida; // vai vir do insumo
     private LocalDate dataValidade; // lote
 
-    public InsumoAgrupado(Integer idInsumo, String nomeMarca, Double quantidadeMedida, String unidadeMedida, LocalDate dataValidade) {
+    public InsumoAgrupado(Integer idInsumo, String nomeMarca, Integer idLote, Double quantidadeMedida, String unidadeMedida, LocalDate dataValidade) {
         this.idInsumo = idInsumo;
         this.nomeMarca = nomeMarca;
+        this.idLote = idLote;
         this.quantidadeMedida = quantidadeMedida;
         this.unidadeMedida = unidadeMedida;
         this.dataValidade = dataValidade;
@@ -35,6 +37,14 @@ public class InsumoAgrupado {
 
     public Double getQuantidadeMedida() {
         return quantidadeMedida;
+    }
+
+    public Integer getIdLote() {
+        return idLote;
+    }
+
+    public void setIdLote(Integer idLote) {
+        this.idLote = idLote;
     }
 
     public void setQuantidadeMedida(Double quantidadeMedida) {

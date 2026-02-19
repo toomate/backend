@@ -8,16 +8,18 @@ public class EstoqueGeral {
     private Integer idInsumo;
     private String nomeInsumo;
     private String nomeMarca;
+    private Integer idLote;
     private Double quantidadeMedida; // vai vir do Lote
     private String unidadeMedida; // vai vir do insumo
     private LocalDate dataValidade;
 
-    public EstoqueGeral(Integer idCategoria, String nomeCategoria, Integer idInsumo, String nomeInsumo, String nomeMarca, Double quantidadeMedida, String unidadeMedida, LocalDate dataValidade) {
+    public EstoqueGeral(Integer idCategoria, String nomeCategoria, Integer idInsumo, String nomeInsumo, String nomeMarca, Integer idLote, Double quantidadeMedida, String unidadeMedida, LocalDate dataValidade) {
         this.idCategoria = idCategoria;
         this.nomeCategoria = nomeCategoria;
         this.idInsumo = idInsumo;
         this.nomeInsumo = nomeInsumo;
         this.nomeMarca = nomeMarca;
+        this.idLote = idLote;
         this.quantidadeMedida = quantidadeMedida;
         this.unidadeMedida = unidadeMedida;
         this.dataValidade = dataValidade;
@@ -61,6 +63,14 @@ public class EstoqueGeral {
 
     public void setNomeMarca(String nomeMarca) {
         this.nomeMarca = nomeMarca;
+    }
+
+    public Integer getIdLote() {
+        return idLote;
+    }
+
+    public void setIdLote(Integer idLote) {
+        this.idLote = idLote;
     }
 
     public Double getQuantidadeMedida() {

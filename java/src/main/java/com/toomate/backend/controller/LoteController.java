@@ -2,6 +2,7 @@ package com.toomate.backend.controller;
 
 import com.toomate.backend.dto.estoque_grupo.EstoqueGrupo;
 import com.toomate.backend.dto.lote.LoteMapperDto;
+import com.toomate.backend.dto.lote.LotePatchDto;
 import com.toomate.backend.dto.lote.LoteRequestDto;
 import com.toomate.backend.dto.lote.LoteResponseDto;
 import com.toomate.backend.model.*;
@@ -94,6 +95,13 @@ public class LoteController {
         }
 
         return ResponseEntity.status(200).body(estoque);
+    }
+
+    @PatchMapping
+    public ResponseEntity<Void> atualizarEstoque(@RequestBody List<LotePatchDto> requests){
+        loteService.atualizarQuantidades(requests);
+
+        return ResponseEntity.status(204).build();
     }
 
     @Operation(summary = "Cadastrar lote",

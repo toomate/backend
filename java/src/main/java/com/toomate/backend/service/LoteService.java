@@ -3,18 +3,21 @@ package com.toomate.backend.service;
 import com.toomate.backend.dto.estoque_grupo.EstoqueGeral;
 import com.toomate.backend.dto.estoque_grupo.EstoqueGrupo;
 import com.toomate.backend.dto.estoque_grupo.InsumoAgrupado;
+import com.toomate.backend.dto.lote.LotePatchDto;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.integration.EnviarNotificacao;
 import com.toomate.backend.model.*;
 import com.toomate.backend.observer.LoteListener;
 import com.toomate.backend.repository.LoteRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class LoteService implements LoteListener {
@@ -175,11 +178,33 @@ public class LoteService implements LoteListener {
 
                 mapa.put(fkInsumo, grupo);
             }
-            mapa.get(fkInsumo).getItens().add(new InsumoAgrupado(item.getIdInsumo(), item.getNomeMarca(), item.getQuantidadeMedida(), item.getUnidadeMedida(), item.getDataValidade()));
+            mapa.get(fkInsumo).getItens().add(new InsumoAgrupado(item.getIdInsumo(), item.getNomeMarca(), item.getIdLote(), item.getQuantidadeMedida(), item.getUnidadeMedida(), item.getDataValidade()));
             mapa.get(fkInsumo).calcularQtdTotal();
             mapa.get(fkInsumo).calcularMenorData();
         }
 
         return mapa;
+    }
+
+    @Transactional
+    public void atualizarQuantidades(List<LotePatchDto> request) {
+        List<Integer> ids = request.stream()
+                .map(LotePatchDto::getId)
+                .toList();
+
+        List<Lote> lotes = loteRepository.findAllById(ids);
+
+        Map<Integer, Lote> mapa = lotes.stream()
+                .collect(Collectors.toMap(Lote::getIdLote, e -> e));
+
+        for (LotePatchDto dto : request) {
+            Lote lote = mapa.get(dto.getId());
+
+            if (lote == null){
+                throw new EntidadeNaoEncontradaException("Não foi encontrado um lote com o id: " + dto.getId());
+            }
+
+            lote.setQuantidadeMedida(dto.getQuantidadeMedida());
+        }
     }
 }

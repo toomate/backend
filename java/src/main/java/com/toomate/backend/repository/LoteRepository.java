@@ -20,6 +20,7 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
             i.idInsumo,
             i.nome,
             m.nomeMarca,
+            l.idLote,
             l.quantidadeMedida,
             i.unidadeMedida,
             l.dataValidade
@@ -39,6 +40,7 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
             i.idInsumo,
             i.nome,
             m.nomeMarca,
+            l.idLote,
             l.quantidadeMedida,
             i.unidadeMedida,
             l.dataValidade
@@ -58,6 +60,7 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
             i.idInsumo,
             i.nome,
             m.nomeMarca,
+            l.idLote,
             l.quantidadeMedida,
             i.unidadeMedida,
             l.dataValidade

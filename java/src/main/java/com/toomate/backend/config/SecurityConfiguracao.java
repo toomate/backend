@@ -64,6 +64,7 @@ public class SecurityConfiguracao {
             "/error/**",
             "/usuarios/login",
             "/usuarios",
+            "/lotes",
             "/lotes/estoque",
             "/lotes/estoque/**"
     };
