@@ -132,10 +132,25 @@ public class LoteService implements LoteListener {
 
     }
 
-    public List<EstoqueGrupo> getEstoque() {
-        Map<Integer, EstoqueGrupo> mapa = new LinkedHashMap<>();
+    public List<EstoqueGrupo> buscarEstoque() {
         List<EstoqueGeral> estoque = loteRepository.buscarEstoque();
 
+        Map<Integer, EstoqueGrupo> estoqueResponse = estruturarJson(estoque);
+
+        return new ArrayList<>(estoqueResponse.values());
+    }
+
+    public List<EstoqueGrupo> buscarEstoquePorCategoria(String categoria) {
+        List<EstoqueGeral> estoque = loteRepository.buscarEstoquePorCategoria(categoria);
+
+        Map<Integer, EstoqueGrupo> estoqueResponse = estruturarJson(estoque);
+
+        return new ArrayList<>(estoqueResponse.values());
+    }
+
+
+    private Map<Integer, EstoqueGrupo> estruturarJson(List<EstoqueGeral> estoque) {
+        Map<Integer, EstoqueGrupo> mapa = new LinkedHashMap<>();
         for (EstoqueGeral item : estoque) {
             Integer fkInsumo = item.getIdInsumo();
             String nomeCategoria = item.getNomeCategoria();
@@ -157,6 +172,6 @@ public class LoteService implements LoteListener {
             mapa.get(fkInsumo).calcularMenorData();
         }
 
-        return new ArrayList<>(mapa.values());
+        return mapa;
     }
 }

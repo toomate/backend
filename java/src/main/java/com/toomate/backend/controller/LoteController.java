@@ -1,25 +1,19 @@
 package com.toomate.backend.controller;
 
 import com.toomate.backend.dto.estoque_grupo.EstoqueGrupo;
-import com.toomate.backend.dto.estoque_grupo.InsumoAgrupado;
 import com.toomate.backend.dto.lote.LoteMapperDto;
 import com.toomate.backend.dto.lote.LoteRequestDto;
 import com.toomate.backend.dto.lote.LoteResponseDto;
-import com.toomate.backend.dto.marca.MarcaMapperDto;
-import com.toomate.backend.dto.marca.MarcaResponseDto;
 import com.toomate.backend.model.*;
-import com.toomate.backend.repository.LoteRepository;
 import com.toomate.backend.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/lotes")
@@ -71,7 +65,18 @@ public class LoteController {
 
     @GetMapping("/estoque")
     public ResponseEntity<List<EstoqueGrupo>> buscarEstoque(){
-        List<EstoqueGrupo> estoque = loteService.getEstoque();
+        List<EstoqueGrupo> estoque = loteService.buscarEstoque();
+
+        if (estoque.isEmpty()){
+            return ResponseEntity.status(204).build();
+        }
+
+        return ResponseEntity.status(200).body(estoque);
+    }
+
+   @GetMapping("/estoque/{categoria}")
+    public ResponseEntity<List<EstoqueGrupo>> buscarEstoquePorCategoria(@PathVariable String categoria){
+        List<EstoqueGrupo> estoque = loteService.buscarEstoquePorCategoria(categoria);
 
         if (estoque.isEmpty()){
             return ResponseEntity.status(204).build();
