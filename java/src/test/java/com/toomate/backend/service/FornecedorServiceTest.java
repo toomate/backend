@@ -48,7 +48,6 @@ class FornecedorServiceTest {
         exemploFornecedor.setTelefone("11987654321");
 
         requestValido = new FornecedorRequestDto(
-                "https://wa.me/5511987654321",
                 "Atacado Sao Paulo",
                 "11987654321"
         );
@@ -117,9 +116,9 @@ class FornecedorServiceTest {
     void cadastrarSucessoTeste() {
         Fornecedor salvo = new Fornecedor();
         salvo.setId(5);
-        salvo.setLink(requestValido.getLink());
+        salvo.setLink("https://wa.me/5511987654321");
         salvo.setRazaoSocial(requestValido.getRazaoSocial());
-        salvo.setTelefone(requestValido.getTelefone());
+        salvo.setTelefone("5511987654321");
 
         when(fornecedorRepository.existsByRazaoSocialIgnoreCase("Atacado Sao Paulo")).thenReturn(false);
         when(fornecedorRepository.save(any(Fornecedor.class))).thenReturn(salvo);
@@ -156,7 +155,6 @@ class FornecedorServiceTest {
     @Test
     void atualizarSucessoTeste() {
         FornecedorRequestDto atualizacao = new FornecedorRequestDto(
-                "https://wa.me/5511999999999",
                 "Novo Nome",
                 "11999999999"
         );
@@ -176,7 +174,7 @@ class FornecedorServiceTest {
         assertEquals(1, resultado.getId());
         assertEquals("Novo Nome", resultado.getRazaoSocial());
         assertEquals("https://wa.me/5511999999999", resultado.getLink());
-        assertEquals("11999999999", resultado.getTelefone());
+        assertEquals("5511999999999", resultado.getTelefone());
         verify(fornecedorRepository, times(1)).findById(1);
         verify(fornecedorRepository, times(1)).existsByRazaoSocialIgnoreCase("Novo Nome");
         verify(fornecedorRepository, times(1)).save(any(Fornecedor.class));
@@ -197,7 +195,6 @@ class FornecedorServiceTest {
     @Test
     void atualizarRazaoSocialDuplicadaTeste() {
         FornecedorRequestDto atualizacao = new FornecedorRequestDto(
-                "https://wa.me/5511999999999",
                 "Fornecedor Duplicado",
                 "11999999999"
         );

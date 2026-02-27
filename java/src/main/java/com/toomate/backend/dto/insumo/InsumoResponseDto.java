@@ -1,7 +1,6 @@
 package com.toomate.backend.dto.insumo;
 
 import com.toomate.backend.dto.categoria.CategoriaResponseDto;
-import com.toomate.backend.model.Categoria;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class InsumoResponseDto {

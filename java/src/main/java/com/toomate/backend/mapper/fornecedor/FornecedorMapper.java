@@ -16,7 +16,6 @@ public final class FornecedorMapper {
         }
 
         Fornecedor fornecedor = new Fornecedor();
-        fornecedor.setLink(request.getLink());
         fornecedor.setRazaoSocial(request.getRazaoSocial());
         fornecedor.setTelefone(request.getTelefone());
         return fornecedor;

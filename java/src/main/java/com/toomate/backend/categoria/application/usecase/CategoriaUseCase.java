@@ -26,6 +26,13 @@ public class CategoriaUseCase {
         return categoriaGateway.findByNomeContainingIgnoreCase(nomeNormalizado);
     }
 
+    public CategoriaDomain buscarPorId(Integer id) {
+        Integer idValidado = validarId(id);
+        return categoriaGateway.findById(idValidado)
+                .orElseThrow(() -> new CategoriaNaoEncontradaException(
+                        String.format("Nao foi encontrada categoria com o id %d", idValidado)));
+    }
+
     public CategoriaDomain cadastrar(String nome, Boolean rotatividade) {
         String nomeNormalizado = validarNome(nome);
         if (categoriaGateway.existsByNome(nomeNormalizado)) {

@@ -5,6 +5,9 @@ import com.toomate.backend.categoria.domain.model.CategoriaDomain;
 import com.toomate.backend.categoria.interfaces.rest.CategoriaDtoMapper;
 import com.toomate.backend.dto.categoria.CategoriaRequestDto;
 import com.toomate.backend.dto.categoria.CategoriaResponseDto;
+import com.toomate.backend.dto.fornecedor.FornecedorResponseDto;
+import com.toomate.backend.mapper.fornecedor.FornecedorMapper;
+import com.toomate.backend.service.MarcaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,9 +32,11 @@ import java.util.List;
 public class CategoriaController {
 
     private final CategoriaUseCase categoriaUseCase;
+    private final MarcaService marcaService;
 
-    public CategoriaController(CategoriaUseCase categoriaUseCase) {
+    public CategoriaController(CategoriaUseCase categoriaUseCase, MarcaService marcaService) {
         this.categoriaUseCase = categoriaUseCase;
+        this.marcaService = marcaService;
     }
 
     @Operation(summary = "Listar categorias",
@@ -71,6 +76,28 @@ public class CategoriaController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(dtos);
+    }
+
+    @Operation(summary = "Listar fornecedores por categoria",
+            description = "Retorna os fornecedores relacionados a categoria via marcas e insumos",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de fornecedores",
+                            content = @Content(mediaType = "application/json")),
+                    @ApiResponse(responseCode = "204", description = "Sem conteudo"),
+                    @ApiResponse(responseCode = "404", description = "Categoria nao encontrada")
+            })
+    @GetMapping("/{id}/fornecedores")
+    public ResponseEntity<List<FornecedorResponseDto>> listarFornecedoresPorCategoria(@PathVariable Integer id) {
+        categoriaUseCase.buscarPorId(id);
+        List<FornecedorResponseDto> fornecedores = FornecedorMapper.toResponseList(
+                marcaService.listarFornecedoresPorCategoria(id)
+        );
+
+        if (fornecedores.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(fornecedores);
     }
 
     @Operation(summary = "Cadastrar categoria",

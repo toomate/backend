@@ -1,8 +1,8 @@
 package com.toomate.backend.dto.insumo;
 
-import com.toomate.backend.model.Categoria;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class InsumoRequestDto {
     @NotBlank(message = "O nome não pode ser vazio.")
@@ -12,6 +12,7 @@ public class InsumoRequestDto {
     private Integer qtdMinima;
     @Schema(description = "Quantidade de medida do insumo", example = "kg")
     private String unidadeMedida;
+    @NotNull(message = "Categoria do insumo e obrigatoria.")
     private Integer fkCategoria;
 
     public InsumoRequestDto(String nome, Integer qtdMinima, String unidadeMedida, Integer fkCategoria) {
@@ -55,4 +56,5 @@ public class InsumoRequestDto {
     public void setFkCategoria(Integer fkCategoria) {
         this.fkCategoria = fkCategoria;
     }
+
 }

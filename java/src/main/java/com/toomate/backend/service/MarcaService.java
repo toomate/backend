@@ -1,6 +1,5 @@
 package com.toomate.backend.service;
 
-import com.toomate.backend.dto.insumo.InsumoRequestDto;
 import com.toomate.backend.dto.marca.MarcaMapperDto;
 import com.toomate.backend.dto.marca.MarcaRequestDto;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
@@ -22,7 +21,11 @@ public class MarcaService {
     private final InsumoRepository insumoRepository;
     private final FornecedorRepository fornecedorRepository;
 
-    public MarcaService(MarcaRepository marcaRepository, InsumoRepository insumoRepository, FornecedorRepository fornecedorRepository) {
+    public MarcaService(
+            MarcaRepository marcaRepository,
+            InsumoRepository insumoRepository,
+            FornecedorRepository fornecedorRepository
+    ) {
         this.marcaRepository = marcaRepository;
         this.insumoRepository = insumoRepository;
         this.fornecedorRepository = fornecedorRepository;
@@ -38,15 +41,21 @@ public class MarcaService {
 
     public Marca cadastrar(MarcaRequestDto request) {
         if (request == null) {
-            throw new EntradaInvalidaException("A marca não pode ser nula!");
+            throw new EntradaInvalidaException("A marca nao pode ser nula!");
         }
 
-        if (marcaRepository.existsByNomeMarca(request.getNome())){
-            throw new RecursoExisteException("Já existe uma marca com este nome!");
+        if (marcaRepository.existsByNomeMarca(request.getNome())) {
+            throw new RecursoExisteException("Ja existe uma marca com este nome!");
         }
 
-        Insumo insumo = insumoRepository.findById(request.getFkInsumo()).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrado um insumo com o id %d", request.getFkInsumo())));
-        Fornecedor fornecedor = fornecedorRepository.findById(request.getFkFornecedor()).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrado um fornecedor com o id %d", request.getFkFornecedor())));
+        Insumo insumo = insumoRepository.findById(request.getFkInsumo()).orElseThrow(
+                () -> new EntidadeNaoEncontradaException(
+                        String.format("Nao foi encontrado um insumo com o id %d", request.getFkInsumo()))
+        );
+        Fornecedor fornecedor = fornecedorRepository.findById(request.getFkFornecedor()).orElseThrow(
+                () -> new EntidadeNaoEncontradaException(
+                        String.format("Nao foi encontrado um fornecedor com o id %d", request.getFkFornecedor()))
+        );
 
         Marca marca = MarcaMapperDto.toEntity(request, insumo, fornecedor);
 
@@ -55,7 +64,8 @@ public class MarcaService {
 
     public void deletar(Integer id) {
         if (!marcaRepository.existsById(id)) {
-            throw new EntidadeNaoEncontradaException(String.format("Não foi encontrado nenhuma marca com o id %d", id));
+            throw new EntidadeNaoEncontradaException(
+                    String.format("Nao foi encontrado nenhuma marca com o id %d", id));
         }
 
         marcaRepository.deleteById(id);
@@ -63,7 +73,8 @@ public class MarcaService {
 
     public Marca atualizar(Integer id, Marca marca) {
         if (!marcaRepository.existsById(id)) {
-            throw new EntidadeNaoEncontradaException(String.format("Não foi encontrado nenhuma marca com o id %d", id));
+            throw new EntidadeNaoEncontradaException(
+                    String.format("Nao foi encontrado nenhuma marca com o id %d", id));
         }
 
         marca.setIdMarca(id);
@@ -79,7 +90,13 @@ public class MarcaService {
     }
 
     public Marca marcaPorId(Integer id) {
-        return marcaRepository.findById(id)
-                .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrado nenhuma marca com o id %d", id)));
+        return marcaRepository.findById(id).orElseThrow(
+                () -> new EntidadeNaoEncontradaException(
+                        String.format("Nao foi encontrado nenhuma marca com o id %d", id))
+        );
+    }
+
+    public List<Fornecedor> listarFornecedoresPorCategoria(Integer idCategoria) {
+        return marcaRepository.findDistinctFornecedoresByCategoriaId(idCategoria);
     }
 }

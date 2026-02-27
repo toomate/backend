@@ -47,8 +47,9 @@ public class FornecedorService {
 
         Fornecedor fornecedor = FornecedorMapper.toEntity(request);
         fornecedor.setRazaoSocial(razaoSocialNormalizada);
-        fornecedor.setLink(normalizarTexto(request.getLink()));
-        fornecedor.setTelefone(normalizarTexto(request.getTelefone()));
+        String telefoneNormalizado = normalizarTelefone(request.getTelefone());
+        fornecedor.setTelefone(telefoneNormalizado);
+        fornecedor.setLink(gerarLinkWhatsapp(telefoneNormalizado));
 
         return fornecedorRepository.save(fornecedor);
     }
@@ -64,8 +65,9 @@ public class FornecedorService {
         }
 
         atual.setRazaoSocial(novaRazaoSocial);
-        atual.setLink(normalizarTexto(request.getLink()));
-        atual.setTelefone(normalizarTexto(request.getTelefone()));
+        String telefoneNormalizado = normalizarTelefone(request.getTelefone());
+        atual.setTelefone(telefoneNormalizado);
+        atual.setLink(gerarLinkWhatsapp(telefoneNormalizado));
 
         return fornecedorRepository.save(atual);
     }
@@ -92,9 +94,6 @@ public class FornecedorService {
         if (request.getRazaoSocial() == null || request.getRazaoSocial().isBlank()) {
             throw new EntradaInvalidaException("A razao social do fornecedor nao pode ser vazia.");
         }
-        if (request.getLink() == null || request.getLink().isBlank()) {
-            throw new EntradaInvalidaException("O link do fornecedor nao pode ser vazio.");
-        }
         if (request.getTelefone() == null || request.getTelefone().isBlank()) {
             throw new EntradaInvalidaException("O telefone do fornecedor nao pode ser vazio.");
         }
@@ -102,5 +101,23 @@ public class FornecedorService {
 
     private String normalizarTexto(String valor) {
         return valor == null ? null : valor.trim();
+    }
+
+    private String normalizarTelefone(String telefone) {
+        String somenteDigitos = telefone == null ? "" : telefone.replaceAll("\\D", "");
+        if (somenteDigitos.isBlank()) {
+            throw new EntradaInvalidaException("O telefone do fornecedor nao pode ser vazio.");
+        }
+        if (somenteDigitos.length() == 10 || somenteDigitos.length() == 11) {
+            return "55" + somenteDigitos;
+        }
+        if (somenteDigitos.startsWith("55") && (somenteDigitos.length() == 12 || somenteDigitos.length() == 13)) {
+            return somenteDigitos;
+        }
+        throw new EntradaInvalidaException("Telefone invalido. Informe DDD + numero.");
+    }
+
+    private String gerarLinkWhatsapp(String telefoneNormalizado) {
+        return "https://wa.me/" + telefoneNormalizado;
     }
 }
