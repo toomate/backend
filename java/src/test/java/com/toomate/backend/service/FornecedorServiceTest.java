@@ -3,6 +3,7 @@ package com.toomate.backend.service;
 import com.toomate.backend.dto.fornecedor.FornecedorRequestDto;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
+import com.toomate.backend.exceptions.RecursoExisteException;
 import com.toomate.backend.model.Fornecedor;
 import com.toomate.backend.repository.FornecedorRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,10 +16,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class FornecedorServiceTest {
@@ -30,14 +37,21 @@ class FornecedorServiceTest {
     private FornecedorService fornecedorService;
 
     private Fornecedor exemploFornecedor;
+    private FornecedorRequestDto requestValido;
 
     @BeforeEach
     void setup() {
         exemploFornecedor = new Fornecedor();
         exemploFornecedor.setId(1);
-        exemploFornecedor.setLink("https://web.whatsapp.com/");
-        exemploFornecedor.setRazaoSocial("Atacado São Paulo");
+        exemploFornecedor.setLink("https://wa.me/5511987654321");
+        exemploFornecedor.setRazaoSocial("Atacado Sao Paulo");
         exemploFornecedor.setTelefone("11987654321");
+
+        requestValido = new FornecedorRequestDto(
+                "https://wa.me/5511987654321",
+                "Atacado Sao Paulo",
+                "11987654321"
+        );
     }
 
     @Test
@@ -70,7 +84,7 @@ class FornecedorServiceTest {
         EntidadeNaoEncontradaException ex = assertThrows(EntidadeNaoEncontradaException.class,
                 () -> fornecedorService.retornarPeloId(2));
 
-        assertTrue(ex.getMessage().contains("Não foi encontrado um fornecedor com o id 2"));
+        assertTrue(ex.getMessage().contains("Nao foi encontrado um fornecedor com o id 2"));
         verify(fornecedorRepository, times(1)).findById(2);
     }
 
@@ -88,23 +102,34 @@ class FornecedorServiceTest {
     }
 
     @Test
-    void cadastrarSucessoTeste() {
-        FornecedorRequestDto request = new FornecedorRequestDto(
-                exemploFornecedor.getLink(), exemploFornecedor.getRazaoSocial(), exemploFornecedor.getTelefone());
+    void filtrarEmBrancoRetornaTodosTeste() {
+        when(fornecedorRepository.findAll()).thenReturn(List.of(exemploFornecedor));
 
+        List<Fornecedor> resultado = fornecedorService.filtrar("   ");
+
+        assertNotNull(resultado);
+        assertEquals(1, resultado.size());
+        verify(fornecedorRepository, times(1)).findAll();
+        verify(fornecedorRepository, never()).findByRazaoSocialContainingIgnoreCase(any());
+    }
+
+    @Test
+    void cadastrarSucessoTeste() {
         Fornecedor salvo = new Fornecedor();
         salvo.setId(5);
-        salvo.setLink(request.getLink());
-        salvo.setRazaoSocial(request.getRazaoSocial());
-        salvo.setTelefone(request.getTelefone());
+        salvo.setLink(requestValido.getLink());
+        salvo.setRazaoSocial(requestValido.getRazaoSocial());
+        salvo.setTelefone(requestValido.getTelefone());
 
+        when(fornecedorRepository.existsByRazaoSocialIgnoreCase("Atacado Sao Paulo")).thenReturn(false);
         when(fornecedorRepository.save(any(Fornecedor.class))).thenReturn(salvo);
 
-        Fornecedor resultado = fornecedorService.cadastrar(request);
+        Fornecedor resultado = fornecedorService.cadastrar(requestValido);
 
         assertNotNull(resultado);
         assertEquals(5, resultado.getId());
-        assertEquals(request.getRazaoSocial(), resultado.getRazaoSocial());
+        assertEquals(requestValido.getRazaoSocial(), resultado.getRazaoSocial());
+        verify(fornecedorRepository, times(1)).existsByRazaoSocialIgnoreCase("Atacado Sao Paulo");
         verify(fornecedorRepository, times(1)).save(any(Fornecedor.class));
     }
 
@@ -113,18 +138,36 @@ class FornecedorServiceTest {
         EntradaInvalidaException ex = assertThrows(EntradaInvalidaException.class,
                 () -> fornecedorService.cadastrar(null));
 
-        assertTrue(ex.getMessage().contains("O fornecedor não pode ser nulo!"));
+        assertTrue(ex.getMessage().contains("O fornecedor nao pode ser nulo."));
+        verify(fornecedorRepository, never()).save(any());
+    }
+
+    @Test
+    void cadastrarRazaoSocialDuplicadaTeste() {
+        when(fornecedorRepository.existsByRazaoSocialIgnoreCase("Atacado Sao Paulo")).thenReturn(true);
+
+        RecursoExisteException ex = assertThrows(RecursoExisteException.class,
+                () -> fornecedorService.cadastrar(requestValido));
+
+        assertTrue(ex.getMessage().contains("Ja existe um fornecedor com essa razao social."));
         verify(fornecedorRepository, never()).save(any());
     }
 
     @Test
     void atualizarSucessoTeste() {
-        Fornecedor atualizacao = new Fornecedor();
-        atualizacao.setLink("https://novo.link/");
-        atualizacao.setRazaoSocial("Novo Nome");
-        atualizacao.setTelefone("11999999999");
+        FornecedorRequestDto atualizacao = new FornecedorRequestDto(
+                "https://wa.me/5511999999999",
+                "Novo Nome",
+                "11999999999"
+        );
+        Fornecedor existente = new Fornecedor();
+        existente.setId(1);
+        existente.setRazaoSocial("Nome Antigo");
+        existente.setLink("https://old.link");
+        existente.setTelefone("11111111111");
 
-        when(fornecedorRepository.existsById(1)).thenReturn(true);
+        when(fornecedorRepository.findById(1)).thenReturn(Optional.of(existente));
+        when(fornecedorRepository.existsByRazaoSocialIgnoreCase("Novo Nome")).thenReturn(false);
         when(fornecedorRepository.save(any(Fornecedor.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         Fornecedor resultado = fornecedorService.atualizar(1, atualizacao);
@@ -132,19 +175,43 @@ class FornecedorServiceTest {
         assertNotNull(resultado);
         assertEquals(1, resultado.getId());
         assertEquals("Novo Nome", resultado.getRazaoSocial());
-        verify(fornecedorRepository, times(1)).existsById(1);
+        assertEquals("https://wa.me/5511999999999", resultado.getLink());
+        assertEquals("11999999999", resultado.getTelefone());
+        verify(fornecedorRepository, times(1)).findById(1);
+        verify(fornecedorRepository, times(1)).existsByRazaoSocialIgnoreCase("Novo Nome");
         verify(fornecedorRepository, times(1)).save(any(Fornecedor.class));
     }
 
     @Test
     void atualizarNaoEncontradoTeste() {
-        when(fornecedorRepository.existsById(2)).thenReturn(false);
+        when(fornecedorRepository.findById(2)).thenReturn(Optional.empty());
 
         EntidadeNaoEncontradaException ex = assertThrows(EntidadeNaoEncontradaException.class,
-                () -> fornecedorService.atualizar(2, new Fornecedor()));
+                () -> fornecedorService.atualizar(2, requestValido));
 
-        assertTrue(ex.getMessage().contains("Não foi encontrado um fornecedor com o id 2"));
-        verify(fornecedorRepository, times(1)).existsById(2);
+        assertTrue(ex.getMessage().contains("Nao foi encontrado um fornecedor com o id 2"));
+        verify(fornecedorRepository, times(1)).findById(2);
+        verify(fornecedorRepository, never()).save(any());
+    }
+
+    @Test
+    void atualizarRazaoSocialDuplicadaTeste() {
+        FornecedorRequestDto atualizacao = new FornecedorRequestDto(
+                "https://wa.me/5511999999999",
+                "Fornecedor Duplicado",
+                "11999999999"
+        );
+        Fornecedor existente = new Fornecedor();
+        existente.setId(1);
+        existente.setRazaoSocial("Nome Antigo");
+
+        when(fornecedorRepository.findById(1)).thenReturn(Optional.of(existente));
+        when(fornecedorRepository.existsByRazaoSocialIgnoreCase("Fornecedor Duplicado")).thenReturn(true);
+
+        RecursoExisteException ex = assertThrows(RecursoExisteException.class,
+                () -> fornecedorService.atualizar(1, atualizacao));
+
+        assertTrue(ex.getMessage().contains("Ja existe um fornecedor com essa razao social."));
         verify(fornecedorRepository, never()).save(any());
     }
 
@@ -165,7 +232,7 @@ class FornecedorServiceTest {
         EntidadeNaoEncontradaException ex = assertThrows(EntidadeNaoEncontradaException.class,
                 () -> fornecedorService.deletar(2));
 
-        assertTrue(ex.getMessage().contains("Não foi encontrado um fornecedor com o id 2"));
+        assertTrue(ex.getMessage().contains("Nao foi encontrado um fornecedor com o id 2"));
         verify(fornecedorRepository, times(1)).existsById(2);
         verify(fornecedorRepository, never()).deleteById(anyInt());
     }
@@ -177,7 +244,7 @@ class FornecedorServiceTest {
         EntidadeNaoEncontradaException ex = assertThrows(EntidadeNaoEncontradaException.class,
                 () -> fornecedorService.fornecedorPorId(99));
 
-        assertTrue(ex.getMessage().contains("Não foi encontrado fornecedor com o id 99"));
+        assertTrue(ex.getMessage().contains("Nao foi encontrado fornecedor com o id 99"));
         verify(fornecedorRepository, times(1)).findById(99);
     }
 }

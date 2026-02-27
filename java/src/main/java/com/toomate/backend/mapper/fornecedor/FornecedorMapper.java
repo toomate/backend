@@ -2,37 +2,40 @@ package com.toomate.backend.mapper.fornecedor;
 
 import com.toomate.backend.dto.fornecedor.FornecedorRequestDto;
 import com.toomate.backend.dto.fornecedor.FornecedorResponseDto;
-import com.toomate.backend.dto.usuario.UsuarioRequestDto;
 import com.toomate.backend.model.Fornecedor;
-import com.toomate.backend.model.Usuario;
 
-public class FornecedorMapper {
-    public static Fornecedor toEntity(FornecedorRequestDto fornecedorRequestDto){
-        if (fornecedorRequestDto == null){
+import java.util.List;
+
+public final class FornecedorMapper {
+    private FornecedorMapper() {
+    }
+
+    public static Fornecedor toEntity(FornecedorRequestDto request) {
+        if (request == null) {
             return null;
         }
 
         Fornecedor fornecedor = new Fornecedor();
-
-        fornecedor.setLink(fornecedorRequestDto.getLink());
-        fornecedor.setRazaoSocial(fornecedorRequestDto.getRazaoSocial());
-        fornecedor.setTelefone(fornecedorRequestDto.getTelefone());
-
+        fornecedor.setLink(request.getLink());
+        fornecedor.setRazaoSocial(request.getRazaoSocial());
+        fornecedor.setTelefone(request.getTelefone());
         return fornecedor;
     }
 
-    public static FornecedorResponseDto toResponse(Fornecedor entity){
-        if (entity == null){
+    public static FornecedorResponseDto toResponse(Fornecedor entity) {
+        if (entity == null) {
             return null;
         }
 
         FornecedorResponseDto dto = new FornecedorResponseDto();
-
-        dto .setIdFornecedor(entity.getId());
-        dto .setLinkWhatsapp(entity.getLink());
-        dto .setRazaoSocial(entity.getRazaoSocial());
-        dto .setTelefone(entity.getTelefone());
-
+        dto.setIdFornecedor(entity.getId());
+        dto.setLink(entity.getLink());
+        dto.setRazaoSocial(entity.getRazaoSocial());
+        dto.setTelefone(entity.getTelefone());
         return dto;
+    }
+
+    public static List<FornecedorResponseDto> toResponseList(List<Fornecedor> fornecedores) {
+        return fornecedores.stream().map(FornecedorMapper::toResponse).toList();
     }
 }
