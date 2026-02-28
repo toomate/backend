@@ -53,7 +53,7 @@ public class UsuarioService {
     }
 
     public UsuarioResponseDto buscarPorNome(String nome) {
-        Usuario usuario = usuarioRepository.findByNome(nome).orElseThrow(
+        Usuario usuario = usuarioRepository.findByNomeIgnoreCase(nome).orElseThrow(
                 () -> new EntidadeNaoEncontradaException("Nao foi encontrado um usuario com este nome!")
         );
         return UsuarioMapper.toResponse(usuario);
@@ -64,7 +64,7 @@ public class UsuarioService {
             throw new EntradaInvalidaException("O usuario nao pode ser nulo.");
         }
 
-        if (usuarioRepository.existsByNome(request.getNome())) {
+        if (usuarioRepository.existsByNomeIgnoreCase(request.getNome())) {
             throw new RecursoExisteException("Ja existe um usuario cadastrado com este nome");
         }
 

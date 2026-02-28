@@ -6,14 +6,25 @@ import jakarta.validation.constraints.NotNull;
 
 public class UsuarioRequestDto {
     @NotBlank
-    @Schema(description = "nome do usário", example = "lucas")
+    @Schema(description = "nome do usuario", example = "lucas")
     private String nome;
+
     @NotBlank
-    @Schema(description = "senha do usuário", example = "lucas123")
+    @Schema(description = "senha do usuario", example = "lucas123")
     private String senha;
+
     @NotNull
-    @Schema(description = "usuário administrador", example = "1")
+    @Schema(description = "usuario administrador", example = "true")
     private Boolean administrador;
+
+    public UsuarioRequestDto() {
+    }
+
+    public UsuarioRequestDto(String nome, String senha, Boolean administrador) {
+        this.nome = nome;
+        this.senha = senha;
+        this.administrador = administrador;
+    }
 
     public String getNome() {
         return nome;
@@ -33,12 +44,6 @@ public class UsuarioRequestDto {
 
     public Boolean getAdministrador() {
         return administrador;
-    }
-
-    public UsuarioRequestDto(String nome, String senha, Boolean administrador) {
-        this.nome = nome;
-        this.senha = senha;
-        this.administrador = administrador;
     }
 
     public void setAdministrador(Boolean administrador) {

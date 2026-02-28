@@ -63,7 +63,6 @@ public class SecurityConfiguracao {
             "/error",
             "/error/**",
             "/usuarios/login",
-            "/usuarios",
             "/lotes",
             "/lotes/estoque",
             "/lotes/estoque/**"
@@ -76,10 +75,10 @@ public class SecurityConfiguracao {
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .cors(Customizer.withDefaults())
                 .csrf(CsrfConfigurer<HttpSecurity>::disable)
-                .authorizeHttpRequests(authorize -> authorize.requestMatchers(URLS_PERMITIDAS)
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated()
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(URLS_PERMITIDAS).permitAll()
+                        .requestMatchers(new RegexRequestMatcher("^/usuarios$", HttpMethod.POST.name())).permitAll()
+                        .anyRequest().authenticated()
                 )
                 .exceptionHandling(handling -> handling.authenticationEntryPoint(autenticacaoEntryPoint))
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

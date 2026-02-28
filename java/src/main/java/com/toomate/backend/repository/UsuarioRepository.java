@@ -7,6 +7,8 @@ import java.util.Optional;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     Boolean existsByNome(String nome);
+    Boolean existsByNomeIgnoreCase(String nome);
 
     Optional<Usuario> findByNome(String nome);
+    Optional<Usuario> findByNomeIgnoreCase(String nome);
 }

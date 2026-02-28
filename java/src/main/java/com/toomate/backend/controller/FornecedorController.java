@@ -90,7 +90,9 @@ public class FornecedorController {
             })
     @PostMapping
     public ResponseEntity<FornecedorResponseDto> cadastrar(@RequestBody @Valid FornecedorRequestDto fornecedor) {
-        return ResponseEntity.status(201).body(FornecedorMapper.toResponse(fornecedorService.cadastrar(fornecedor)));
+        return ResponseEntity.status(201).body(FornecedorMapper.toResponse(
+                fornecedorService.cadastrar(fornecedor.getRazaoSocial(), fornecedor.getTelefone())
+        ));
     }
 
     @Operation(summary = "Atualizar fornecedor",
@@ -105,7 +107,9 @@ public class FornecedorController {
             @PathVariable Integer id,
             @RequestBody @Valid FornecedorRequestDto fornecedor
     ) {
-        return ResponseEntity.ok(FornecedorMapper.toResponse(fornecedorService.atualizar(id, fornecedor)));
+        return ResponseEntity.ok(FornecedorMapper.toResponse(
+                fornecedorService.atualizar(id, fornecedor.getRazaoSocial(), fornecedor.getTelefone())
+        ));
     }
 
     @Operation(summary = "Deletar fornecedor",

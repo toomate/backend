@@ -1,10 +1,8 @@
 package com.toomate.backend.service;
 
-import com.toomate.backend.dto.fornecedor.FornecedorRequestDto;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.exceptions.RecursoExisteException;
-import com.toomate.backend.mapper.fornecedor.FornecedorMapper;
 import com.toomate.backend.model.Fornecedor;
 import com.toomate.backend.repository.FornecedorRepository;
 import org.springframework.stereotype.Service;
@@ -37,27 +35,27 @@ public class FornecedorService {
         return fornecedorRepository.findByRazaoSocialContainingIgnoreCase(razaoSocial.trim());
     }
 
-    public Fornecedor cadastrar(FornecedorRequestDto request) {
-        validarRequest(request);
-        String razaoSocialNormalizada = normalizarTexto(request.getRazaoSocial());
+    public Fornecedor cadastrar(String razaoSocial, String telefone) {
+        validarEntrada(razaoSocial, telefone);
+        String razaoSocialNormalizada = normalizarTexto(razaoSocial);
 
         if (fornecedorRepository.existsByRazaoSocialIgnoreCase(razaoSocialNormalizada)) {
             throw new RecursoExisteException("Ja existe um fornecedor com essa razao social.");
         }
 
-        Fornecedor fornecedor = FornecedorMapper.toEntity(request);
+        Fornecedor fornecedor = new Fornecedor();
         fornecedor.setRazaoSocial(razaoSocialNormalizada);
-        String telefoneNormalizado = normalizarTelefone(request.getTelefone());
+        String telefoneNormalizado = normalizarTelefone(telefone);
         fornecedor.setTelefone(telefoneNormalizado);
         fornecedor.setLink(gerarLinkWhatsapp(telefoneNormalizado));
 
         return fornecedorRepository.save(fornecedor);
     }
 
-    public Fornecedor atualizar(Integer id, FornecedorRequestDto request) {
-        validarRequest(request);
+    public Fornecedor atualizar(Integer id, String razaoSocial, String telefone) {
+        validarEntrada(razaoSocial, telefone);
         Fornecedor atual = retornarPeloId(id);
-        String novaRazaoSocial = normalizarTexto(request.getRazaoSocial());
+        String novaRazaoSocial = normalizarTexto(razaoSocial);
 
         if (!atual.getRazaoSocial().equalsIgnoreCase(novaRazaoSocial)
                 && fornecedorRepository.existsByRazaoSocialIgnoreCase(novaRazaoSocial)) {
@@ -65,7 +63,7 @@ public class FornecedorService {
         }
 
         atual.setRazaoSocial(novaRazaoSocial);
-        String telefoneNormalizado = normalizarTelefone(request.getTelefone());
+        String telefoneNormalizado = normalizarTelefone(telefone);
         atual.setTelefone(telefoneNormalizado);
         atual.setLink(gerarLinkWhatsapp(telefoneNormalizado));
 
@@ -80,21 +78,11 @@ public class FornecedorService {
         fornecedorRepository.deleteById(id);
     }
 
-    public Fornecedor fornecedorPorId(Integer id) {
-        return fornecedorRepository.findById(id).orElseThrow(
-                () -> new EntidadeNaoEncontradaException(
-                        String.format("Nao foi encontrado fornecedor com o id %d", id))
-        );
-    }
-
-    private void validarRequest(FornecedorRequestDto request) {
-        if (request == null) {
-            throw new EntradaInvalidaException("O fornecedor nao pode ser nulo.");
-        }
-        if (request.getRazaoSocial() == null || request.getRazaoSocial().isBlank()) {
+    private void validarEntrada(String razaoSocial, String telefone) {
+        if (razaoSocial == null || razaoSocial.isBlank()) {
             throw new EntradaInvalidaException("A razao social do fornecedor nao pode ser vazia.");
         }
-        if (request.getTelefone() == null || request.getTelefone().isBlank()) {
+        if (telefone == null || telefone.isBlank()) {
             throw new EntradaInvalidaException("O telefone do fornecedor nao pode ser vazio.");
         }
     }

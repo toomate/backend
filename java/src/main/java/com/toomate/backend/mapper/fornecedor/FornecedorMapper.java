@@ -1,6 +1,5 @@
 package com.toomate.backend.mapper.fornecedor;
 
-import com.toomate.backend.dto.fornecedor.FornecedorRequestDto;
 import com.toomate.backend.dto.fornecedor.FornecedorResponseDto;
 import com.toomate.backend.model.Fornecedor;
 
@@ -8,17 +7,6 @@ import java.util.List;
 
 public final class FornecedorMapper {
     private FornecedorMapper() {
-    }
-
-    public static Fornecedor toEntity(FornecedorRequestDto request) {
-        if (request == null) {
-            return null;
-        }
-
-        Fornecedor fornecedor = new Fornecedor();
-        fornecedor.setRazaoSocial(request.getRazaoSocial());
-        fornecedor.setTelefone(request.getTelefone());
-        return fornecedor;
     }
 
     public static FornecedorResponseDto toResponse(Fornecedor entity) {
