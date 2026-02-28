@@ -35,7 +35,7 @@ public class CategoriaUseCase {
 
     public CategoriaDomain cadastrar(String nome, Boolean rotatividade) {
         String nomeNormalizado = validarNome(nome);
-        if (categoriaGateway.existsByNome(nomeNormalizado)) {
+        if (categoriaGateway.existsByNomeIgnoreCase(nomeNormalizado)) {
             throw new CategoriaJaExisteException("Ja existe uma categoria cadastrada com esse nome.");
         }
 
@@ -55,7 +55,7 @@ public class CategoriaUseCase {
                         String.format("Nao foi encontrada categoria com o id %d", idValidado)));
 
         String nomeAtual = existente.getNome() == null ? "" : existente.getNome();
-        if (!nomeAtual.equalsIgnoreCase(nomeNormalizado) && categoriaGateway.existsByNome(nomeNormalizado)) {
+        if (!nomeAtual.equalsIgnoreCase(nomeNormalizado) && categoriaGateway.existsByNomeIgnoreCase(nomeNormalizado)) {
             throw new CategoriaJaExisteException("Ja existe uma categoria cadastrada com esse nome.");
         }
 

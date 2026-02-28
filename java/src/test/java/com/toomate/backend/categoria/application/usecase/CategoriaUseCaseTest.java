@@ -40,7 +40,7 @@ class CategoriaUseCaseTest {
     @Test
     @DisplayName("Deve lancar conflito quando nome ja existir")
     void deveLancarConflitoQuandoNomeJaExiste() {
-        when(categoriaGateway.existsByNome("Massas")).thenReturn(true);
+        when(categoriaGateway.existsByNomeIgnoreCase("Massas")).thenReturn(true);
 
         assertThrows(CategoriaJaExisteException.class, () -> categoriaUseCase.cadastrar("Massas", false));
         verify(categoriaGateway, never()).save(any());
@@ -50,7 +50,7 @@ class CategoriaUseCaseTest {
     @DisplayName("Deve cadastrar categoria com sucesso")
     void deveCadastrarComSucesso() {
         CategoriaDomain salva = new CategoriaDomain(10, "Massas", true);
-        when(categoriaGateway.existsByNome("Massas")).thenReturn(false);
+        when(categoriaGateway.existsByNomeIgnoreCase("Massas")).thenReturn(false);
         when(categoriaGateway.save(any(CategoriaDomain.class))).thenReturn(salva);
 
         CategoriaDomain resultado = categoriaUseCase.cadastrar("Massas", true);

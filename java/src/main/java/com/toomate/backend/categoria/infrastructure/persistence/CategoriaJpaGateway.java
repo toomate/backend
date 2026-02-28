@@ -51,8 +51,8 @@ public class CategoriaJpaGateway implements CategoriaGateway {
     }
 
     @Override
-    public boolean existsByNome(String nome) {
-        return categoriaRepository.existsByNome(nome);
+    public boolean existsByNomeIgnoreCase(String nome) {
+        return categoriaRepository.existsByNomeIgnoreCase(nome);
     }
 
     @Override

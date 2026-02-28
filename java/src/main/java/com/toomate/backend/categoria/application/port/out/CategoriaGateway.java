@@ -16,7 +16,7 @@ public interface CategoriaGateway {
 
     boolean existsById(Integer id);
 
-    boolean existsByNome(String nome);
+    boolean existsByNomeIgnoreCase(String nome);
 
     void deleteById(Integer id);
 }
