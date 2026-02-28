@@ -6,8 +6,12 @@ import jakarta.validation.constraints.NotNull;
 
 public class UsuarioRequestDto {
     @NotBlank
-    @Schema(description = "nome do usuario", example = "lucas")
+    @Schema(description = "nome do usuario", example = "Lucas Silva")
     private String nome;
+
+    @NotBlank
+    @Schema(description = "apelido do usuario usado no login", example = "lucas.dev")
+    private String apelido;
 
     @NotBlank
     @Schema(description = "senha do usuario", example = "lucas123")
@@ -20,8 +24,9 @@ public class UsuarioRequestDto {
     public UsuarioRequestDto() {
     }
 
-    public UsuarioRequestDto(String nome, String senha, Boolean administrador) {
+    public UsuarioRequestDto(String nome, String apelido, String senha, Boolean administrador) {
         this.nome = nome;
+        this.apelido = apelido;
         this.senha = senha;
         this.administrador = administrador;
     }
@@ -32,6 +37,14 @@ public class UsuarioRequestDto {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getApelido() {
+        return apelido;
+    }
+
+    public void setApelido(String apelido) {
+        this.apelido = apelido;
     }
 
     public String getSenha() {

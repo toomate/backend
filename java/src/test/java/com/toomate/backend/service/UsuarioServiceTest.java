@@ -45,14 +45,15 @@ class UsuarioServiceTest {
 
     @Test
     void cadastrarDeveHasharSenhaESalvar() {
-        UsuarioRequestDto request = new UsuarioRequestDto("Lucas", "lucas123", true);
+        UsuarioRequestDto request = new UsuarioRequestDto("Lucas", "lucas.dev", "lucas123", true);
 
-        when(usuarioRepository.existsByNomeIgnoreCase("Lucas")).thenReturn(false);
+        when(usuarioRepository.existsByApelidoIgnoreCase("lucas.dev")).thenReturn(false);
         when(passwordEncoder.encode("lucas123")).thenReturn("$2a$10$hashGeradoTeste12345678901234567890123456789012345678901");
 
         Usuario usuarioSalvo = new Usuario();
         usuarioSalvo.setId(1);
         usuarioSalvo.setNome("Lucas");
+        usuarioSalvo.setApelido("lucas.dev");
         usuarioSalvo.setSenha("$2a$10$hashGeradoTeste12345678901234567890123456789012345678901");
         usuarioSalvo.setAdministrador(true);
         when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuarioSalvo);
@@ -63,15 +64,16 @@ class UsuarioServiceTest {
         verify(usuarioRepository).save(captor.capture());
 
         assertEquals("Lucas", response.getNome());
+        assertEquals("lucas.dev", response.getApelido());
         assertEquals(true, response.getAdministrador());
         assertEquals("$2a$10$hashGeradoTeste12345678901234567890123456789012345678901", captor.getValue().getSenha());
         verify(passwordEncoder).encode("lucas123");
     }
 
     @Test
-    void cadastrarDeveBloquearDuplicidadeIgnorandoCase() {
-        UsuarioRequestDto request = new UsuarioRequestDto("Lucas", "lucas123", false);
-        when(usuarioRepository.existsByNomeIgnoreCase("Lucas")).thenReturn(true);
+    void cadastrarDeveBloquearDuplicidadeDeApelidoIgnorandoCase() {
+        UsuarioRequestDto request = new UsuarioRequestDto("Lucas", "LUCAS.DEV", "lucas123", false);
+        when(usuarioRepository.existsByApelidoIgnoreCase("LUCAS.DEV")).thenReturn(true);
 
         assertThrows(RecursoExisteException.class, () -> usuarioService.cadastrar(request));
 
@@ -84,6 +86,7 @@ class UsuarioServiceTest {
         Usuario usuario = new Usuario();
         usuario.setId(7);
         usuario.setNome("lucas");
+        usuario.setApelido("lucas.dev");
         usuario.setSenha("hash");
         usuario.setAdministrador(false);
 
@@ -92,6 +95,7 @@ class UsuarioServiceTest {
         UsuarioResponseDto response = usuarioService.buscarPorNome("LUCAS");
 
         assertEquals("lucas", response.getNome());
+        assertEquals("lucas.dev", response.getApelido());
         verify(usuarioRepository).findByNomeIgnoreCase("LUCAS");
     }
 

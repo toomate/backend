@@ -1,7 +1,6 @@
 package com.toomate.backend.service;
 
 import com.toomate.backend.dto.usuario.UsuarioDetalhesDto;
-import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.model.Usuario;
 import com.toomate.backend.repository.UsuarioRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +18,8 @@ public class AutenticacaoService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        Usuario usuario = usuarioRepository.findByNome(username).orElseThrow(() -> new UsernameNotFoundException("Você precisa estar logado para acessar este recurso!"));
+        Usuario usuario = usuarioRepository.findByApelidoIgnoreCase(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario nao encontrado para o apelido informado."));
 
         return new UsuarioDetalhesDto(usuario);
     }

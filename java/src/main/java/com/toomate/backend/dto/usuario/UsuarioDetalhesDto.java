@@ -9,15 +9,17 @@ import java.util.Collection;
 import java.util.List;
 
 public class UsuarioDetalhesDto implements UserDetails {
-    @Schema(description = "nome do usário", example = "lucas")
-    private final String nome;
-    @Schema(description = "senha do usuário", example = "lucas123")
+    @Schema(description = "apelido do usuario", example = "lucas.dev")
+    private final String apelido;
+
+    @Schema(description = "senha do usuario", example = "lucas123")
     private final String senha;
-    @Schema(description = "usuário administrador", example = "1")
+
+    @Schema(description = "usuario administrador", example = "true")
     private final Boolean administrador;
 
-    public UsuarioDetalhesDto(Usuario usuario){
-        this.nome = usuario.getNome();
+    public UsuarioDetalhesDto(Usuario usuario) {
+        this.apelido = usuario.getApelido();
         this.senha = usuario.getSenha();
         this.administrador = usuario.getAdministrador();
     }
@@ -34,7 +36,7 @@ public class UsuarioDetalhesDto implements UserDetails {
 
     @Override
     public String getUsername() {
-        return nome;
+        return apelido;
     }
 
     @Override

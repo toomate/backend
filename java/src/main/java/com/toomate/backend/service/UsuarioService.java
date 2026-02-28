@@ -64,10 +64,15 @@ public class UsuarioService {
             throw new EntradaInvalidaException("O usuario nao pode ser nulo.");
         }
 
-        if (usuarioRepository.existsByNomeIgnoreCase(request.getNome())) {
-            throw new RecursoExisteException("Ja existe um usuario cadastrado com este nome");
+        String nomeNormalizado = normalizarTexto(request.getNome(), "O nome do usuario nao pode ser vazio.");
+        String apelidoNormalizado = normalizarTexto(request.getApelido(), "O apelido do usuario nao pode ser vazio.");
+
+        if (usuarioRepository.existsByApelidoIgnoreCase(apelidoNormalizado)) {
+            throw new RecursoExisteException("Ja existe um usuario cadastrado com este apelido");
         }
 
+        request.setNome(nomeNormalizado);
+        request.setApelido(apelidoNormalizado);
         request.setSenha(encodeIfNeeded(request.getSenha()));
 
         Usuario usuario = UsuarioMapper.of(request);
@@ -92,6 +97,15 @@ public class UsuarioService {
 
         if (request.getNome() != null && !request.getNome().isBlank()) {
             usuario.setNome(request.getNome().trim());
+        }
+
+        if (request.getApelido() != null && !request.getApelido().isBlank()) {
+            String novoApelido = request.getApelido().trim();
+            if (!novoApelido.equalsIgnoreCase(usuario.getApelido())
+                    && usuarioRepository.existsByApelidoIgnoreCase(novoApelido)) {
+                throw new RecursoExisteException("Ja existe um usuario cadastrado com este apelido");
+            }
+            usuario.setApelido(novoApelido);
         }
 
         if (request.getAdministrador() != null) {
@@ -127,11 +141,11 @@ public class UsuarioService {
 
     public UsuarioTokenDto autenticar(Usuario usuario) {
         final UsernamePasswordAuthenticationToken credentials =
-                new UsernamePasswordAuthenticationToken(usuario.getNome(), usuario.getSenha());
+                new UsernamePasswordAuthenticationToken(usuario.getApelido(), usuario.getSenha());
 
         final Authentication authentication = this.authenticationManager.authenticate(credentials);
 
-        Optional<Usuario> usuarioAutenticado = usuarioRepository.findByNome(usuario.getNome());
+        Optional<Usuario> usuarioAutenticado = usuarioRepository.findByApelidoIgnoreCase(usuario.getApelido());
 
         if (usuarioAutenticado.isEmpty()) {
             throw new EntidadeNaoEncontradaException("Usuario nao encontrado");
@@ -158,5 +172,12 @@ public class UsuarioService {
 
     private boolean isBcryptHash(String senha) {
         return senha != null && senha.matches("^\\$2[aby]?\\$\\d\\d\\$[./A-Za-z0-9]{53}$");
+    }
+
+    private String normalizarTexto(String valor, String mensagemErro) {
+        if (valor == null || valor.isBlank()) {
+            throw new EntradaInvalidaException(mensagemErro);
+        }
+        return valor.trim();
     }
 }
