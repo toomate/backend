@@ -4,28 +4,20 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 
 public class FornecedorRequestDto {
-    @NotBlank
-    @Schema(description = "Link do whatsapp do fornecedor", example = "https://web.whatsapp.com/")
-    private String link;
-    @NotBlank
-    @Schema(description = "Razão social do fornecedor", example = "Atacado São Paulo")
+    @NotBlank(message = "A razao social nao pode ser vazia.")
+    @Schema(description = "Razao social do fornecedor", example = "Atacado Sao Paulo")
     private String razaoSocial;
-    @NotBlank
-    @Schema(description = "Link do whatsapp do fornecedor", example = "11987654321")
+
+    @NotBlank(message = "O telefone nao pode ser vazio.")
+    @Schema(description = "Telefone do fornecedor", example = "11987654321")
     private String telefone;
 
-    public FornecedorRequestDto(String link, String razaoSocial, String telefone) {
-        this.link = link;
+    public FornecedorRequestDto() {
+    }
+
+    public FornecedorRequestDto(String razaoSocial, String telefone) {
         this.razaoSocial = razaoSocial;
         this.telefone = telefone;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
     }
 
     public String getRazaoSocial() {

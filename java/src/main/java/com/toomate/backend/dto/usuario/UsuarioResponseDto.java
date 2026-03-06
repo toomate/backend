@@ -3,11 +3,16 @@ package com.toomate.backend.dto.usuario;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class UsuarioResponseDto {
-    @Schema(description = "Id númerico do usuário(incrementa automaticamente)", example = "1")
+    @Schema(description = "Id numerico do usuario (incrementa automaticamente)", example = "1")
     private Integer id;
-    @Schema(description = "nome do usário", example = "lucas")
+
+    @Schema(description = "nome do usuario", example = "Lucas Silva")
     private String nome;
-    @Schema(description = "usuário administrador", example = "1")
+
+    @Schema(description = "apelido do usuario", example = "lucas.dev")
+    private String apelido;
+
+    @Schema(description = "usuario administrador", example = "true")
     private Boolean administrador;
 
     public Integer getId() {
@@ -24,6 +29,14 @@ public class UsuarioResponseDto {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getApelido() {
+        return apelido;
+    }
+
+    public void setApelido(String apelido) {
+        this.apelido = apelido;
     }
 
     public Boolean getAdministrador() {

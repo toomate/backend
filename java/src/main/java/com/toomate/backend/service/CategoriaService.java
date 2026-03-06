@@ -37,7 +37,7 @@ public class CategoriaService  {
     }
 
     public Boolean existePorNome(String nome) {
-        return categoriaRepository.existsByNome(nome);
+        return categoriaRepository.existsByNomeIgnoreCase(nome);
     }
 
     public Boolean existePorId(Integer id) {

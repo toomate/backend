@@ -112,7 +112,7 @@ public class MarcaController {
     public ResponseEntity<Void> atualizar(@PathVariable Integer id, @RequestBody MarcaRequestDto marca){
 
         if (marcaService.existePorId(id)) {
-            Fornecedor fornecedor = fornecedorService.fornecedorPorId(marca.getFkFornecedor());
+            Fornecedor fornecedor = fornecedorService.retornarPeloId(marca.getFkFornecedor());
             Insumo insumo = insumoService.insumoPorId(marca.getFkInsumo());
             Marca marcaAtualizada = MarcaMapperDto.toEntity(marca, insumo, fornecedor);
             marcaService.atualizar(id, marcaAtualizada);

@@ -1,19 +1,23 @@
 package com.toomate.backend.dto.usuario;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 
 public class UsuarioLoginDto {
-    @Schema(description = "senha do usuário", example = "admin")
-    private String nome;
-    @Schema(description = "senha do usuário", example = "123")
+    @NotBlank
+    @Schema(description = "apelido do usuario para login", example = "lucas.dev")
+    private String apelido;
+
+    @NotBlank
+    @Schema(description = "senha do usuario", example = "123")
     private String senha;
 
-    public String getNome() {
-        return nome;
+    public String getApelido() {
+        return apelido;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setApelido(String apelido) {
+        this.apelido = apelido;
     }
 
     public String getSenha() {

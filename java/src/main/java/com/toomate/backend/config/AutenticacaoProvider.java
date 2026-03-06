@@ -25,12 +25,15 @@ public class AutenticacaoProvider implements AuthenticationProvider {
 
         UserDetails userDetails = usuarioAutenticacaoService.loadUserByUsername(username);
 
-        if (passwordEncoder.matches(password, userDetails.getPassword())) {
-            return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        } else {
-            throw new BadCredentialsException("Usuário ou senha inválidos!");
+        try {
+            if (passwordEncoder.matches(password, userDetails.getPassword())) {
+                return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            }
+        } catch (IllegalArgumentException exception) {
+            throw new BadCredentialsException("Usuario ou senha invalidos!");
         }
 
+        throw new BadCredentialsException("Usuario ou senha invalidos!");
     }
 
     @Override

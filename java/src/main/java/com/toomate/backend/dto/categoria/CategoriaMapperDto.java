@@ -1,6 +1,5 @@
 package com.toomate.backend.dto.categoria;
 
-import com.toomate.backend.dto.usuario.UsuarioResponseDto;
 import com.toomate.backend.model.Categoria;
 
 import java.util.List;
@@ -14,6 +13,7 @@ public class CategoriaMapperDto {
 
         Categoria entity = new Categoria();
         entity.setNome(dto.getNome());
+        entity.setRotatividade(dto.getRotatividade());
 
         return entity;
     }
@@ -27,6 +27,7 @@ public class CategoriaMapperDto {
         CategoriaResponseDto dto = new CategoriaResponseDto();
         dto.setIdCategoria(entity.getIdCategoria());
         dto.setNome(entity.getNome());
+        dto.setRotatividade(entity.getRotatividade());
 
         return dto;
     }

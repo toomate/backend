@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface FornecedorRepository extends JpaRepository<Fornecedor, Integer> {
     List<Fornecedor> findByRazaoSocialContainingIgnoreCase(String razaoSocial);
+
+    boolean existsByRazaoSocialIgnoreCase(String razaoSocial);
 }

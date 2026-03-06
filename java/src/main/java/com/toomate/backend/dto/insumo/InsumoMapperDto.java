@@ -37,6 +37,7 @@ public class InsumoMapperDto {
             CategoriaResponseDto categoriaDto = new CategoriaResponseDto();
             categoriaDto.setIdCategoria(categoria.getIdCategoria());
             categoriaDto.setNome(categoria.getNome());
+            categoriaDto.setRotatividade(categoria.getRotatividade());
             dto.setCategoria(categoriaDto);
         }
 

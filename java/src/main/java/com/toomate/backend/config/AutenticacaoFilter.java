@@ -1,7 +1,7 @@
 package com.toomate.backend.config;
 
-import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import com.toomate.backend.service.AutenticacaoService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -43,7 +44,14 @@ public class AutenticacaoFilter extends OncePerRequestFilter {
                 username = jwtTokenManager.getUsernameFromToken(jwtToken);
             } catch (ExpiredJwtException exception) {
                 LOGGER.info("[FALHA AUTENTICACAO] - Token expirado, usuario: {} - {}", exception.getClaims().getSubject(), exception.getMessage());
-                LOGGER.trace("[FALHA AUTENTICACAO] - stack trace: %s", exception);
+                LOGGER.trace("[FALHA AUTENTICACAO] - stack trace", exception);
+
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+                return;
+            } catch (JwtException | IllegalArgumentException exception) {
+                LOGGER.info("[FALHA AUTENTICACAO] - Token invalido: {}", exception.getMessage());
+                LOGGER.trace("[FALHA AUTENTICACAO] - stack trace", exception);
 
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
@@ -59,7 +67,13 @@ public class AutenticacaoFilter extends OncePerRequestFilter {
     }
 
     private void addUsernameInContext(HttpServletRequest request, String username, String jwtToken){
-        UserDetails userDetails = autenticacaoService.loadUserByUsername(username);
+        UserDetails userDetails;
+        try {
+            userDetails = autenticacaoService.loadUserByUsername(username);
+        } catch (UsernameNotFoundException exception) {
+            LOGGER.info("[FALHA AUTENTICACAO] - Usuario do token nao encontrado: {}", username);
+            return;
+        }
 
         if (jwtTokenManager.validateToken(jwtToken, userDetails)){
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
