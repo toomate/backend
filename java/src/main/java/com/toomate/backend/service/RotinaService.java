@@ -1,5 +1,6 @@
 package com.toomate.backend.service;
 
+import com.toomate.backend.dto.rotina.RotinaInsumoRequest;
 import com.toomate.backend.dto.rotina.RotinaRequestDto;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
@@ -44,13 +45,14 @@ public class RotinaService {
         return rotina;
     }
 
-    public RotinaInsumo associarInsumo(Integer idInsumo, Integer idRotina){
-        Insumo insumo = insumoService.insumoPorId(idInsumo);
-        Rotina rotina = rotinaRepository.findById(idRotina).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrada uma rotina com o id %d", idRotina)));
+    public RotinaInsumo associarInsumo(RotinaInsumoRequest request){
+        Insumo insumo = insumoService.insumoPorId(request.getFkInsumo());
+        Rotina rotina = rotinaRepository.findById(request.getFkRotina()).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrada uma rotina com o id %d", request.getFkRotina())));
 
         RotinaInsumo rotinaInsumo = new RotinaInsumo();
         rotinaInsumo.setRotina(rotina);
         rotinaInsumo.setInsumo(insumo);
+        rotinaInsumo.setQuantidadeMedida(request.getQuantidadeMedida());
 
         return rotinaInsumoRepository.save(rotinaInsumo);
     }

@@ -14,6 +14,15 @@ public class RotinaInsumo {
     @ManyToOne
     @JoinColumn(name = "fkInsumo", referencedColumnName = "idInsumo")
     private Insumo insumo;
+    private Double quantidadeMedida;
+
+    public Double getQuantidadeMedida() {
+        return quantidadeMedida;
+    }
+
+    public void setQuantidadeMedida(Double quantidadeMedida) {
+        this.quantidadeMedida = quantidadeMedida;
+    }
 
     public Integer getId() {
         return id;

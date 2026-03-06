@@ -13,7 +13,6 @@ public class RotinaMapper {
         Rotina rotina = new Rotina();
 
         rotina.setTitulo(request.getTitulo());
-        rotina.setQuantidadeMedida(request.getQuantidadeMedida());
 
         return rotina;
     }

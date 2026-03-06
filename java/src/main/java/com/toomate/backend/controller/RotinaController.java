@@ -1,5 +1,6 @@
 package com.toomate.backend.controller;
 
+import com.toomate.backend.dto.rotina.RotinaInsumoRequest;
 import com.toomate.backend.dto.rotina.RotinaRequestDto;
 import com.toomate.backend.model.Rotina;
 import com.toomate.backend.model.RotinaInsumo;
@@ -41,9 +42,9 @@ public class RotinaController {
         return ResponseEntity.status(201).body(rotinaService.cadastrar(request));
     }
 
-    @PostMapping("/{idRotina}/insumos")
-    public ResponseEntity<RotinaInsumo> associar(@RequestBody Integer idInsumo, @PathVariable Integer idRotina){
-        return ResponseEntity.status(201).body(rotinaService.associarInsumo(idInsumo, idRotina));
+    @PostMapping("/associar-rotina-insumo")
+    public ResponseEntity<RotinaInsumo> associar(@RequestBody RotinaInsumoRequest request) {
+        return ResponseEntity.status(201).body(rotinaService.associarInsumo(request));
     }
 
     @PutMapping("/{id}")

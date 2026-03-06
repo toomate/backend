@@ -29,15 +29,15 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final GerenciadorTokenJwt gerenciadorTokenJwt;
     private final AuthenticationManager authenticationManager;
+    public  final AutenticacaoService autenticacaoService;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, GerenciadorTokenJwt gerenciadorTokenJwt) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, GerenciadorTokenJwt gerenciadorTokenJwt, AuthenticationManager authenticationManager, AutenticacaoService autenticacaoService) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
         this.gerenciadorTokenJwt = gerenciadorTokenJwt;
+        this.authenticationManager = authenticationManager;
+        this.autenticacaoService = autenticacaoService;
     }
-
-
 
     public List<UsuarioResponseDto> listar() {
         return UsuarioMapper.toResponse(usuarioRepository.findAll());
@@ -122,28 +122,6 @@ public class UsuarioService {
         final String token = gerenciadorTokenJwt.generateToken(authentication);
 
         return UsuarioMapper.of(usuarioAutenticado.get(), token);
-    }
-
-    @Service
-    public class AutenticacaoService implements UserDetailsService{
-
-        private UsuarioRepository usuarioRepository;
-
-        public AutenticacaoService(UsuarioRepository usuarioRepository){
-            this.usuarioRepository = usuarioRepository;
-        }
-
-
-        @Override
-        public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-            Optional<Usuario> usuarioOpt = usuarioRepository.findByNome(username);
-
-            if (usuarioOpt.isEmpty()){
-                throw new UsernameNotFoundException(String.format("Usuario %s não encontrado.", username));
-            }
-
-            return new UsuarioDetalhesDto(usuarioOpt.get());
-        }
     }
 
 }
