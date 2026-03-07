@@ -106,12 +106,12 @@ public class UsuarioService {
     public UsuarioTokenDto autenticar(Usuario usuario){
 
         final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(
-                usuario.getNome(), usuario.getSenha()
+                usuario.getApelido(), usuario.getSenha()
         );
 
         final Authentication authentication = this.authenticationManager.authenticate(credentials);
 
-        Optional<Usuario> usuarioAutenticado = usuarioRepository.findByNome(usuario.getNome());
+        Optional<Usuario> usuarioAutenticado = usuarioRepository.findByApelido(usuario.getApelido());
 
         if (usuarioAutenticado.isEmpty()){
             throw new EntidadeNaoEncontradaException("Usuario não encontrado");
