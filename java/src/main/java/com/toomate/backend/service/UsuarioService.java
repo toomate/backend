@@ -23,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.List;
 import java.util.Optional;
 
+
 @Service
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
@@ -60,8 +61,8 @@ public class UsuarioService {
             throw new EntradaInvalidaException("O usuário não pode ser nulo!");
         }
 
-        if (usuarioRepository.existsByNome(request.getNome())) {
-            throw new RecursoExisteException("Já existe um usuário cadastrado com este nome");
+        if (usuarioRepository.existsByApelidoIgnoreCase(request.getNome())) {
+            throw new RecursoExisteException("Já existe um usuário cadastrado com este apelido!");
         }
 
         String senhaCriptografada = passwordEncoder.encode(request.getSenha());
