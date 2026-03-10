@@ -47,4 +47,19 @@ public class InsumoMapperDto {
     public static List<InsumoResponseDto> toDto(List<Insumo> entity) {
         return entity.stream().map(InsumoMapperDto::toDto).toList();
     }
+
+    public static InsumoNotificationDto toNotification(Insumo insumo, Double atual) {
+        if (insumo == null) {
+            return null;
+        }
+
+        InsumoNotificationDto dto = new InsumoNotificationDto();
+        dto.setId(insumo.getIdInsumo());
+        dto.setNome(insumo.getNome());
+        dto.setQuantidadeMinima(insumo.getQtdMinima());
+        dto.setUnidadeMedida(insumo.getUnidadeMedida());
+        dto.setUnidadeMedida(insumo.getUnidadeMedida());
+
+        return dto;
+    }
 }
