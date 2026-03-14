@@ -11,14 +11,18 @@ import com.toomate.backend.model.*;
 import com.toomate.backend.observer.LoteListener;
 import com.toomate.backend.repository.LoteRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class LoteService implements LoteListener {
     private final LoteRepository loteRepository;
@@ -49,6 +53,7 @@ public class LoteService implements LoteListener {
     }
 
     public Lote cadastrar(Lote lote) {
+        String usuarioLogado = getUsuarioLogado();
         if (lote == null) {
             throw new EntradaInvalidaException("O lote não pode ser nulo!");
         }
@@ -75,15 +80,18 @@ public class LoteService implements LoteListener {
 
         lote = loteRepository.save(lote);
         notificarMudanca(lote.getMarca().getInsumo());
+        log.info("Usuário {} cadastrou um novo lote da marca: {} com {} {}", usuarioLogado, lote.getMarca().getNomeMarca(), lote.getQuantidadeMedida(), lote.getMarca().getInsumo().getUnidadeMedida());
         return lote;
     }
 
     public void deletar(Integer id) {
+        String usuarioLogado = getUsuarioLogado();
         if (!loteRepository.existsById(id)) {
             throw new EntidadeNaoEncontradaException(String.format("Não foi encontrado lote com o id %d", id));
         }
 
         loteRepository.deleteById(id);
+        log.info("Usuário {} deletou o Lote com ID: {}", usuarioLogado, id);
         notificarMudanca(loteRepository.findById(id).get().getMarca().getInsumo());
     }
 
@@ -188,6 +196,7 @@ public class LoteService implements LoteListener {
 
     @Transactional
     public void atualizarQuantidades(List<LotePatchDto> request) {
+        String usuarioLogado = getUsuarioLogado();
         List<Integer> ids = request.stream()
                 .map(LotePatchDto::getId)
                 .toList();
@@ -203,8 +212,11 @@ public class LoteService implements LoteListener {
             if (lote == null){
                 throw new EntidadeNaoEncontradaException("Não foi encontrado um lote com o id: " + dto.getId());
             }
-
+            log.info("Usuário {} atualizou a quantidade do lote: {} às {}", usuarioLogado, dto.getId(), LocalDateTime.now());
             lote.setQuantidadeMedida(dto.getQuantidadeMedida());
         }
+    }
+    private String getUsuarioLogado() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }

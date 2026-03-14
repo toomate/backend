@@ -1,6 +1,7 @@
 package com.toomate.backend.config;
 
 import com.toomate.backend.service.AutenticacaoService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -9,6 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+@Slf4j
 public class AutenticacaoProvider implements AuthenticationProvider {
     private final AutenticacaoService usuarioAutenticacaoService;
     private final PasswordEncoder passwordEncoder;
@@ -38,6 +40,6 @@ public class AutenticacaoProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(final Class<?> authentication) {
-        return authentication.equals(UsernamePasswordAuthenticationToken.class);
+        return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
     }
 }

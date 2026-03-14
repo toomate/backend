@@ -1,43 +1,45 @@
 package com.toomate.backend.service;
 
 import com.toomate.backend.config.GerenciadorTokenJwt;
-import com.toomate.backend.dto.usuario.AtualizarAdministradorDto;
-import com.toomate.backend.dto.usuario.UsuarioRequestDto;
-import com.toomate.backend.dto.usuario.UsuarioResponseDto;
-import com.toomate.backend.dto.usuario.UsuarioTokenDto;
+import lombok.extern.slf4j.Slf4j;
+import com.toomate.backend.dto.usuario.*;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.exceptions.RecursoExisteException;
 import com.toomate.backend.mapper.usuario.UsuarioMapper;
+import com.toomate.backend.model.Marca;
 import com.toomate.backend.model.Usuario;
 import com.toomate.backend.repository.UsuarioRepository;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
     private final GerenciadorTokenJwt gerenciadorTokenJwt;
     private final AuthenticationManager authenticationManager;
+    public  final AutenticacaoService autenticacaoService;
 
-    public UsuarioService(
-            UsuarioRepository usuarioRepository,
-            PasswordEncoder passwordEncoder,
-            AuthenticationManager authenticationManager,
-            GerenciadorTokenJwt gerenciadorTokenJwt
-    ) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, GerenciadorTokenJwt gerenciadorTokenJwt, AuthenticationManager authenticationManager, AutenticacaoService autenticacaoService) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
         this.gerenciadorTokenJwt = gerenciadorTokenJwt;
+        this.authenticationManager = authenticationManager;
+        this.autenticacaoService = autenticacaoService;
     }
 
     public List<UsuarioResponseDto> listar() {
@@ -45,139 +47,103 @@ public class UsuarioService {
     }
 
     public UsuarioResponseDto buscarPorId(Integer id) {
-        Usuario usuario = usuarioRepository.findById(id).orElseThrow(
-                () -> new EntidadeNaoEncontradaException(
-                        String.format("Nao foi encontrado um usuario com o id %d", id))
-        );
+        Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrado um usuário com o id %d", id)));
+
         return UsuarioMapper.toResponse(usuario);
     }
 
-    public UsuarioResponseDto buscarPorNome(String nome) {
-        Usuario usuario = usuarioRepository.findByNomeIgnoreCase(nome).orElseThrow(
-                () -> new EntidadeNaoEncontradaException("Nao foi encontrado um usuario com este nome!")
-        );
+    public UsuarioResponseDto buscarPorNome(String nome){
+        Usuario usuario = usuarioRepository.findByNome(nome).orElseThrow(() -> new EntidadeNaoEncontradaException("Não foi encontrado um usuário com este nome!"));
+
         return UsuarioMapper.toResponse(usuario);
     }
 
     public UsuarioResponseDto cadastrar(UsuarioRequestDto request) {
         if (request == null) {
-            throw new EntradaInvalidaException("O usuario nao pode ser nulo.");
+            throw new EntradaInvalidaException("O usuário não pode ser nulo!");
         }
 
-        String nomeNormalizado = normalizarTexto(request.getNome(), "O nome do usuario nao pode ser vazio.");
-        String apelidoNormalizado = normalizarTexto(request.getApelido(), "O apelido do usuario nao pode ser vazio.");
-
-        if (usuarioRepository.existsByApelidoIgnoreCase(apelidoNormalizado)) {
-            throw new RecursoExisteException("Ja existe um usuario cadastrado com este apelido");
+        if (usuarioRepository.existsByApelidoIgnoreCase(request.getApelido())) {
+            throw new RecursoExisteException("Já existe um usuário cadastrado com este apelido!");
         }
 
-        request.setNome(nomeNormalizado);
-        request.setApelido(apelidoNormalizado);
-        request.setSenha(encodeIfNeeded(request.getSenha()));
+        String senhaCriptografada = passwordEncoder.encode(request.getSenha());
+        request.setSenha(senhaCriptografada);
+
+        String usuarioLogado = getUsuarioLogado();
 
         Usuario usuario = UsuarioMapper.of(request);
         usuarioRepository.save(usuario);
-
+        log.info("ADM {} criou usuário {}", usuarioLogado, usuario.getApelido());
         return UsuarioMapper.toResponse(usuario);
     }
 
     public void deletar(Integer id) {
         if (!usuarioRepository.existsById(id)) {
-            throw new EntidadeNaoEncontradaException(
-                    String.format("Nao foi encontrado um usuario com o id %d", id));
+            throw new EntidadeNaoEncontradaException(String.format("Não foi encontrado um usuário com o id %d", id));
         }
+
+        String usuarioLogado = getUsuarioLogado();
+        log.info("ADM {} deletou usuário dono do ID: {}", usuarioLogado, id);
         usuarioRepository.deleteById(id);
     }
 
-    public UsuarioResponseDto atualizar(Integer id, Usuario request) {
-        Usuario usuario = usuarioRepository.findById(id).orElseThrow(
-                () -> new EntidadeNaoEncontradaException(
-                        String.format("Nao foi encontrado um usuario com o id %d", id))
-        );
-
-        if (request.getNome() != null && !request.getNome().isBlank()) {
-            usuario.setNome(request.getNome().trim());
+    public UsuarioResponseDto atualizar(Integer id, Usuario usuario) {
+        String usuarioLogado = getUsuarioLogado();
+        if (!usuarioRepository.existsById(id)) {
+            throw new EntidadeNaoEncontradaException(String.format("Não foi encontrado um usuario com o id %d", id));
         }
-
-        if (request.getApelido() != null && !request.getApelido().isBlank()) {
-            String novoApelido = request.getApelido().trim();
-            if (!novoApelido.equalsIgnoreCase(usuario.getApelido())
-                    && usuarioRepository.existsByApelidoIgnoreCase(novoApelido)) {
-                throw new RecursoExisteException("Ja existe um usuario cadastrado com este apelido");
-            }
-            usuario.setApelido(novoApelido);
-        }
-
-        if (request.getAdministrador() != null) {
-            usuario.setAdministrador(request.getAdministrador());
-        }
-
-        if (request.getSenha() != null && !request.getSenha().isBlank()) {
-            usuario.setSenha(encodeIfNeeded(request.getSenha()));
-        }
-
+        usuario.setId(id);
         usuarioRepository.save(usuario);
+        log.info("Usuário {} atualizou usuário {}", usuarioLogado, usuario.getApelido());
         return UsuarioMapper.toResponse(usuario);
     }
 
-    public UsuarioResponseDto atualizarAdministrador(Integer id, AtualizarAdministradorDto adm) {
-        Usuario usuario = usuarioRepository.findById(id).orElseThrow(
-                () -> new EntidadeNaoEncontradaException(
-                        String.format("Nao foi encontrado um usuario com o id %d", id))
-        );
+    public UsuarioResponseDto atualizarAdministrador(Integer id, AtualizarAdministradorDto adm){
+        Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrado um usuário com o id %d", id)));
+
+        String usuarioLogado = getUsuarioLogado();
 
         usuario.setAdministrador(adm.getadministrador());
         usuarioRepository.save(usuario);
-
+        log.info("ADM {} tornou usuário {} um administrador do sistema", usuarioLogado, usuario.getApelido());
         return UsuarioMapper.toResponse(usuario);
     }
 
     public Usuario usuarioPorId(Integer id) {
-        return usuarioRepository.findById(id).orElseThrow(
-                () -> new EntidadeNaoEncontradaException(
-                        String.format("Nao foi encontrado um usuario com o id %d", id))
-        );
+        return usuarioRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrado nenhuma marca com o id %d", id)));
     }
 
-    public UsuarioTokenDto autenticar(Usuario usuario) {
-        final UsernamePasswordAuthenticationToken credentials =
-                new UsernamePasswordAuthenticationToken(usuario.getApelido(), usuario.getSenha());
+    public UsuarioTokenDto autenticar(Usuario usuario){
+        try {
+
+        final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(
+                usuario.getApelido(), usuario.getSenha()
+        );
 
         final Authentication authentication = this.authenticationManager.authenticate(credentials);
 
-        Optional<Usuario> usuarioAutenticado = usuarioRepository.findByApelidoIgnoreCase(usuario.getApelido());
+        Optional<Usuario> usuarioAutenticado = usuarioRepository.findByApelido(usuario.getApelido());
 
-        if (usuarioAutenticado.isEmpty()) {
-            throw new EntidadeNaoEncontradaException("Usuario nao encontrado");
+        if (usuarioAutenticado.isEmpty()){
+            throw new EntidadeNaoEncontradaException("Usuario não encontrado");
         }
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        SecurityContextHolder.getContext().setAuthentication((authentication));
 
         final String token = gerenciadorTokenJwt.generateToken(authentication);
 
+        log.info("Usuário {} autenticado com sucesso", usuarioAutenticado.get().getApelido());
         return UsuarioMapper.of(usuarioAutenticado.get(), token);
-    }
-
-    private String encodeIfNeeded(String senha) {
-        if (senha == null || senha.isBlank()) {
-            throw new EntradaInvalidaException("A senha do usuario nao pode ser vazia.");
+        } catch (BadCredentialsException e) {
+            log.warn("Falha na autenticação do usuário: {}", usuario.getApelido());
+            throw e;
         }
-
-        if (isBcryptHash(senha)) {
-            return senha;
-        }
-
-        return passwordEncoder.encode(senha);
     }
 
-    private boolean isBcryptHash(String senha) {
-        return senha != null && senha.matches("^\\$2[aby]?\\$\\d\\d\\$[./A-Za-z0-9]{53}$");
+    private String getUsuarioLogado() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
-    private String normalizarTexto(String valor, String mensagemErro) {
-        if (valor == null || valor.isBlank()) {
-            throw new EntradaInvalidaException(mensagemErro);
-        }
-        return valor.trim();
-    }
 }

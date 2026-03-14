@@ -9,7 +9,6 @@ public class Rotina {
     @Column(name = "idRotina")
     private Integer id;
     private String titulo;
-    private Integer quantidadeMedida;
 
     public Integer getId() {
         return id;
@@ -26,13 +25,4 @@ public class Rotina {
     public void setTitulo(String titulo) {
         this.titulo = titulo;
     }
-
-    public Integer getQuantidadeMedida() {
-        return quantidadeMedida;
-    }
-
-    public void setQuantidadeMedida(Integer quantidadeMedida) {
-        this.quantidadeMedida = quantidadeMedida;
-    }
-
 }
