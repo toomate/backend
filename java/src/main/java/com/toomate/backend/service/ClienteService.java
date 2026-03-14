@@ -61,4 +61,8 @@ public class ClienteService {
                 .map(ClienteMapper::toResponses)
                 .toList();
     }
+
+    public Integer listarComDividasEmAberto() {
+        return clienteRepository.findAllByNotPago();
+    }
 }

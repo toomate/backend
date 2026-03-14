@@ -113,4 +113,15 @@ public class ClienteController {
         return ResponseEntity.status(200).body(clientesEncontrados);
     }
 
+    @Operation(summary = "Buscar quantidade de clientes que tenha pelo menos uma dívida em aberto",
+            description = "Retorna a quantidade (codigo 200)",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Quantidade"),
+            })
+    @GetMapping("/aberto")
+    public ResponseEntity<Integer> listarComDividasEmAberto(){
+        Integer quantidade = clienteService.listarComDividasEmAberto();
+            return ResponseEntity.status(200).body(quantidade);
+    }
+
 }
