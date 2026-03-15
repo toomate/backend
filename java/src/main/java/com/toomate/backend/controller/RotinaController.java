@@ -57,6 +57,12 @@ public class RotinaController {
         rotinaService.deletar(id);
         return ResponseEntity.status(204).build();
     }
+
+    @PutMapping("/baixa/{id}")
+    public ResponseEntity<Void> darBaixa(@PathVariable Integer id){
+        rotinaService.darBaixa(id);
+        return ResponseEntity.status(204).build();
+    }
 }
 
 

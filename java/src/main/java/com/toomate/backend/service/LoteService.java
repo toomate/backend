@@ -140,7 +140,6 @@ public class LoteService implements LoteListener {
         lote.adicionarQuantidadeMedida(quantidadeMedida);
         loteRepository.save(lote);
         notificarMudanca(lote.getMarca().getInsumo());
-
     }
 
     public List<EstoqueGrupo> buscarEstoque() {
@@ -216,6 +215,12 @@ public class LoteService implements LoteListener {
             lote.setQuantidadeMedida(dto.getQuantidadeMedida());
         }
     }
+
+    public List<Lote> lotePorInsumoId(Integer id){
+        return loteRepository.lotePorIdInsumo(id);
+    }
+
+
     private String getUsuarioLogado() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }

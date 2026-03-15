@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface LoteRepository extends JpaRepository<Lote, Integer> {
 
@@ -73,4 +74,6 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
             """)
     List<EstoqueGeral> pesquisarEstoquePorInsumo(String insumo);
 
+    @Query("SELECT l FROM Lote l WHERE l.marca.insumo.idInsumo = :idInsumo ORDER BY l.dataValidade ASC")
+    List<Lote> lotePorIdInsumo(Integer idInsumo);
 }

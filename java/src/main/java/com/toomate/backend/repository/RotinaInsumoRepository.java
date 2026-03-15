@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public interface RotinaInsumoRepository extends JpaRepository<RotinaInsumo, Integer> {
     Optional<RotinaInsumo> findByRotinaId(Integer rotinaId);
+    List<RotinaInsumo> findAllByRotinaId(Integer rotinaId);
     @Modifying
     @Query("DELETE FROM RotinaInsumo r WHERE r.rotina.id = :id")
     void deleteByRotinaId(Integer id);
