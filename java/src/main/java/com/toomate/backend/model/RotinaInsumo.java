@@ -9,10 +9,10 @@ public class RotinaInsumo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne
-    @JoinColumn(name = "fkRotina", referencedColumnName = "idRotina")
+    @JoinColumn(name = "idRotina")
     private Rotina rotina;
     @ManyToOne
-    @JoinColumn(name = "fkInsumo", referencedColumnName = "idInsumo")
+    @JoinColumn(name = "idInsumo")
     private Insumo insumo;
     private Double quantidadeMedida;
 

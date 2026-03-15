@@ -57,11 +57,13 @@ public class RotinaService {
         return rotinaInsumoRepository.save(rotinaInsumo);
     }
 
+    @Transactional
     public void deletar(Integer id) {
-        if (!rotinaRepository.existsById(id)) {
+        if(!rotinaRepository.existsById(id)){
             throw new EntidadeNaoEncontradaException(String.format("Não foi encontrada uma rotina com este id %d", id));
         }
 
+        rotinaInsumoRepository.deleteByRotinaId(id);
         rotinaRepository.deleteById(id);
     }
 
