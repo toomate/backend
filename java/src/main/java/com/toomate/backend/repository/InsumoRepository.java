@@ -2,6 +2,7 @@ package com.toomate.backend.repository;
 
 import com.toomate.backend.model.Insumo;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -11,4 +12,7 @@ public interface InsumoRepository extends JpaRepository<Insumo, Integer> {
     Boolean existsByNome(String nome);
 
     Insumo findByNome(String nome);
+
+    @Query("select i.unidadeMedida from Insumo i group by i.unidadeMedida")
+    List<String> listarUnidadesDeMedida();
 }

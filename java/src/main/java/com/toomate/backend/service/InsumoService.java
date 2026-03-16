@@ -5,6 +5,7 @@ import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.model.Insumo;
 import com.toomate.backend.repository.InsumoRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -76,5 +77,9 @@ public class InsumoService {
 
     private String getUsuarioLogado() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    public List<String> listarUnidadesDeMedida() {
+        return insumoRepository.listarUnidadesDeMedida();
     }
 }
