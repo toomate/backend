@@ -37,6 +37,11 @@ public class RotinaController {
         return ResponseEntity.status(200).body(rotinaService.buscarPorId(id));
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<Rotina>> pesquisarRotinas(@RequestParam String titulo){
+        return ResponseEntity.status(200).body(rotinaService.pesquisar(titulo));
+    }
+
     @PostMapping
     public ResponseEntity<Rotina> cadastrar(@RequestBody RotinaRequestDto request){
         return ResponseEntity.status(201).body(rotinaService.cadastrar(request));

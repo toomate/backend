@@ -38,6 +38,10 @@ public class RotinaService {
         return rotinaRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrada uma rotina com este id %d", id)));
     }
 
+    public List<Rotina> pesquisar(String nomeRotina){
+        return rotinaRepository.findByTituloContainsIgnoreCase(nomeRotina);
+    }
+
     public Rotina cadastrar(RotinaRequestDto request) {
         if (request == null) {
             throw new EntradaInvalidaException("A rotina não pode ser nula!");
