@@ -76,7 +76,7 @@ public class UsuarioController {
                             content = @Content(mediaType = "application/json")),
                     @ApiResponse(responseCode = "409", description = "Conflito no cadastro")
             })
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<UsuarioResponseDto> cadastrar(@RequestBody @Valid UsuarioRequestDto request) {
 
