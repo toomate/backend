@@ -90,9 +90,16 @@ public class UsuarioService {
 
     public UsuarioResponseDto atualizar(Integer id, Usuario usuario) {
         String usuarioLogado = getUsuarioLogado();
-        if (!usuarioRepository.existsById(id)) {
-            throw new EntidadeNaoEncontradaException(String.format("Não foi encontrado um usuario com o id %d", id));
+        Usuario usuarioAtual = usuarioRepository.findById(id).orElseThrow(
+                () -> new EntidadeNaoEncontradaException(String.format("Nao foi encontrado um usuario com o id %d", id))
+        );
+
+        if (usuario.getSenha() == null || usuario.getSenha().isBlank()) {
+            usuario.setSenha(usuarioAtual.getSenha());
+        } else if (!isBcryptHash(usuario.getSenha())) {
+            usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         }
+
         usuario.setId(id);
         usuarioRepository.save(usuario);
         log.info("Usuário {} atualizou usuário {}", usuarioLogado, usuario.getApelido());
@@ -146,4 +153,7 @@ public class UsuarioService {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
+    private boolean isBcryptHash(String senha) {
+        return senha != null && senha.matches("^\\$2[aby]?\\$\\d\\d\\$[./A-Za-z0-9]{53}$");
+    }
 }
