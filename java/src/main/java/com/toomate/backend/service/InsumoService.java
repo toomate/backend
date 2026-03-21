@@ -74,6 +74,9 @@ public class InsumoService {
                         String.format("Nao foi encontrado insumo com o id %d", id))
         );
     }
+    public List<Insumo> insumosPorId(List<Integer> ids) {
+        return insumoRepository.findAllById(ids);
+    }
 
     private String getUsuarioLogado() {
         return SecurityContextHolder.getContext().getAuthentication().getName();

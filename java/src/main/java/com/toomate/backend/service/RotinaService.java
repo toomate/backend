@@ -1,5 +1,6 @@
 package com.toomate.backend.service;
 
+import com.toomate.backend.dto.rotina.InsumoRotina;
 import com.toomate.backend.dto.rotina.RotinaInsumoRequest;
 import com.toomate.backend.dto.rotina.RotinaRequestDto;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
@@ -11,6 +12,7 @@ import com.toomate.backend.repository.RotinaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +40,7 @@ public class RotinaService {
         return rotinaRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrada uma rotina com este id %d", id)));
     }
 
-    public List<Rotina> pesquisar(String nomeRotina){
+    public List<Rotina> pesquisar(String nomeRotina) {
         return rotinaRepository.findByTituloContainsIgnoreCase(nomeRotina);
     }
 
@@ -51,16 +53,22 @@ public class RotinaService {
         return rotina;
     }
 
-    public RotinaInsumo associarInsumo(RotinaInsumoRequest request) {
-        Insumo insumo = insumoService.insumoPorId(request.getFkInsumo());
+    @Transactional
+    public List<RotinaInsumo> associarInsumo(RotinaInsumoRequest request) {
+        List<InsumoRotina> insumos = request.getInsumos();
         Rotina rotina = rotinaRepository.findById(request.getFkRotina()).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrada uma rotina com o id %d", request.getFkRotina())));
 
-        RotinaInsumo rotinaInsumo = new RotinaInsumo();
-        rotinaInsumo.setRotina(rotina);
-        rotinaInsumo.setInsumo(insumo);
-        rotinaInsumo.setQuantidadeMedida(request.getQuantidadeMedida());
+        List<RotinaInsumo> rotinas = new ArrayList<>();
+        for (InsumoRotina atual : insumos) {
+            Insumo insumo = insumoService.insumoPorId(atual.getInsumoId());
+            RotinaInsumo rotinaInsumo = new RotinaInsumo();
+            rotinaInsumo.setInsumo(insumo);
+            rotinaInsumo.setQuantidadeMedida(atual.getQuantidadeMedida());
+            rotinaInsumo.setRotina(rotina);
+            rotinas.add(rotinaInsumo);
+        }
 
-        return rotinaInsumoRepository.save(rotinaInsumo);
+        return rotinaInsumoRepository.saveAll(rotinas);
     }
 
     @Transactional

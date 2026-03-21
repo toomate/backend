@@ -1,18 +1,10 @@
 package com.toomate.backend.dto.rotina;
 
+import java.util.List;
+
 public class RotinaInsumoRequest {
-    private Integer id;
     private Integer fkRotina;
-    private Integer fkInsumo;
-    private Double quantidadeMedida;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    private List<InsumoRotina> insumos;
 
     public Integer getFkRotina() {
         return fkRotina;
@@ -22,19 +14,11 @@ public class RotinaInsumoRequest {
         this.fkRotina = fkRotina;
     }
 
-    public Integer getFkInsumo() {
-        return fkInsumo;
+    public List<InsumoRotina> getInsumos() {
+        return insumos;
     }
 
-    public void setFkInsumo(Integer fkInsumo) {
-        this.fkInsumo = fkInsumo;
-    }
-
-    public Double getQuantidadeMedida() {
-        return quantidadeMedida;
-    }
-
-    public void setQuantidadeMedida(Double quantidadeMedida) {
-        this.quantidadeMedida = quantidadeMedida;
+    public void setInsumos(List<InsumoRotina> insumos) {
+        this.insumos = insumos;
     }
 }

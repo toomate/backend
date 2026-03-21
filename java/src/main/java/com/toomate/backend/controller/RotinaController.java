@@ -47,8 +47,8 @@ public class RotinaController {
         return ResponseEntity.status(201).body(rotinaService.cadastrar(request));
     }
 
-    @PostMapping("/associar-rotina-insumo")
-    public ResponseEntity<RotinaInsumo> associar(@RequestBody RotinaInsumoRequest request) {
+    @PutMapping("/associar-rotina-insumo")
+    public ResponseEntity<List<RotinaInsumo>> associar(@RequestBody RotinaInsumoRequest request) {
         return ResponseEntity.status(201).body(rotinaService.associarInsumo(request));
     }
 
