@@ -7,6 +7,8 @@ import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.RecursoExisteException;
 import com.toomate.backend.model.Usuario;
 import com.toomate.backend.repository.UsuarioRepository;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -14,6 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -42,6 +46,18 @@ class UsuarioServiceTest {
 
     @InjectMocks
     private UsuarioService usuarioService;
+
+    @BeforeEach
+    void setupAutenticacao() {
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("admin.teste", "senha")
+        );
+    }
+
+    @AfterEach
+    void limparAutenticacao() {
+        SecurityContextHolder.clearContext();
+    }
 
     @Test
     void cadastrarDeveHasharSenhaESalvar() {
@@ -82,7 +98,7 @@ class UsuarioServiceTest {
     }
 
     @Test
-    void buscarPorNomeDeveUsarIgnoreCase() {
+    void buscarPorNomeDeveBuscarPorNomeExatoDoServico() {
         Usuario usuario = new Usuario();
         usuario.setId(7);
         usuario.setNome("lucas");
@@ -90,18 +106,18 @@ class UsuarioServiceTest {
         usuario.setSenha("hash");
         usuario.setAdministrador(false);
 
-        when(usuarioRepository.findByNomeIgnoreCase("LUCAS")).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findByNome("LUCAS")).thenReturn(Optional.of(usuario));
 
         UsuarioResponseDto response = usuarioService.buscarPorNome("LUCAS");
 
         assertEquals("lucas", response.getNome());
         assertEquals("lucas.dev", response.getApelido());
-        verify(usuarioRepository).findByNomeIgnoreCase("LUCAS");
+        verify(usuarioRepository).findByNome("LUCAS");
     }
 
     @Test
     void buscarPorNomeDeveLancarQuandoNaoEncontrar() {
-        when(usuarioRepository.findByNomeIgnoreCase("inexistente")).thenReturn(Optional.empty());
+        when(usuarioRepository.findByNome("inexistente")).thenReturn(Optional.empty());
 
         assertThrows(EntidadeNaoEncontradaException.class, () -> usuarioService.buscarPorNome("inexistente"));
     }

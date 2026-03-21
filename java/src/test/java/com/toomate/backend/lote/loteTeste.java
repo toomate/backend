@@ -6,12 +6,16 @@ import com.toomate.backend.integration.EnviarNotificacao;
 import com.toomate.backend.model.*;
 import com.toomate.backend.repository.LoteRepository;
 import com.toomate.backend.service.LoteService;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDate;
 
@@ -31,6 +35,18 @@ public class loteTeste {
     @InjectMocks
     public LoteService loteService;
 
+    @BeforeEach
+    void setupAutenticacao() {
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("operador.teste", "senha")
+        );
+    }
+
+    @AfterEach
+    void limparAutenticacao() {
+        SecurityContextHolder.clearContext();
+    }
+
     @Test
     @DisplayName("Deve cadastrar o lote quando ele for criado corretamente.")
     public void validarCadastroCorreto(){
@@ -39,6 +55,8 @@ public class loteTeste {
 
         when(loteRepository.save(any(Lote.class)))
                 .thenReturn(lote);
+        when(loteRepository.getEstoqueInsumo(anyInt()))
+                .thenReturn(100.0);
 
         lote.setQuantidadeMedida(3.0);
         lote.setPrecoUnitario(20.0);
