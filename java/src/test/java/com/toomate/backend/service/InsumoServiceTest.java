@@ -7,6 +7,8 @@ import com.toomate.backend.model.Categoria;
 import com.toomate.backend.model.Insumo;
 import com.toomate.backend.repository.InsumoRepository;
 import jakarta.validation.constraints.AssertTrue;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,6 +18,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +36,18 @@ class InsumoServiceTest {
     private InsumoService service;
     @Mock
     private InsumoRepository repository;
+
+    @BeforeEach
+    void setupAutenticacao() {
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("teste", "senha")
+        );
+    }
+
+    @AfterEach
+    void limparAutenticacao() {
+        SecurityContextHolder.clearContext();
+    }
 
     @Nested
     class listar{
