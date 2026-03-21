@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/usuarios")
 public class UsuarioController {
     private final UsuarioService usuarioService;
@@ -33,6 +34,7 @@ public class UsuarioController {
             })
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<List<UsuarioResponseDto>> listar() {
         List<UsuarioResponseDto> usuarios = usuarioService.listar();
@@ -51,6 +53,7 @@ public class UsuarioController {
                     @ApiResponse(responseCode = "404", description = "Não encontrado")
             })
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<UsuarioResponseDto> buscarPeloId(@PathVariable Integer id) {
         return ResponseEntity.status(200).body(usuarioService.buscarPorId(id));
@@ -64,6 +67,7 @@ public class UsuarioController {
                     @ApiResponse(responseCode = "404", description = "Não encontrado")
             })
     @GetMapping("/nome")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<UsuarioResponseDto> buscarPeloNome(@RequestParam String nome) {
         return ResponseEntity.status(200).body(usuarioService.buscarPorNome(nome));
@@ -76,8 +80,8 @@ public class UsuarioController {
                             content = @Content(mediaType = "application/json")),
                     @ApiResponse(responseCode = "409", description = "Conflito no cadastro")
             })
-    //@PreAuthorize("hasRole('ADMIN')")
     @PostMapping
+    @PreAuthorize("permitAll()")
     public ResponseEntity<UsuarioResponseDto> cadastrar(@RequestBody @Valid UsuarioRequestDto request) {
 
         return ResponseEntity.status(201).body(usuarioService.cadastrar(request));
@@ -91,7 +95,8 @@ public class UsuarioController {
                     @ApiResponse(responseCode = "404", description = "Não encontrado")
             })
     @PostMapping("/login")
-    public ResponseEntity<UsuarioTokenDto> login(@RequestBody @Valid UsuarioLoginDto usuarioLoginDto){
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<UsuarioTokenDto> login(@RequestBody @Valid UsuarioLoginDto usuarioLoginDto) {
         final Usuario usuario = UsuarioMapper.of(usuarioLoginDto);
         UsuarioTokenDto usuarioTokenDto = this.usuarioService.autenticar(usuario);
 
@@ -119,6 +124,7 @@ public class UsuarioController {
             })
     @PutMapping("/{id}")
     @SecurityRequirement(name = "Bearer")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<UsuarioResponseDto> atualizar(@PathVariable Integer id, @RequestBody Usuario usuario) {
         return ResponseEntity.status(200).body(usuarioService.atualizar(id, usuario));
     }

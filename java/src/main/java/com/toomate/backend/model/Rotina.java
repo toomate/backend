@@ -2,6 +2,8 @@ package com.toomate.backend.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 public class Rotina {
     @Id
@@ -9,6 +11,8 @@ public class Rotina {
     @Column(name = "idRotina")
     private Integer id;
     private String titulo;
+    @OneToMany(mappedBy = "rotina", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RotinaInsumo> rotinaInsumos;
 
     public Integer getId() {
         return id;

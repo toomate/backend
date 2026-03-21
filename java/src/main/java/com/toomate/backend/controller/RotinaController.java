@@ -37,6 +37,11 @@ public class RotinaController {
         return ResponseEntity.status(200).body(rotinaService.buscarPorId(id));
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<Rotina>> pesquisarRotinas(@RequestParam String titulo){
+        return ResponseEntity.status(200).body(rotinaService.pesquisar(titulo));
+    }
+
     @PostMapping
     public ResponseEntity<Rotina> cadastrar(@RequestBody RotinaRequestDto request){
         return ResponseEntity.status(201).body(rotinaService.cadastrar(request));
@@ -55,6 +60,12 @@ public class RotinaController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Integer id){
         rotinaService.deletar(id);
+        return ResponseEntity.status(204).build();
+    }
+
+    @PutMapping("/baixa/{id}")
+    public ResponseEntity<Void> darBaixa(@PathVariable Integer id){
+        rotinaService.darBaixa(id);
         return ResponseEntity.status(204).build();
     }
 }

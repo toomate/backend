@@ -122,4 +122,19 @@ public class InsumoController {
         }
         return ResponseEntity.status(404).build();
     }
+
+    @Operation(summary = "Listar unidades de medida dos insumos",
+            description = "Retorna codigo 200 com a lista de insumos ou 204 com nada",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de String(insumos)"),
+                    @ApiResponse(responseCode = "204", description = "Nada")
+            })
+    @GetMapping("/listarUnidades")
+    public ResponseEntity<List<String>> listarUnidadesDeMedida(){
+        List<String> unidades = insumoService.listarUnidadesDeMedida();
+        if(unidades.isEmpty()){
+            return ResponseEntity.status(204).build();
+        }
+        return ResponseEntity.status(200).body(insumoService.listarUnidadesDeMedida());
+    }
 }
