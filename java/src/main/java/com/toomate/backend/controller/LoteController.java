@@ -1,5 +1,6 @@
 package com.toomate.backend.controller;
 
+import com.toomate.backend.dto.Kpi;
 import com.toomate.backend.dto.estoque_grupo.EstoqueGrupo;
 import com.toomate.backend.dto.estoque_grupo.EstoqueMapper;
 import com.toomate.backend.dto.estoque_grupo.EstoqueVencimento;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -111,6 +113,17 @@ public class LoteController {
         List<VencimentoView> view = EstoqueMapper.toView(vencimentos);
 
         return ResponseEntity.status(200).body(view);
+    }
+
+    @GetMapping("/estoque/kpis")
+    public ResponseEntity<List<Kpi>> buscarKpis(){
+        List<Kpi> kpis = loteService.buscarKpisVencimentos();
+
+        if(kpis.isEmpty()){
+            return ResponseEntity.status(204).build();
+        }
+
+        return ResponseEntity.status(200).body(kpis);
     }
 
     @PatchMapping

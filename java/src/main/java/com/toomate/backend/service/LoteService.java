@@ -1,10 +1,9 @@
 package com.toomate.backend.service;
 
-import com.toomate.backend.dto.estoque_grupo.EstoqueGeral;
-import com.toomate.backend.dto.estoque_grupo.EstoqueGrupo;
-import com.toomate.backend.dto.estoque_grupo.EstoqueVencimento;
-import com.toomate.backend.dto.estoque_grupo.InsumoAgrupado;
+import com.toomate.backend.dto.Kpi;
+import com.toomate.backend.dto.estoque_grupo.*;
 import com.toomate.backend.dto.lote.LotePatchDto;
+import com.toomate.backend.enums.StatusVencimento;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.integration.EnviarNotificacao;
@@ -16,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -167,8 +167,41 @@ public class LoteService implements LoteListener {
         return new ArrayList<>(estoqueResponse.values());
     }
 
-    public List<EstoqueVencimento> buscarEstoqueVencimento(){
+    public List<EstoqueVencimento> buscarEstoqueVencimento() {
         return loteRepository.buscarEstoqueVencimento();
+    }
+
+    public List<Kpi> buscarKpisVencimentos() {
+        List<EstoqueVencimento> estoqueVencimentos = loteRepository.buscarEstoqueVencimento();
+
+        List<VencimentoView> vencimentoViews = EstoqueMapper.toView(estoqueVencimentos);
+
+        long vencidos = 0;
+        long vencemLogo = 0;
+        long vencemHoje = 0;
+
+        LocalDate hoje = LocalDate.now();
+
+        for (VencimentoView insumo : vencimentoViews) {
+
+            if (StatusVencimento.VENCIDO.getLabel().equals(insumo.getStatus())) {
+                vencidos++;
+            }
+
+            if (StatusVencimento.VENCE_LOGO.getLabel().equals(insumo.getStatus())) {
+                vencemLogo++;
+            }
+
+            if (insumo.getDtVencimento().isEqual(hoje)) {
+                vencemHoje++;
+            }
+        }
+
+        return List.of(
+                new Kpi("expirado", "Insumos Vencidos", (double) vencidos),
+                new Kpi("vencemHoje", "Vencem Hoje", (double) vencemHoje),
+                new Kpi("prox7dias", "Próximo 7 Dias", (double) vencemLogo)
+        );
     }
 
 
@@ -213,7 +246,7 @@ public class LoteService implements LoteListener {
         for (LotePatchDto dto : request) {
             Lote lote = mapa.get(dto.getId());
 
-            if (lote == null){
+            if (lote == null) {
                 throw new EntidadeNaoEncontradaException("Não foi encontrado um lote com o id: " + dto.getId());
             }
             log.info("Usuário {} atualizou a quantidade do lote: {} às {}", usuarioLogado, dto.getId(), LocalDateTime.now());
@@ -221,7 +254,7 @@ public class LoteService implements LoteListener {
         }
     }
 
-    public List<Lote> lotePorInsumoId(Integer id){
+    public List<Lote> lotePorInsumoId(Integer id) {
         return loteRepository.lotePorIdInsumo(id);
     }
 
