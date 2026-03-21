@@ -1,6 +1,9 @@
 package com.toomate.backend.controller;
 
 import com.toomate.backend.dto.estoque_grupo.EstoqueGrupo;
+import com.toomate.backend.dto.estoque_grupo.EstoqueMapper;
+import com.toomate.backend.dto.estoque_grupo.EstoqueVencimento;
+import com.toomate.backend.dto.estoque_grupo.VencimentoView;
 import com.toomate.backend.dto.lote.LoteMapperDto;
 import com.toomate.backend.dto.lote.LotePatchDto;
 import com.toomate.backend.dto.lote.LoteRequestDto;
@@ -95,6 +98,19 @@ public class LoteController {
         }
 
         return ResponseEntity.status(200).body(estoque);
+    }
+
+    @GetMapping("/estoque/vencimentos")
+    public ResponseEntity<List<VencimentoView>> buscarEstoqueVencimento(){
+        List<EstoqueVencimento> vencimentos = loteService.buscarEstoqueVencimento();
+
+        if (vencimentos.isEmpty()){
+            return ResponseEntity.status(204).build();
+        }
+
+        List<VencimentoView> view = EstoqueMapper.toView(vencimentos);
+
+        return ResponseEntity.status(200).body(view);
     }
 
     @PatchMapping

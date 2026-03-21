@@ -2,6 +2,7 @@ package com.toomate.backend.service;
 
 import com.toomate.backend.dto.estoque_grupo.EstoqueGeral;
 import com.toomate.backend.dto.estoque_grupo.EstoqueGrupo;
+import com.toomate.backend.dto.estoque_grupo.EstoqueVencimento;
 import com.toomate.backend.dto.estoque_grupo.InsumoAgrupado;
 import com.toomate.backend.dto.lote.LotePatchDto;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
@@ -164,6 +165,10 @@ public class LoteService implements LoteListener {
         Map<Integer, EstoqueGrupo> estoqueResponse = estruturarJson(estoque);
 
         return new ArrayList<>(estoqueResponse.values());
+    }
+
+    public List<EstoqueVencimento> buscarEstoqueVencimento(){
+        return loteRepository.buscarEstoqueVencimento();
     }
 
 

@@ -1,6 +1,7 @@
 package com.toomate.backend.repository;
 
 import com.toomate.backend.dto.estoque_grupo.EstoqueGeral;
+import com.toomate.backend.dto.estoque_grupo.EstoqueVencimento;
 import com.toomate.backend.model.Lote;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -74,6 +75,20 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
             """)
     List<EstoqueGeral> pesquisarEstoquePorInsumo(String insumo);
 
+    @Query("""
+            SELECT new com.toomate.backend.dto.estoque_grupo.EstoqueVencimento (
+            l.idLote,
+            i.nome,
+            m.nomeMarca,
+            l.quantidadeMedida,
+            i.unidadeMedida,
+            l.dataValidade
+            )
+            FROM Lote l
+            JOIN l.marca m
+            JOIN m.insumo i
+            ORDER BY l.dataValidade""")
+    List<EstoqueVencimento> buscarEstoqueVencimento();
     @Query("SELECT l FROM Lote l WHERE l.marca.insumo.idInsumo = :idInsumo ORDER BY l.dataValidade ASC")
     List<Lote> lotePorIdInsumo(Integer idInsumo);
 }
