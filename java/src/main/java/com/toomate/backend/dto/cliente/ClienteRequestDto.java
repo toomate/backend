@@ -13,7 +13,7 @@ public class ClienteRequestDto {
     @Schema(description = "telefone do cliente", example = "11987654321")
     private String telefone;
     @Pattern(regexp = "\\d{5}-\\d{3}")
-    @Schema(description = "cep do cliente", example = "01001000")
+    @Schema(description = "cep do cliente", example = "01001-000")
     private String cep;
     @Schema(description = "logradouro do cliente", example = "Rua São Paulo")
     private String logradouro;

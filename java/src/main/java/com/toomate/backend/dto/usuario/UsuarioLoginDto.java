@@ -9,7 +9,7 @@ public class UsuarioLoginDto {
     private String apelido;
 
     @NotBlank
-    @Schema(description = "senha do usuario", example = "123")
+    @Schema(description = "senha do usuario", example = "lucas123")
     private String senha;
 
     public String getApelido() {

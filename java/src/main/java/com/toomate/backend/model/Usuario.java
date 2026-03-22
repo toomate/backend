@@ -24,7 +24,7 @@ public class Usuario {
     @NotBlank
     private String apelido;
 
-    @Schema(description = "senha do usuario", example = "123")
+    @Schema(description = "senha do usuario", example = "lucas123")
     @NotBlank
     private String senha;
 

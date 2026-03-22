@@ -85,5 +85,20 @@ public class DividaController {
         }
         return ResponseEntity.status(404).build();
     }
+    @Operation(summary = "Listar pedidos",
+            description = "Retorna uma lista de pedidos (codigo 200) ou codigo 204 se não houver pedidos",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de pedidos",
+                            content = @Content(mediaType = "application/json")),
+                    @ApiResponse(responseCode = "204", description = "Sem conteúdo")
+            })
+    @GetMapping("/pedidos")
+    public ResponseEntity<List<String>> listarPedidos(){
+        List<String> pedidos = dividaService.listarPedidos();
 
+        if (pedidos.isEmpty()){
+            return ResponseEntity.status(204).build();
+        }
+        return ResponseEntity.status(200).body(pedidos);
+    }
 }

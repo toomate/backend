@@ -101,4 +101,8 @@ public class DividaService {
 
         return DividaMapper.toResponse(dividaAtualizada, dividaAtualizada.getCliente());
     }
+
+    public List<String> listarPedidos() {
+        return dividaRepository.listarPedidos();
+    }
 }
