@@ -1,5 +1,6 @@
     package com.toomate.backend.model;
 
+    import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,6 +31,7 @@ public class Cliente {
     private String bairro;
 
     @OneToMany(mappedBy = "cliente")
+    @JsonManagedReference
     @Schema(description = "Lista de dividas do cliente")
     private List<Divida> dividas;
 

@@ -1,5 +1,6 @@
 package com.toomate.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
@@ -26,6 +27,7 @@ public class Divida {
 
     @ManyToOne
     @JoinColumn(name = "fkCliente", referencedColumnName = "idCliente")
+    @JsonBackReference
     @Schema(description = "Booleano que sinaliza se está pago ou não", example = "Frango assado")
     private Cliente cliente;
 

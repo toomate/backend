@@ -65,4 +65,8 @@ public class ClienteService {
     public Integer listarComDividasEmAberto() {
         return clienteRepository.findAllByNotPago();
     }
+
+    public List<Cliente> listarClientesEDividas() {
+        return clienteRepository.findAll();
+    }
 }

@@ -124,4 +124,22 @@ public class ClienteController {
             return ResponseEntity.status(200).body(quantidade);
     }
 
+    @Operation(summary = "Listar clientes e suas dividas",
+            description = "Retorna lista de clientes com suas dividas (codigo 200) ou codigo 204 se não houver clientes",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de clientes",
+                            content = @Content(mediaType = "application/json")),
+                    @ApiResponse(responseCode = "204", description = "Sem conteúdo")
+            })
+    @GetMapping("/com-dividas")
+    public ResponseEntity<List<Cliente>> listarClientesEDividas() {
+
+        List<Cliente> clientes = clienteService.listarClientesEDividas();
+
+        if (clientes.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        return ResponseEntity.status(200).body(clientes);
+    }
+
 }
