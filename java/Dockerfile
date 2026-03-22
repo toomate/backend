@@ -1,14 +1,15 @@
 FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
 
-COPY pom.xml .
-COPY mvnw .
-COPY .mvn .mvn
+COPY java/pom.xml .
+COPY java/mvnw .
+COPY java/.mvn .mvn
 
 RUN chmod +x mvnw
 RUN ./mvnw dependency:go-offline
 
-COPY src src
+COPY java/src src
+
 RUN ./mvnw clean package -DskipTests -Dfile.encoding=UTF-8
 
 FROM eclipse-temurin:21-jre
