@@ -39,7 +39,7 @@ public class BoletoController {
         return ResponseEntity.status(201).body(boletoService.cadastrar(request));
     }
 
-    @Operation(summary = "Listar ingredientes",
+    @Operation(summary = "Listar boletos",
             description = "Retorna lista de boletos (codigo 200) ou codigo 204 se não houver boletos",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Lista de boletos",
