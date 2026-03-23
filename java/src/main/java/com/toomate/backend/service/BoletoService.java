@@ -76,4 +76,7 @@ public class BoletoService {
     }
 
 
+    public List<String> listarCategorias() {
+        return boletoRepository.listarCategorias();
+    }
 }

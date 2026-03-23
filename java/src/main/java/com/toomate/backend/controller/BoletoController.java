@@ -133,4 +133,24 @@ public class BoletoController {
         return ResponseEntity.status(200).body(boletosEncontrados);
     }
 
+    @Operation(summary = "Listar ingredientes",
+            description = "Retorna lista de boletos (codigo 200) ou codigo 204 se não houver boletos",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de boletos",
+                            content = @Content(mediaType = "application/json")),
+                    @ApiResponse(responseCode = "204", description = "Sem conteúdo")
+            })
+    @GetMapping("/categorias")
+    public ResponseEntity<List<String>> listarCategorias() {
+
+        List<String> categorias = boletoService.listarCategorias();
+
+        if (categorias.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+
+        return ResponseEntity.status(200).body(categorias);
+
+    }
+
 }
