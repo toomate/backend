@@ -133,10 +133,10 @@ public class BoletoController {
         return ResponseEntity.status(200).body(boletosEncontrados);
     }
 
-    @Operation(summary = "Listar ingredientes",
-            description = "Retorna lista de boletos (codigo 200) ou codigo 204 se não houver boletos",
+    @Operation(summary = "Listar categorias",
+            description = "Retorna lista de categoria (codigo 200) ou codigo 204 se não houver categorias",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Lista de boletos",
+                    @ApiResponse(responseCode = "200", description = "Lista de categorias",
                             content = @Content(mediaType = "application/json")),
                     @ApiResponse(responseCode = "204", description = "Sem conteúdo")
             })
