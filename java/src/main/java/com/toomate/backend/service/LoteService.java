@@ -200,7 +200,7 @@ public class LoteService implements LoteListener {
         return List.of(
                 new Kpi("expirado", "Insumos Vencidos", (double) vencidos),
                 new Kpi("vencemHoje", "Vencem Hoje", (double) vencemHoje),
-                new Kpi("prox7dias", "Próximo 7 Dias", (double) vencemLogo)
+                new Kpi("prox7dias", "Próximos 7 Dias", (double) vencemLogo)
         );
     }
 
