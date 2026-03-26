@@ -1,6 +1,7 @@
 package com.toomate.backend.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,6 +32,7 @@ public class Boleto {
     @Schema(description = "Valor do boleto", example = "R$ 20,99")
     private Double valor;
     @Schema(description = "Id númerico do fornecedor", example = "1")
+    @Column(name = "fkFornecedor")
     private Integer idFornecedor;
 
     public Boleto(Integer idBoleto, String descricao, String categoria, Boolean pago, LocalDate dataVencimento, LocalDate dataPagamento, Double valor, Integer idFornecedor) {
