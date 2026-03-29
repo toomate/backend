@@ -10,6 +10,9 @@ import com.toomate.backend.model.*;
 import com.toomate.backend.repository.RotinaInsumoRepository;
 import com.toomate.backend.repository.RotinaRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,6 +37,11 @@ public class RotinaService {
 
     public List<Rotina> listar() {
         return rotinaRepository.findAll();
+    }
+
+    public Page<Rotina> listarComPaginacao(Integer pagina, Integer tamanho){
+        PageRequest pgRequest = PageRequest.of(pagina, tamanho);
+        return rotinaRepository.findAll(pgRequest);
     }
 
     public Rotina buscarPorId(Integer id) {
