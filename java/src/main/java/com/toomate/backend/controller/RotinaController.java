@@ -1,11 +1,13 @@
 package com.toomate.backend.controller;
 
+import com.toomate.backend.dto.rotina.PageResponseDto;
 import com.toomate.backend.dto.rotina.RotinaInsumoRequest;
 import com.toomate.backend.dto.rotina.RotinaRequestDto;
 import com.toomate.backend.model.Rotina;
 import com.toomate.backend.model.RotinaInsumo;
 import com.toomate.backend.service.RotinaService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,14 +24,10 @@ public class RotinaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Rotina>> listar(){
-        List<Rotina> rotinas = rotinaService.listar();
-
-        if (rotinas.isEmpty()){
-            return ResponseEntity.status(204).build();
-        }
-
-        return ResponseEntity.status(200).body(rotinas);
+    public ResponseEntity<PageResponseDto> listar(@RequestParam(defaultValue = "0") Integer pagina, @RequestParam(defaultValue = "16") Integer tamanho){
+        Page<Rotina> rotinas = rotinaService.listarComPaginacao(pagina, tamanho);
+        PageResponseDto pgResponse = PageResponseDto.de(rotinas);
+        return ResponseEntity.status(200).body(pgResponse);
     }
 
     @GetMapping("/{id}")
