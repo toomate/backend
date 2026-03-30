@@ -80,6 +80,8 @@ jobs:
 
           for package in root.findall("package"):
               package_name = package.attrib.get("name", "").replace("/", ".")
+              if ".service" not in f".{package_name}":
+                continue
               for clazz in package.findall("class"):
                   class_name = clazz.attrib.get("name", "").replace("/", ".")
                   for method in clazz.findall("method"):
