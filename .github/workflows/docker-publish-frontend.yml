@@ -4,9 +4,133 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
+  tests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: toomate
+          MYSQL_USER: toomate_user
+          MYSQL_PASSWORD: toomate_password
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -u root -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Wait for MySQL
+        run: |
+          python - <<'PY'
+          import socket
+          import time
+
+          host = "127.0.0.1"
+          port = 3306
+          for _ in range(30):
+              try:
+                  with socket.create_connection((host, port), timeout=2):
+                      print("MySQL port is ready")
+                      break
+              except OSError:
+                  print("Waiting for MySQL...")
+                  time.sleep(2)
+          else:
+              raise SystemExit("MySQL did not become ready in time")
+          PY
+
+      - name: Run unit tests and generate coverage
+        working-directory: ./java
+        run: mvn -B clean verify
+
+      - name: List methods with no test coverage
+        run: |
+          python - <<'PY'
+          import os
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+
+          report = Path("java/target/site/jacoco/jacoco.xml")
+          if not report.exists():
+              raise SystemExit(f"Coverage report not found: {report}")
+
+          root = ET.parse(report).getroot()
+          no_coverage = []
+
+          for package in root.findall("package"):
+              package_name = package.attrib.get("name", "").replace("/", ".")
+              for clazz in package.findall("class"):
+                  class_name = clazz.attrib.get("name", "").replace("/", ".")
+                  for method in clazz.findall("method"):
+                      method_name = method.attrib.get("name", "")
+                      if method_name.startswith("lambda$"):
+                          continue
+
+                      instr = None
+                      for counter in method.findall("counter"):
+                          if counter.attrib.get("type") == "INSTRUCTION":
+                              instr = counter
+                              break
+
+                      if instr is None:
+                          continue
+
+                      covered = int(instr.attrib.get("covered", "0"))
+                      missed = int(instr.attrib.get("missed", "0"))
+
+                      if covered == 0 and missed > 0:
+                          no_coverage.append(f"{package_name}.{class_name.split('.')[-1]}#{method_name}{method.attrib.get('desc', '')}")
+
+          summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+          summary_file = Path(summary_path) if summary_path else None
+          if no_coverage:
+              print("Methods without test coverage:")
+              for item in no_coverage:
+                  print(f" - {item}")
+
+              if summary_file is not None:
+                  with summary_file.open("a", encoding="utf-8") as fp:
+                      fp.write("## Methods without test coverage\n\n")
+                      for item in no_coverage:
+                          fp.write(f"- `{item}`\n")
+          else:
+              print("All methods executed by tests have at least some instruction coverage.")
+              if summary_file is not None:
+                  with summary_file.open("a", encoding="utf-8") as fp:
+                      fp.write("## Coverage\n\nNo methods without instruction coverage were found.\n")
+          PY
+
+      - name: Upload JaCoCo report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: |
+            java/target/site/jacoco/jacoco.xml
+            java/target/site/jacoco/index.html
+
   docker:
+    needs: tests
     runs-on: ubuntu-latest
     permissions:
       contents: read
