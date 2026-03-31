@@ -12,6 +12,8 @@ import com.toomate.backend.model.Divida;
 import com.toomate.backend.repository.ClienteRepository;
 import com.toomate.backend.repository.DividaRepository;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -55,6 +57,12 @@ public class DividaService {
                 .toList();
     }
 
+    public Page<Divida> listarComPaginacao(Integer pagina, Integer tamanho) {
+        PageRequest pgRequest = PageRequest.of(pagina, tamanho);
+
+        return dividaRepository.findAll(pgRequest);
+    }
+
     public DividaResponseDto atualizarEstado(Integer idDivida) {
         if (dividaRepository.existsById(idDivida)) {
             Divida divida = dividaRepository.findById(idDivida).get();
@@ -66,7 +74,7 @@ public class DividaService {
         throw new EntidadeNaoEncontradaException("Divida não encontrada");
     }
 
-    public DividaResponseDto buscarPorId(Integer id){
+    public DividaResponseDto buscarPorId(Integer id) {
         Divida divida = dividaRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException("Não foi encontrada uma dívida com esse id"));
 
         return DividaMapper.toResponse(divida, divida.getCliente());

@@ -1,6 +1,6 @@
 package com.toomate.backend.controller;
 
-import com.toomate.backend.dto.rotina.PageResponseDto;
+import com.toomate.backend.dto.rotina.PageRotinaResponseDto;
 import com.toomate.backend.dto.rotina.RotinaInsumoRequest;
 import com.toomate.backend.dto.rotina.RotinaRequestDto;
 import com.toomate.backend.model.Rotina;
@@ -24,9 +24,9 @@ public class RotinaController {
     }
 
     @GetMapping
-    public ResponseEntity<PageResponseDto> listar(@RequestParam(defaultValue = "0") Integer pagina, @RequestParam(defaultValue = "16") Integer tamanho){
+    public ResponseEntity<PageRotinaResponseDto> listar(@RequestParam(defaultValue = "0") Integer pagina, @RequestParam(defaultValue = "16") Integer tamanho){
         Page<Rotina> rotinas = rotinaService.listarComPaginacao(pagina, tamanho);
-        PageResponseDto pgResponse = PageResponseDto.de(rotinas);
+        PageRotinaResponseDto pgResponse = PageRotinaResponseDto.de(rotinas);
         return ResponseEntity.status(200).body(pgResponse);
     }
 

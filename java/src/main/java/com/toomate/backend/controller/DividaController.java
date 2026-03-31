@@ -3,6 +3,7 @@ package com.toomate.backend.controller;
 import com.toomate.backend.dto.divida.DividaRequestDto;
 import com.toomate.backend.dto.divida.DividaResponseDto;
 import com.toomate.backend.dto.divida.DividaResponseModalDto;
+import com.toomate.backend.dto.divida.PageDividaResponseDto;
 import com.toomate.backend.model.Divida;
 import com.toomate.backend.service.DividaService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,14 +47,11 @@ public class DividaController {
                             content = @Content(mediaType = "application/json")),
                     @ApiResponse(responseCode = "204", description = "Sem conteúdo")
             })
-    @GetMapping()
-    public ResponseEntity<List<DividaResponseModalDto>> listarModal(){
-        List<DividaResponseModalDto> dividas = dividaService.listarModal();
-
-        if (dividas.isEmpty()){
-            return ResponseEntity.status(204).build();
-        }
-        return ResponseEntity.status(200).body(dividas);
+    @GetMapping
+    public ResponseEntity<PageDividaResponseDto> listarModal(@RequestParam(defaultValue = "0") Integer pagina, @RequestParam(defaultValue = "16") Integer tamanho){
+        Page<Divida> dividaPg = dividaService.listarComPaginacao(pagina, tamanho);
+        PageDividaResponseDto pgResponse = PageDividaResponseDto.de(dividaPg);
+        return ResponseEntity.status(200).body(pgResponse);
     }
 
     @Operation(summary = "Atualizar estado da divida",
