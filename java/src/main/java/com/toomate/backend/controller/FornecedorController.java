@@ -2,13 +2,16 @@ package com.toomate.backend.controller;
 
 import com.toomate.backend.dto.fornecedor.FornecedorRequestDto;
 import com.toomate.backend.dto.fornecedor.FornecedorResponseDto;
+import com.toomate.backend.dto.fornecedor.PageFornecedorResponseDto;
 import com.toomate.backend.mapper.fornecedor.FornecedorMapper;
+import com.toomate.backend.model.Fornecedor;
 import com.toomate.backend.service.FornecedorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,16 +43,14 @@ public class FornecedorController {
                     @ApiResponse(responseCode = "204", description = "Sem conteudo")
             })
     @GetMapping
-    public ResponseEntity<List<FornecedorResponseDto>> listar(
-            @RequestParam(required = false) String razaoSocial
+    public ResponseEntity<PageFornecedorResponseDto> listar(
+            @RequestParam(required = false) String razaoSocial,
+            @RequestParam(defaultValue = "0") Integer pagina,
+            @RequestParam(defaultValue = "9") Integer tamanho
     ) {
-        List<FornecedorResponseDto> fornecedores = FornecedorMapper.toResponseList(fornecedorService.filtrar(razaoSocial));
-
-        if (fornecedores.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.ok(fornecedores);
+        Page<Fornecedor> fornecedores = fornecedorService.listar(pagina, tamanho, razaoSocial);
+        PageFornecedorResponseDto pgResponse = PageFornecedorResponseDto.de(fornecedores);
+        return ResponseEntity.status(200).body(pgResponse);
     }
 
     @Operation(summary = "Buscar fornecedor pelo id",

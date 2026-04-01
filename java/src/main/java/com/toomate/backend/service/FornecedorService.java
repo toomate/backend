@@ -5,6 +5,8 @@ import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.exceptions.RecursoExisteException;
 import com.toomate.backend.model.Fornecedor;
 import com.toomate.backend.repository.FornecedorRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,6 +35,14 @@ public class FornecedorService {
             return fornecedorRepository.findAll();
         }
         return fornecedorRepository.findByRazaoSocialContainingIgnoreCase(razaoSocial.trim());
+    }
+
+    public Page<Fornecedor> listar( Integer pagina, Integer tamanho, String razaoSocial) {
+        PageRequest pgRequest = PageRequest.of(pagina, tamanho);
+        if (razaoSocial == null || razaoSocial.isBlank()) {
+            return fornecedorRepository.findAll(pgRequest);
+        }
+        return fornecedorRepository.findAllByRazaoSocialContainingIgnoreCase(pgRequest, razaoSocial.trim());
     }
 
     public Fornecedor cadastrar(String razaoSocial, String telefone) {

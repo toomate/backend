@@ -14,13 +14,13 @@ public record PageDividaResponseDto (
         long total,
         long totalPaginas
 ) {
-    public static PageDividaResponseDto de(Page<Divida> rotinaPage){
+    public static PageDividaResponseDto de(Page<Divida> dividaPage){
         return new PageDividaResponseDto(
-                rotinaPage.getContent(),
-                rotinaPage.getNumber(),
-                rotinaPage.getSize(),
-                rotinaPage.getTotalElements(),
-                rotinaPage.getTotalPages()
+                dividaPage.getContent(),
+                dividaPage.getNumber(),
+                dividaPage.getSize(),
+                dividaPage.getTotalElements(),
+                dividaPage.getTotalPages()
         );
     }
 }
