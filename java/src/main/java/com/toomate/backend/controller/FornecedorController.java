@@ -2,7 +2,7 @@ package com.toomate.backend.controller;
 
 import com.toomate.backend.dto.fornecedor.FornecedorRequestDto;
 import com.toomate.backend.dto.fornecedor.FornecedorResponseDto;
-import com.toomate.backend.dto.fornecedor.PageFornecedorResponseDto;
+import com.toomate.backend.dto.page.PageResponseDto;
 import com.toomate.backend.mapper.fornecedor.FornecedorMapper;
 import com.toomate.backend.model.Fornecedor;
 import com.toomate.backend.service.FornecedorService;
@@ -43,13 +43,13 @@ public class FornecedorController {
                     @ApiResponse(responseCode = "204", description = "Sem conteudo")
             })
     @GetMapping
-    public ResponseEntity<PageFornecedorResponseDto> listar(
+    public ResponseEntity<PageResponseDto<Fornecedor>> listar(
             @RequestParam(required = false) String razaoSocial,
             @RequestParam(defaultValue = "0") Integer pagina,
             @RequestParam(defaultValue = "9") Integer tamanho
     ) {
         Page<Fornecedor> fornecedores = fornecedorService.listar(pagina, tamanho, razaoSocial);
-        PageFornecedorResponseDto pgResponse = PageFornecedorResponseDto.de(fornecedores);
+        PageResponseDto<Fornecedor> pgResponse = new PageResponseDto<Fornecedor>().de(fornecedores);
         return ResponseEntity.status(200).body(pgResponse);
     }
 

@@ -2,8 +2,7 @@ package com.toomate.backend.controller;
 
 import com.toomate.backend.dto.divida.DividaRequestDto;
 import com.toomate.backend.dto.divida.DividaResponseDto;
-import com.toomate.backend.dto.divida.DividaResponseModalDto;
-import com.toomate.backend.dto.divida.PageDividaResponseDto;
+import com.toomate.backend.dto.page.PageResponseDto;
 import com.toomate.backend.model.Divida;
 import com.toomate.backend.service.DividaService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,9 +47,9 @@ public class DividaController {
                     @ApiResponse(responseCode = "204", description = "Sem conteúdo")
             })
     @GetMapping
-    public ResponseEntity<PageDividaResponseDto> listarModal(@RequestParam(defaultValue = "0") Integer pagina, @RequestParam(defaultValue = "16") Integer tamanho){
+    public ResponseEntity<PageResponseDto<Divida>> listarModal(@RequestParam(defaultValue = "0") Integer pagina, @RequestParam(defaultValue = "16") Integer tamanho){
         Page<Divida> dividaPg = dividaService.listarComPaginacao(pagina, tamanho);
-        PageDividaResponseDto pgResponse = PageDividaResponseDto.de(dividaPg);
+        PageResponseDto<Divida> pgResponse = new PageResponseDto<Divida>().de(dividaPg);
         return ResponseEntity.status(200).body(pgResponse);
     }
 
