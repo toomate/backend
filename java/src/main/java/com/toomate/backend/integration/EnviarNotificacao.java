@@ -25,7 +25,7 @@ public class EnviarNotificacao {
 
         try{
             System.out.printf("Quantidade atual do insumo %s é %.2f, abaixo do mínimo de %d%n\nEnviando notificação...",
-                    notificationDto.getNome(), notificationDto.getQuantidadeAtual(), notificationDto.getQuantidadeMinima());
+                    insumo.getNome(), atual, insumo.getQtdMinima());
 
             webClient.post()
                  .uri(notificacaoEndpointUrl)

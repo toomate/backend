@@ -52,14 +52,7 @@ public class InsumoMapperDto {
         if (insumo == null) {
             return null;
         }
-
-        InsumoNotificationDto dto = new InsumoNotificationDto();
-        dto.setId(insumo.getIdInsumo());
-        dto.setNome(insumo.getNome());
-        dto.setQuantidadeMinima(insumo.getQtdMinima());
-        dto.setUnidadeMedida(insumo.getUnidadeMedida());
-        dto.setUnidadeMedida(insumo.getUnidadeMedida());
-
+        InsumoNotificationDto dto = new InsumoNotificationDto(insumo, atual);
         return dto;
     }
 }
