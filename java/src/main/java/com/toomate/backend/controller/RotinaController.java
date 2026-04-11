@@ -24,8 +24,9 @@ public class RotinaController {
     }
 
     @GetMapping
-    public ResponseEntity<PageResponseDto<Rotina>> listar(@RequestParam(defaultValue = "0") Integer pagina, @RequestParam(defaultValue = "16") Integer tamanho){
-        Page<Rotina> rotinas = rotinaService.listarComPaginacao(pagina, tamanho);
+    public ResponseEntity<PageResponseDto<Rotina>> listar(@RequestParam(defaultValue = "0") Integer pagina, @RequestParam(defaultValue = "16") Integer tamanho,
+    @RequestParam(required = false) String titulo){
+        Page<Rotina> rotinas = rotinaService.listarComPaginacao(pagina, tamanho, titulo);
         PageResponseDto<Rotina> response = new PageResponseDto<Rotina>().de(rotinas);
         return ResponseEntity.status(200).body(response);
     }
@@ -33,11 +34,6 @@ public class RotinaController {
     @GetMapping("/{id}")
     public ResponseEntity<Rotina> buscarPorId(@PathVariable Integer id){
         return ResponseEntity.status(200).body(rotinaService.buscarPorId(id));
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<List<Rotina>> pesquisarRotinas(@RequestParam String titulo){
-        return ResponseEntity.status(200).body(rotinaService.pesquisar(titulo));
     }
 
     @PostMapping

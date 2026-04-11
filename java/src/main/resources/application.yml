@@ -4,8 +4,8 @@ spring:
     name: backend
   datasource:
     url: jdbc:mysql://localhost:3306/toomate
-    username: toomate_user
-    password: toomate_password
+    username: root
+    password: admin!
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:

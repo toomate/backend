@@ -39,9 +39,13 @@ public class RotinaService {
         return rotinaRepository.findAll();
     }
 
-    public Page<Rotina> listarComPaginacao(Integer pagina, Integer tamanho){
+    public Page<Rotina> listarComPaginacao(Integer pagina, Integer tamanho, String titulo) {
         PageRequest pgRequest = PageRequest.of(pagina, tamanho);
-        return rotinaRepository.findAll(pgRequest);
+        if (titulo == null || titulo.isBlank()) {
+            return rotinaRepository.findAll(pgRequest);
+        }
+
+        return rotinaRepository.findAllByTituloContainingIgnoreCase(pgRequest, titulo);
     }
 
     public Rotina buscarPorId(Integer id) {
