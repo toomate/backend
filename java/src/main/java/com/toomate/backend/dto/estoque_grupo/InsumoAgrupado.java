@@ -4,17 +4,21 @@ import java.time.LocalDate;
 
 public class InsumoAgrupado {
     private Integer idInsumo;
+    private Integer idMarca;
     private String nomeMarca;
     private Integer idLote;
     private Double quantidadeMedida; // vai vir do Lote
+    private Integer quantidadeMinima;
     private String unidadeMedida; // vai vir do insumo
     private LocalDate dataValidade; // lote
 
-    public InsumoAgrupado(Integer idInsumo, String nomeMarca, Integer idLote, Double quantidadeMedida, String unidadeMedida, LocalDate dataValidade) {
+    public InsumoAgrupado(Integer idInsumo, Integer idMarca, String nomeMarca, Integer idLote, Double quantidadeMedida, Integer quantidadeMinima, String unidadeMedida, LocalDate dataValidade) {
         this.idInsumo = idInsumo;
+        this.idMarca = idMarca;
         this.nomeMarca = nomeMarca;
         this.idLote = idLote;
         this.quantidadeMedida = quantidadeMedida;
+        this.quantidadeMinima = quantidadeMinima;
         this.unidadeMedida = unidadeMedida;
         this.dataValidade = dataValidade;
     }
@@ -27,16 +31,20 @@ public class InsumoAgrupado {
         this.idInsumo = idInsumo;
     }
 
+    public Integer getIdMarca() {
+        return idMarca;
+    }
+
+    public void setIdMarca(Integer idMarca) {
+        this.idMarca = idMarca;
+    }
+
     public String getNomeMarca() {
         return nomeMarca;
     }
 
     public void setNomeMarca(String nomeMarca) {
         this.nomeMarca = nomeMarca;
-    }
-
-    public Double getQuantidadeMedida() {
-        return quantidadeMedida;
     }
 
     public Integer getIdLote() {
@@ -47,8 +55,20 @@ public class InsumoAgrupado {
         this.idLote = idLote;
     }
 
+    public Double getQuantidadeMedida() {
+        return quantidadeMedida;
+    }
+
     public void setQuantidadeMedida(Double quantidadeMedida) {
         this.quantidadeMedida = quantidadeMedida;
+    }
+
+    public Integer getQuantidadeMinima() {
+        return quantidadeMinima;
+    }
+
+    public void setQuantidadeMinima(Integer quantidadeMinima) {
+        this.quantidadeMinima = quantidadeMinima;
     }
 
     public String getUnidadeMedida() {

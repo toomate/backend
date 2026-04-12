@@ -7,17 +7,21 @@ public class EstoqueGeral {
     private String nomeCategoria;
     private Integer idInsumo;
     private String nomeInsumo;
+    private Integer qtdMinima;
+    private Integer idMarca;
     private String nomeMarca;
     private Integer idLote;
     private Double quantidadeMedida; // vai vir do Lote
     private String unidadeMedida; // vai vir do insumo
     private LocalDate dataValidade;
 
-    public EstoqueGeral(Integer idCategoria, String nomeCategoria, Integer idInsumo, String nomeInsumo, String nomeMarca, Integer idLote, Double quantidadeMedida, String unidadeMedida, LocalDate dataValidade) {
+    public EstoqueGeral(Integer idCategoria, String nomeCategoria, Integer idInsumo, String nomeInsumo, Integer qtdMinima, Integer idMarca, String nomeMarca, Integer idLote, Double quantidadeMedida, String unidadeMedida, LocalDate dataValidade) {
         this.idCategoria = idCategoria;
         this.nomeCategoria = nomeCategoria;
         this.idInsumo = idInsumo;
         this.nomeInsumo = nomeInsumo;
+        this.qtdMinima = qtdMinima;
+        this.idMarca = idMarca;
         this.nomeMarca = nomeMarca;
         this.idLote = idLote;
         this.quantidadeMedida = quantidadeMedida;
@@ -55,6 +59,22 @@ public class EstoqueGeral {
 
     public void setNomeInsumo(String nomeInsumo) {
         this.nomeInsumo = nomeInsumo;
+    }
+
+    public Integer getQtdMinima() {
+        return qtdMinima;
+    }
+
+    public void setQtdMinima(Integer qtdMinima) {
+        this.qtdMinima = qtdMinima;
+    }
+
+    public Integer getIdMarca() {
+        return idMarca;
+    }
+
+    public void setIdMarca(Integer idMarca) {
+        this.idMarca = idMarca;
     }
 
     public String getNomeMarca() {

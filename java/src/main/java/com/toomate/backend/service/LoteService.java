@@ -218,12 +218,13 @@ public class LoteService implements LoteListener {
                 grupo.setFkCategoria(item.getIdCategoria());
                 grupo.setCategoria(nomeCategoria);
                 grupo.setInsumo(item.getNomeInsumo());
+                grupo.setQtdMinima(item.getQtdMinima());
                 grupo.setMedida(item.getUnidadeMedida());
                 grupo.setItens(new ArrayList<>());
 
                 mapa.put(fkInsumo, grupo);
             }
-            mapa.get(fkInsumo).getItens().add(new InsumoAgrupado(item.getIdInsumo(), item.getNomeMarca(), item.getIdLote(), item.getQuantidadeMedida(), item.getUnidadeMedida(), item.getDataValidade()));
+            mapa.get(fkInsumo).getItens().add(new InsumoAgrupado(item.getIdInsumo(), item.getIdMarca(), item.getNomeMarca(), item.getIdLote(), item.getQuantidadeMedida(), item.getQtdMinima(), item.getUnidadeMedida(), item.getDataValidade()));
             mapa.get(fkInsumo).calcularQtdTotal();
             mapa.get(fkInsumo).calcularMenorData();
         }

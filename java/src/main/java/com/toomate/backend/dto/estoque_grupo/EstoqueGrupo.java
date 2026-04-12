@@ -11,6 +11,7 @@ public class EstoqueGrupo {
     private Integer fkInsumo;
     private String categoria;
     private String insumo;
+    private Integer qtdMinima;
     private Double qtdTotal;
     private String medida;
     private LocalDate dtVencimento;
@@ -35,6 +36,21 @@ public class EstoqueGrupo {
         if (maisProxima.isPresent()) {
             dtVencimento = maisProxima.get().getDataValidade();
         }
+    }
+
+    public EstoqueGrupo(Integer fkCategoria, Integer fkInsumo, String categoria, String insumo, Integer qtdMinima, Double qtdTotal, String medida, LocalDate dtVencimento, List<InsumoAgrupado> itens) {
+        this.fkCategoria = fkCategoria;
+        this.fkInsumo = fkInsumo;
+        this.categoria = categoria;
+        this.insumo = insumo;
+        this.qtdMinima = qtdMinima;
+        this.qtdTotal = qtdTotal;
+        this.medida = medida;
+        this.dtVencimento = dtVencimento;
+        this.itens = itens;
+    }
+
+    public EstoqueGrupo() {
     }
 
     public Integer getFkCategoria() {
@@ -67,6 +83,14 @@ public class EstoqueGrupo {
 
     public void setInsumo(String insumo) {
         this.insumo = insumo;
+    }
+
+    public Integer getQtdMinima() {
+        return qtdMinima;
+    }
+
+    public void setQtdMinima(Integer qtdMinima) {
+        this.qtdMinima = qtdMinima;
     }
 
     public Double getQtdTotal() {
