@@ -75,7 +75,7 @@ public class RotinaService {
             Insumo insumo = insumoService.insumoPorId(atual.getInsumoId());
             RotinaInsumo rotinaInsumo = new RotinaInsumo();
             rotinaInsumo.setInsumo(insumo);
-            rotinaInsumo.setQuantidadeMedida(atual.getQuantidadeMedida());
+            rotinaInsumo.setQuantidadeMedida(Math.abs(atual.getQuantidadeMedida()));
             rotinaInsumo.setRotina(rotina);
             rotinas.add(rotinaInsumo);
         }
@@ -100,14 +100,19 @@ public class RotinaService {
 
         }
         List<RotinaInsumo> relacoes = rotinaInsumoRepository.findAllByRotinaId(id);
+        System.out.println("relações encontradas: " + relacoes.size());
+
+
 
         for (RotinaInsumo relacao : relacoes) {
-            Double qtdNecessaria = relacao.getQuantidadeMedida();
+            Double qtdNecessaria = Math.abs(relacao.getQuantidadeMedida());
 
             List<Lote> lotesDisponiveis = loteService.lotePorInsumoId(relacao.getInsumo().getIdInsumo());
+            System.out.println("Lotes encontrados: " + lotesDisponiveis.size());
 
             for (Lote lote : lotesDisponiveis) {
                 if (qtdNecessaria <= 0) break;
+                System.out.println("Qtd necessária inicial: " + qtdNecessaria);
 
                 if (lote.getQuantidadeMedida() >= qtdNecessaria) {
                     loteService.removerQuantidade(lote.getIdLote(), qtdNecessaria);

@@ -10,7 +10,7 @@ import com.toomate.backend.integration.EnviarNotificacao;
 import com.toomate.backend.model.*;
 import com.toomate.backend.observer.LoteListener;
 import com.toomate.backend.repository.LoteRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
