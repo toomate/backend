@@ -37,3 +37,7 @@ logging:
 notificacao:
   endpoint:
     url: http://localhost:8181/notification
+
+audit:
+  bucket: toomate-raw-2026
+  prefix: logs/auditoria

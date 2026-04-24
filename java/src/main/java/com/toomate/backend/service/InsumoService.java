@@ -1,5 +1,6 @@
 package com.toomate.backend.service;
 
+import com.toomate.backend.audit.AuditService;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.model.Insumo;
@@ -16,9 +17,11 @@ import java.util.List;
 @Service
 public class InsumoService {
     private final InsumoRepository insumoRepository;
+    private final AuditService auditService;
 
-    public InsumoService(InsumoRepository insumoRepository) {
+    public InsumoService(InsumoRepository insumoRepository, AuditService auditService) {
         this.insumoRepository = insumoRepository;
+        this.auditService = auditService;
     }
 
     public List<Insumo> listar() {
@@ -35,6 +38,7 @@ public class InsumoService {
             throw new EntradaInvalidaException("O insumo nao pode ser nulo!");
         }
         log.info("Usuário {} cadastrou o insumo: {} às {}", usuarioLogado, insumo.getNome(), LocalDateTime.now());
+        auditService.registrar(usuarioLogado, "CADASTRO", "INSUMO", "Cadastrou insumo: " + insumo.getNome());
         return insumoRepository.save(insumo);
     }
 
@@ -47,6 +51,7 @@ public class InsumoService {
 
         insumoRepository.deleteById(id);
         log.info("Usuário {} deletou o insumo com ID: {} às {}", usuarioLogado, id, LocalDateTime.now());
+        auditService.registrar(usuarioLogado, "DELECAO", "INSUMO", "Deletou insumo ID: " + id);
     }
 
     public Insumo atualizar(Integer id, Insumo insumo) {
@@ -57,6 +62,7 @@ public class InsumoService {
         }
         insumo.setIdInsumo(id);
         log.info("Usuário {} atualizou o insumo com ID: {} às {}", usuarioLogado, id, LocalDateTime.now());
+        auditService.registrar(usuarioLogado, "ATUALIZACAO", "INSUMO", "Atualizou insumo ID: " + id);
         return insumoRepository.save(insumo);
     }
 

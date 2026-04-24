@@ -1,5 +1,6 @@
 package com.toomate.backend.service;
 
+import com.toomate.backend.audit.AuditService;
 import com.toomate.backend.config.GerenciadorTokenJwt;
 import lombok.extern.slf4j.Slf4j;
 import com.toomate.backend.dto.usuario.*;
@@ -33,13 +34,15 @@ public class UsuarioService {
     private final GerenciadorTokenJwt gerenciadorTokenJwt;
     private final AuthenticationManager authenticationManager;
     public  final AutenticacaoService autenticacaoService;
+    private final AuditService auditService;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, GerenciadorTokenJwt gerenciadorTokenJwt, AuthenticationManager authenticationManager, AutenticacaoService autenticacaoService) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, GerenciadorTokenJwt gerenciadorTokenJwt, AuthenticationManager authenticationManager, AutenticacaoService autenticacaoService, AuditService auditService) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
         this.gerenciadorTokenJwt = gerenciadorTokenJwt;
         this.authenticationManager = authenticationManager;
         this.autenticacaoService = autenticacaoService;
+        this.auditService = auditService;
     }
 
     public List<UsuarioResponseDto> listar() {
@@ -75,6 +78,7 @@ public class UsuarioService {
         Usuario usuario = UsuarioMapper.of(request);
         usuarioRepository.save(usuario);
         log.info("ADM {} criou usuário {}", usuarioLogado, usuario.getApelido());
+        auditService.registrar(usuarioLogado, "CADASTRO", "USUARIO", "Criou usuário: " + usuario.getApelido());
         return UsuarioMapper.toResponse(usuario);
     }
 
@@ -85,6 +89,7 @@ public class UsuarioService {
 
         String usuarioLogado = getUsuarioLogado();
         log.info("ADM {} deletou usuário dono do ID: {}", usuarioLogado, id);
+        auditService.registrar(usuarioLogado, "DELECAO", "USUARIO", "Deletou usuário ID: " + id);
         usuarioRepository.deleteById(id);
     }
 
@@ -103,6 +108,7 @@ public class UsuarioService {
         usuario.setId(id);
         usuarioRepository.save(usuario);
         log.info("Usuário {} atualizou usuário {}", usuarioLogado, usuario.getApelido());
+        auditService.registrar(usuarioLogado, "ATUALIZACAO", "USUARIO", "Atualizou usuário: " + usuario.getApelido());
         return UsuarioMapper.toResponse(usuario);
     }
 
@@ -114,6 +120,7 @@ public class UsuarioService {
         usuario.setAdministrador(adm.getadministrador());
         usuarioRepository.save(usuario);
         log.info("ADM {} tornou usuário {} um administrador do sistema", usuarioLogado, usuario.getApelido());
+        auditService.registrar(usuarioLogado, "ATUALIZACAO", "USUARIO", "Alterou permissão de administrador do usuário: " + usuario.getApelido());
         return UsuarioMapper.toResponse(usuario);
     }
 
@@ -142,6 +149,7 @@ public class UsuarioService {
         final String token = gerenciadorTokenJwt.generateToken(authentication);
 
         log.info("Usuário {} autenticado com sucesso", usuarioAutenticado.get().getApelido());
+        auditService.registrar(usuarioAutenticado.get().getApelido(), "LOGIN", "USUARIO", "Login realizado com sucesso");
         return UsuarioMapper.of(usuarioAutenticado.get(), token);
         } catch (BadCredentialsException e) {
             log.warn("Falha na autenticação do usuário: {}", usuario.getApelido());

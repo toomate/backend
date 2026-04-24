@@ -1,5 +1,6 @@
 package com.toomate.backend.service;
 
+import com.toomate.backend.audit.AuditService;
 import com.toomate.backend.dto.divida.DividaRequestDto;
 import com.toomate.backend.dto.divida.DividaResponseDto;
 import com.toomate.backend.dto.divida.DividaResponseModalDto;
@@ -14,6 +15,7 @@ import com.toomate.backend.repository.DividaRepository;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -26,10 +28,12 @@ public class DividaService {
 
     private final DividaRepository dividaRepository;
     private final ClienteRepository clienteRepository;
+    private final AuditService auditService;
 
-    public DividaService(DividaRepository dividaRepository, ClienteRepository clienteRepository) {
+    public DividaService(DividaRepository dividaRepository, ClienteRepository clienteRepository, AuditService auditService) {
         this.dividaRepository = dividaRepository;
         this.clienteRepository = clienteRepository;
+        this.auditService = auditService;
     }
 
     public DividaResponseDto cadastrar(DividaRequestDto divida) {
@@ -46,6 +50,8 @@ public class DividaService {
         Divida dividaParaCadastrar = DividaMapper.toEntity(divida, cliente.get());
 
         dividaRepository.save(dividaParaCadastrar);
+        auditService.registrar(getUsuarioLogado(), "CADASTRO", "DIVIDA",
+                String.format("Cadastrou dívida de R$%.2f para cliente ID: %d", divida.getValor(), divida.getIdCliente()));
 
         return DividaMapper.toResponse(dividaParaCadastrar, cliente.get());
     }
@@ -69,6 +75,7 @@ public class DividaService {
             divida.setPago(true);
             divida.setDataPagamento(LocalDate.now());
             Divida dividaAtualizada = dividaRepository.save(divida);
+            auditService.registrar(getUsuarioLogado(), "PAGAMENTO", "DIVIDA", "Marcou dívida ID: " + idDivida + " como paga");
             return DividaMapper.toResponse(dividaAtualizada, dividaAtualizada.getCliente());
         }
         throw new EntidadeNaoEncontradaException("Divida não encontrada");
@@ -112,5 +119,9 @@ public class DividaService {
 
     public List<String> listarPedidos() {
         return dividaRepository.listarPedidos();
+    }
+
+    private String getUsuarioLogado() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }

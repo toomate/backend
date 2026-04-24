@@ -1,5 +1,6 @@
 package com.toomate.backend.service;
 
+import com.toomate.backend.audit.AuditService;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.exceptions.RecursoExisteException;
@@ -7,6 +8,7 @@ import com.toomate.backend.model.Fornecedor;
 import com.toomate.backend.repository.FornecedorRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,9 +16,11 @@ import java.util.List;
 @Service
 public class FornecedorService {
     private final FornecedorRepository fornecedorRepository;
+    private final AuditService auditService;
 
-    public FornecedorService(FornecedorRepository fornecedorRepository) {
+    public FornecedorService(FornecedorRepository fornecedorRepository, AuditService auditService) {
         this.fornecedorRepository = fornecedorRepository;
+        this.auditService = auditService;
     }
 
     public List<Fornecedor> listar() {
@@ -59,7 +63,9 @@ public class FornecedorService {
         fornecedor.setTelefone(telefoneNormalizado);
         fornecedor.setLink(gerarLinkWhatsapp(telefoneNormalizado));
 
-        return fornecedorRepository.save(fornecedor);
+        Fornecedor salvo = fornecedorRepository.save(fornecedor);
+        auditService.registrar(getUsuarioLogado(), "CADASTRO", "FORNECEDOR", "Cadastrou fornecedor: " + salvo.getRazaoSocial());
+        return salvo;
     }
 
     public Fornecedor atualizar(Integer id, String razaoSocial, String telefone) {
@@ -77,7 +83,9 @@ public class FornecedorService {
         atual.setTelefone(telefoneNormalizado);
         atual.setLink(gerarLinkWhatsapp(telefoneNormalizado));
 
-        return fornecedorRepository.save(atual);
+        Fornecedor atualizado = fornecedorRepository.save(atual);
+        auditService.registrar(getUsuarioLogado(), "ATUALIZACAO", "FORNECEDOR", "Atualizou fornecedor: " + atualizado.getRazaoSocial());
+        return atualizado;
     }
 
     public void deletar(Integer id) {
@@ -85,6 +93,7 @@ public class FornecedorService {
             throw new EntidadeNaoEncontradaException(
                     String.format("Nao foi encontrado um fornecedor com o id %d", id));
         }
+        auditService.registrar(getUsuarioLogado(), "DELECAO", "FORNECEDOR", "Deletou fornecedor ID: " + id);
         fornecedorRepository.deleteById(id);
     }
 
@@ -117,5 +126,9 @@ public class FornecedorService {
 
     private String gerarLinkWhatsapp(String telefoneNormalizado) {
         return "https://wa.me/" + telefoneNormalizado;
+    }
+
+    private String getUsuarioLogado() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }

@@ -1,11 +1,13 @@
 package com.toomate.backend.service;
 
+import com.toomate.backend.audit.AuditService;
 import com.toomate.backend.dto.boleto.BoletoRequestDto;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.mapper.boleto.BoletoMapper;
 import com.toomate.backend.model.Boleto;
 import com.toomate.backend.repository.BoletoRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,14 +19,18 @@ import java.util.List;
 public class BoletoService {
 
     private final BoletoRepository boletoRepository;
+    private final AuditService auditService;
 
-    public BoletoService(BoletoRepository boletoRepository) {
+    public BoletoService(BoletoRepository boletoRepository, AuditService auditService) {
         this.boletoRepository = boletoRepository;
+        this.auditService = auditService;
     }
 
     public Boleto cadastrar(BoletoRequestDto request) {
         Boleto boleto = BoletoMapper.toEntity(request);
-        return boletoRepository.save(boleto);
+        boletoRepository.save(boleto);
+        auditService.registrar(getUsuarioLogado(), "CADASTRO", "BOLETO", "Cadastrou boleto: " + boleto.getDescricao());
+        return boleto;
     }
 
     public List<Boleto> listarBoletos() {
@@ -43,7 +49,7 @@ public class BoletoService {
 
         if (boletoRepository.existsById(idBoleto)) {
             Boleto save = boletoRepository.save(boleto);
-
+            auditService.registrar(getUsuarioLogado(), "ATUALIZACAO", "BOLETO", "Editou boleto ID: " + idBoleto);
             return save;
         }
 
@@ -55,6 +61,7 @@ public class BoletoService {
         if (!boletoRepository.existsById(idBoleto)) {
             throw new EntidadeNaoEncontradaException("O boleto não foi encontrado!");
         }
+        auditService.registrar(getUsuarioLogado(), "DELECAO", "BOLETO", "Deletou boleto ID: " + idBoleto);
         boletoRepository.deleteById(idBoleto);
     }
 
@@ -78,5 +85,9 @@ public class BoletoService {
 
     public List<String> listarCategorias() {
         return boletoRepository.listarCategorias();
+    }
+
+    private String getUsuarioLogado() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }

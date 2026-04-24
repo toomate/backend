@@ -1,5 +1,6 @@
 package com.toomate.backend.service;
 
+import com.toomate.backend.audit.AuditService;
 import com.toomate.backend.dto.rotina.InsumoRotina;
 import com.toomate.backend.dto.rotina.RotinaInsumoRequest;
 import com.toomate.backend.dto.rotina.RotinaRequestDto;
@@ -13,6 +14,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,13 +28,15 @@ public class RotinaService {
     private final RotinaInsumoRepository rotinaInsumoRepository;
     private final LoteService loteService;
     private final MarcaService marcaService;
+    private final AuditService auditService;
 
-    public RotinaService(RotinaRepository rotinaRepository, InsumoService insumoService, RotinaInsumoRepository rotinaInsumoRepository, LoteService loteService, MarcaService marcaService) {
+    public RotinaService(RotinaRepository rotinaRepository, InsumoService insumoService, RotinaInsumoRepository rotinaInsumoRepository, LoteService loteService, MarcaService marcaService, AuditService auditService) {
         this.rotinaRepository = rotinaRepository;
         this.insumoService = insumoService;
         this.rotinaInsumoRepository = rotinaInsumoRepository;
         this.loteService = loteService;
         this.marcaService = marcaService;
+        this.auditService = auditService;
     }
 
     public List<Rotina> listar() {
@@ -62,6 +66,7 @@ public class RotinaService {
         }
         Rotina rotina = RotinaMapper.toEntity(request);
         rotinaRepository.save(rotina);
+        auditService.registrar(getUsuarioLogado(), "CADASTRO", "ROTINA", "Cadastrou rotina: " + rotina.getTitulo());
         return rotina;
     }
 
@@ -89,6 +94,7 @@ public class RotinaService {
             throw new EntidadeNaoEncontradaException(String.format("Não foi encontrada uma rotina com este id %d", id));
         }
 
+        auditService.registrar(getUsuarioLogado(), "DELECAO", "ROTINA", "Deletou rotina ID: " + id);
         rotinaInsumoRepository.deleteByRotinaId(id);
         rotinaRepository.deleteById(id);
     }
@@ -127,8 +133,7 @@ public class RotinaService {
                 throw new EntradaInvalidaException("Faltou estoque para: " + relacao.getInsumo().getNome());
             }
         }
-
-
+        auditService.registrar(getUsuarioLogado(), "BAIXA", "ROTINA", "Deu baixa no estoque pela rotina ID: " + id);
     }
 
     public Rotina atualizar(RotinaRequestDto rotina, Integer id) {
@@ -141,8 +146,12 @@ public class RotinaService {
         }
 
         Rotina rotinaParaAtualizar = RotinaMapper.toEntity(rotina);
-        return rotinaRepository.save(rotinaParaAtualizar);
+        Rotina salva = rotinaRepository.save(rotinaParaAtualizar);
+        auditService.registrar(getUsuarioLogado(), "ATUALIZACAO", "ROTINA", "Atualizou rotina ID: " + id);
+        return salva;
     }
 
-
+    private String getUsuarioLogado() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
 }

@@ -1,5 +1,6 @@
 package com.toomate.backend.service;
 
+import com.toomate.backend.audit.AuditService;
 import com.toomate.backend.dto.Kpi;
 import com.toomate.backend.dto.estoque_grupo.*;
 import com.toomate.backend.dto.lote.LotePatchDto;
@@ -28,11 +29,12 @@ import java.util.stream.Collectors;
 public class LoteService implements LoteListener {
     private final LoteRepository loteRepository;
     private final EnviarNotificacao enviarNotificacao;
+    private final AuditService auditService;
 
-
-    public LoteService(LoteRepository loteRepository, EnviarNotificacao enviarNotificacao) {
+    public LoteService(LoteRepository loteRepository, EnviarNotificacao enviarNotificacao, AuditService auditService) {
         this.loteRepository = loteRepository;
         this.enviarNotificacao = enviarNotificacao;
+        this.auditService = auditService;
     }
 
     @Override
@@ -82,6 +84,8 @@ public class LoteService implements LoteListener {
         lote = loteRepository.save(lote);
         notificarMudanca(lote.getMarca().getInsumo());
         log.info("Usuário {} cadastrou um novo lote da marca: {} com {} {}", usuarioLogado, lote.getMarca().getNomeMarca(), lote.getQuantidadeMedida(), lote.getMarca().getInsumo().getUnidadeMedida());
+        auditService.registrar(usuarioLogado, "CADASTRO", "LOTE",
+                String.format("Cadastrou lote da marca %s com %.2f %s", lote.getMarca().getNomeMarca(), lote.getQuantidadeMedida(), lote.getMarca().getInsumo().getUnidadeMedida()));
         return lote;
     }
 
@@ -93,6 +97,7 @@ public class LoteService implements LoteListener {
 
         loteRepository.deleteById(id);
         log.info("Usuário {} deletou o Lote com ID: {}", usuarioLogado, id);
+        auditService.registrar(usuarioLogado, "DELECAO", "LOTE", "Deletou lote ID: " + id);
         notificarMudanca(loteRepository.findById(id).get().getMarca().getInsumo());
     }
 
@@ -251,6 +256,7 @@ public class LoteService implements LoteListener {
                 throw new EntidadeNaoEncontradaException("Não foi encontrado um lote com o id: " + dto.getId());
             }
             log.info("Usuário {} atualizou a quantidade do lote: {} às {}", usuarioLogado, dto.getId(), LocalDateTime.now());
+            auditService.registrar(usuarioLogado, "ATUALIZACAO", "LOTE", "Atualizou quantidade do lote ID: " + dto.getId());
             lote.setQuantidadeMedida(dto.getQuantidadeMedida());
         }
     }
