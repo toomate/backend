@@ -270,6 +270,8 @@ public class LoteService implements LoteListener {
                 .distinct()
                 .toList();
 
+        alterados.forEach(this::notificarMudanca);
+
         for (LotePatchDto dto : request) {
             Lote lote = mapa.get(dto.getId());
 
@@ -280,13 +282,6 @@ public class LoteService implements LoteListener {
             auditService.registrar(usuarioLogado, "ATUALIZACAO", "LOTE", "Atualizou quantidade do lote ID: " + dto.getId());
 
             lote.setQuantidadeMedida(dto.getQuantidadeMedida());
-        }
-
-        // notify any related insumos whose total stock might have changed
-        for (Insumo insumo : alterados) {
-            if (insumo != null) {
-                notificarMudanca(insumo);
-            }
         }
     }
 
