@@ -34,9 +34,11 @@ logging:
   level:
     com.toomate.backend: INFO
 
-notificacao:
-  endpoint:
-    url: http://localhost:8181/notification
+broker:
+  exchange:
+    name: example.fanout.exchange
+  queue:
+    name: example.queue
 
 audit:
   bucket: toomate-raw-2026

@@ -1,8 +1,7 @@
 package com.toomate.backend.lote;
 
-import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
-import com.toomate.backend.integration.EnviarNotificacao;
+import com.toomate.backend.integration.ProducerRabbitMQ;
 import com.toomate.backend.model.*;
 import com.toomate.backend.repository.LoteRepository;
 import com.toomate.backend.service.LoteService;
@@ -30,7 +29,7 @@ public class loteTeste {
     private LoteRepository loteRepository;
 
     @Mock
-    private EnviarNotificacao enviarNotificacao;
+    private ProducerRabbitMQ producerRabbitMQ;
 
     @InjectMocks
     public LoteService loteService;

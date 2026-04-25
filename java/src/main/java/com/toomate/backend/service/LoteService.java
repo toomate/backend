@@ -7,7 +7,7 @@ import com.toomate.backend.dto.lote.LotePatchDto;
 import com.toomate.backend.enums.StatusVencimento;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
-import com.toomate.backend.integration.EnviarNotificacao;
+import com.toomate.backend.integration.ProducerRabbitMQ;
 import com.toomate.backend.model.*;
 import com.toomate.backend.observer.LoteListener;
 import com.toomate.backend.repository.LoteRepository;
@@ -28,12 +28,12 @@ import java.util.stream.Collectors;
 @Service
 public class LoteService implements LoteListener {
     private final LoteRepository loteRepository;
-    private final EnviarNotificacao enviarNotificacao;
+    private final ProducerRabbitMQ producerRabbitMQ;
     private final AuditService auditService;
 
-    public LoteService(LoteRepository loteRepository, EnviarNotificacao enviarNotificacao, AuditService auditService) {
+    public LoteService(LoteRepository loteRepository, ProducerRabbitMQ producerRabbitMQ, AuditService auditService) {
         this.loteRepository = loteRepository;
-        this.enviarNotificacao = enviarNotificacao;
+        this.producerRabbitMQ = producerRabbitMQ;
         this.auditService = auditService;
     }
 
@@ -41,7 +41,7 @@ public class LoteService implements LoteListener {
     public void notificarMudanca(Insumo insumo) {
         Double total = loteRepository.getEstoqueInsumo(insumo.getIdInsumo());
         if (total < insumo.getQtdMinima()) {
-            enviarNotificacao.enviarNotif(insumo, total);
+            producerRabbitMQ.enviarNotif(insumo, total);
         }
     }
 
