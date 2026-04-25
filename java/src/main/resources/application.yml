@@ -13,15 +13,15 @@ spring:
       naming:
         implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
   rabbitmq:
     addresses: amqp://myuser:secret@localhost:5672/
-    username: toomate_user
-    password: toomate_password
+    username: myuser
+    password: secret
     virtual-host: /
     listener:
       simple:

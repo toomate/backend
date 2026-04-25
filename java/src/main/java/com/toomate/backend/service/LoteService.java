@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -95,10 +96,16 @@ public class LoteService implements LoteListener {
             throw new EntidadeNaoEncontradaException(String.format("Não foi encontrado lote com o id %d", id));
         }
 
+        // fetch the lote before deleting so we can notify based on its insumo
+        Lote lote = loteRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrado lote com o id %d", id)));
+
         loteRepository.deleteById(id);
         log.info("Usuário {} deletou o Lote com ID: {}", usuarioLogado, id);
         auditService.registrar(usuarioLogado, "DELECAO", "LOTE", "Deletou lote ID: " + id);
-        notificarMudanca(loteRepository.findById(id).get().getMarca().getInsumo());
+        if (lote.getMarca() != null && lote.getMarca().getInsumo() != null) {
+            notificarMudanca(lote.getMarca().getInsumo());
+        }
     }
 
     public Lote atualizar(Integer id, Lote lote) {
@@ -126,14 +133,17 @@ public class LoteService implements LoteListener {
             throw new EntidadeNaoEncontradaException(String.format("Não foi encontrado lote com o id %d", id));
         }
 
-        Lote lote = loteRepository.findById(id).get();
+        Lote lote = loteRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrado lote com o id %d", id)));
         if (lote.getQuantidadeMedida() - quantidadeMedida < 0) {
             throw new EntradaInvalidaException("Quantidade medida não pode ser negativa");
         }
 
         lote.removerQuantidadeMedida(quantidadeMedida);
         loteRepository.save(lote);
-        notificarMudanca(lote.getMarca().getInsumo());
+        if (lote.getMarca() != null && lote.getMarca().getInsumo() != null) {
+            notificarMudanca(lote.getMarca().getInsumo());
+        }
 
     }
 
@@ -142,10 +152,13 @@ public class LoteService implements LoteListener {
             throw new EntidadeNaoEncontradaException(String.format("Não foi encontrado lote com o id %d", id));
         }
 
-        Lote lote = loteRepository.findById(id).get();
+        Lote lote = loteRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrado lote com o id %d", id)));
         lote.adicionarQuantidadeMedida(quantidadeMedida);
         loteRepository.save(lote);
-        notificarMudanca(lote.getMarca().getInsumo());
+        if (lote.getMarca() != null && lote.getMarca().getInsumo() != null) {
+            notificarMudanca(lote.getMarca().getInsumo());
+        }
     }
 
     public List<EstoqueGrupo> buscarEstoque() {
@@ -249,6 +262,14 @@ public class LoteService implements LoteListener {
         Map<Integer, Lote> mapa = lotes.stream()
                 .collect(Collectors.toMap(Lote::getIdLote, e -> e));
 
+        List<Insumo> alterados = lotes.stream()
+                .map(Lote::getMarca)
+                .filter(Objects::nonNull)
+                .map(Marca::getInsumo)
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+
         for (LotePatchDto dto : request) {
             Lote lote = mapa.get(dto.getId());
 
@@ -257,7 +278,15 @@ public class LoteService implements LoteListener {
             }
             log.info("Usuário {} atualizou a quantidade do lote: {} às {}", usuarioLogado, dto.getId(), LocalDateTime.now());
             auditService.registrar(usuarioLogado, "ATUALIZACAO", "LOTE", "Atualizou quantidade do lote ID: " + dto.getId());
+
             lote.setQuantidadeMedida(dto.getQuantidadeMedida());
+        }
+
+        // notify any related insumos whose total stock might have changed
+        for (Insumo insumo : alterados) {
+            if (insumo != null) {
+                notificarMudanca(insumo);
+            }
         }
     }
 
