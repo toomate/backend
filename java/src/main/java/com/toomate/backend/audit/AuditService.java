@@ -7,10 +7,14 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Object;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -53,5 +57,29 @@ public class AuditService {
         } catch (Exception e) {
             log.error("Falha ao salvar log de auditoria no S3: {}", e.getMessage());
         }
+    }
+
+    public List<AuditLog> listar(LocalDate data) {
+        String prefixoDia = String.format("%s/%s/", prefix, data);
+
+        List<S3Object> objetos = s3Client.listObjectsV2(
+                ListObjectsV2Request.builder()
+                        .bucket(bucket)
+                        .prefix(prefixoDia)
+                        .build()
+        ).contents();
+
+        List<AuditLog> logs = new ArrayList<>();
+        for (S3Object objeto : objetos) {
+            try {
+                byte[] conteudo = s3Client.getObjectAsBytes(
+                        b -> b.bucket(bucket).key(objeto.key())
+                ).asByteArray();
+                logs.add(mapper.readValue(conteudo, AuditLog.class));
+            } catch (Exception e) {
+                log.error("Falha ao ler log de auditoria {}: {}", objeto.key(), e.getMessage());
+            }
+        }
+        return logs;
     }
 }
