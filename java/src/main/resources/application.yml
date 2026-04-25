@@ -18,7 +18,15 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
-
+  rabbitmq:
+    addresses: amqp://myuser:secret@localhost:5672/
+    username: toomate_user
+    password: toomate_password
+    virtual-host: /
+    listener:
+      simple:
+        concurrency: 2
+        max-concurrency: 10
 server:
   error:
     include-message: always
