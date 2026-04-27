@@ -6,6 +6,7 @@ import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.model.Categoria;
 import com.toomate.backend.model.Insumo;
 import com.toomate.backend.repository.InsumoRepository;
+import com.toomate.backend.audit.AuditService;
 import jakarta.validation.constraints.AssertTrue;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +37,8 @@ class InsumoServiceTest {
     private InsumoService service;
     @Mock
     private InsumoRepository repository;
+    @Mock
+    private AuditService auditService; 
 
     @BeforeEach
     void setupAutenticacao() {
