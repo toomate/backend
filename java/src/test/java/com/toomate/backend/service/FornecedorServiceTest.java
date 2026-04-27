@@ -39,6 +39,9 @@ class FornecedorServiceTest {
     private String razaoSocialValida;
     private String telefoneValido;
 
+    @Mock
+    private AuditService auditService;
+
     @BeforeEach
     void setup() {
         exemploFornecedor = new Fornecedor();
@@ -49,6 +52,10 @@ class FornecedorServiceTest {
 
         razaoSocialValida = "Atacado Sao Paulo";
         telefoneValido = "11987654321";
+
+        SecurityContextHolder.getContext().setAuthentication(
+            new UsernamePasswordAuthenticationToken("admin.teste", "senha")
+        );
     }
 
     @Test

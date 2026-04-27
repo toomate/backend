@@ -47,6 +47,9 @@ class UsuarioServiceTest {
     @InjectMocks
     private UsuarioService usuarioService;
 
+    @Mock
+    private AuditService auditService;
+
     @BeforeEach
     void setupAutenticacao() {
         SecurityContextHolder.getContext().setAuthentication(
