@@ -11,7 +11,10 @@ public class InsumoNotificationDto {
     private LocalDateTime timestamp = LocalDateTime.now();
     private BodyInsumoNotification body;
 
-    InsumoNotificationDto(Insumo insumo, Double quantidadeAtual) {
+    public InsumoNotificationDto() {
+    }
+
+    public InsumoNotificationDto(Insumo insumo, Double quantidadeAtual) {
         this.id = "e" + insumo.getIdInsumo();
         this.body = new BodyInsumoNotification(
                 insumo.getNome(),
