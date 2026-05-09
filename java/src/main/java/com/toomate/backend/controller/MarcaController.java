@@ -1,13 +1,11 @@
 package com.toomate.backend.controller;
 
-import com.toomate.backend.dto.marca.MarcaMapperDto;
+import com.toomate.backend.mapper.marca.MarcaMapper;
 import com.toomate.backend.dto.marca.MarcaRequestDto;
 import com.toomate.backend.dto.marca.MarcaResponseDto;
-import com.toomate.backend.model.Categoria;
 import com.toomate.backend.model.Fornecedor;
 import com.toomate.backend.model.Insumo;
 import com.toomate.backend.model.Marca;
-import com.toomate.backend.repository.MarcaRepository;
 import com.toomate.backend.service.FornecedorService;
 import com.toomate.backend.service.InsumoService;
 import com.toomate.backend.service.MarcaService;
@@ -19,9 +17,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/marcas")
@@ -46,7 +42,7 @@ public class MarcaController {
             })
     @GetMapping
     public ResponseEntity<List<MarcaResponseDto>> listar(){
-        List<MarcaResponseDto> marcas = MarcaMapperDto.toDto(marcaService.listar());
+        List<MarcaResponseDto> marcas = MarcaMapper.toDto(marcaService.listar());
 
         if(marcas.isEmpty()) {
             return ResponseEntity.status(204).build();
@@ -84,7 +80,7 @@ public class MarcaController {
     public ResponseEntity<MarcaResponseDto> cadastrar(@Valid @RequestBody MarcaRequestDto request){
         Marca entity = marcaService.cadastrar(request);
 
-        MarcaResponseDto responseDto = MarcaMapperDto.toDto(entity);
+        MarcaResponseDto responseDto = MarcaMapper.toDto(entity);
         return ResponseEntity.status(201).body(responseDto);
     }
 
@@ -114,7 +110,7 @@ public class MarcaController {
         if (marcaService.existePorId(id)) {
             Fornecedor fornecedor = fornecedorService.retornarPeloId(marca.getFkFornecedor());
             Insumo insumo = insumoService.insumoPorId(marca.getFkInsumo());
-            Marca marcaAtualizada = MarcaMapperDto.toEntity(marca, insumo, fornecedor);
+            Marca marcaAtualizada = MarcaMapper.toEntity(marca, insumo, fornecedor);
             marcaService.atualizar(id, marcaAtualizada);
             return ResponseEntity.status(204).build();
         }

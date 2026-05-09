@@ -1,6 +1,6 @@
 package com.toomate.backend.service;
 
-import com.toomate.backend.dto.marca.MarcaMapperDto;
+import com.toomate.backend.mapper.marca.MarcaMapper;
 import com.toomate.backend.dto.marca.MarcaRequestDto;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
@@ -57,7 +57,7 @@ public class MarcaService {
                         String.format("Nao foi encontrado um fornecedor com o id %d", request.getFkFornecedor()))
         );
 
-        Marca marca = MarcaMapperDto.toEntity(request, insumo, fornecedor);
+        Marca marca = MarcaMapper.toEntity(request, insumo, fornecedor);
 
         return marcaRepository.save(marca);
     }

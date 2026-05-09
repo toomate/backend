@@ -1,6 +1,6 @@
 package com.toomate.backend.service;
 
-import com.toomate.backend.dto.marca.MarcaMapperDto;
+import com.toomate.backend.mapper.marca.MarcaMapper;
 import com.toomate.backend.dto.marca.MarcaRequestDto;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
@@ -26,7 +26,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 
 @ExtendWith(MockitoExtension.class)
 class MarcaServiceTest {
@@ -45,7 +44,7 @@ class MarcaServiceTest {
         @DisplayName("Deve cadastrar uma marca com sucesso")
         void deveCadastrarUmaMarca(){
             MarcaRequestDto dto = new MarcaRequestDto("teste", 1, 2);
-            Marca marca = MarcaMapperDto.toEntity(dto);
+            Marca marca = MarcaMapper.toEntity(dto);
             marca.setInsumo(new Insumo());
             marca.setFornecedor(new Fornecedor());
 
