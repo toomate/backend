@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
@@ -21,8 +22,14 @@ import java.util.UUID;
 @Service
 public class AuditService {
 
-    private final S3Client s3Client = S3Client.builder().build();
+    private final S3Client s3Client;
     private final ObjectMapper mapper = new ObjectMapper();
+
+    public AuditService(@Value("${audit.aws-region:${AWS_REGION:us-east-1}}") String awsRegion) {
+        this.s3Client = S3Client.builder()
+                .region(Region.of(awsRegion))
+                .build();
+    }
 
     @Value("${audit.bucket}")
     private String bucket;
