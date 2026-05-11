@@ -1,9 +1,10 @@
 package com.toomate.backend.service;
 
-import com.toomate.backend.dto.categoria.CategoriaMapperDto;
+import com.toomate.backend.mapper.categoria.CategoriaMapper;
 import com.toomate.backend.dto.categoria.CategoriaRequestDto;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
+import com.toomate.backend.exceptions.RecursoExisteException;
 import com.toomate.backend.model.Categoria;
 import com.toomate.backend.repository.CategoriaRepository;
 import org.springframework.stereotype.Service;
@@ -28,10 +29,14 @@ public class CategoriaService  {
 
     public Categoria cadastrar(CategoriaRequestDto request) {
         if (request == null) {
-            throw new EntradaInvalidaException("O fornecedor não pode ser nulo!");
+            throw new EntradaInvalidaException("A categoria não pode ser nula!");
         }
 
-        Categoria categoria = CategoriaMapperDto.toEntity(request);
+        if (categoriaRepository.existsByNomeIgnoreCase(request.getNome())) {
+            throw new RecursoExisteException("Já existe uma categoria cadastrada com esse nome.");
+        }
+
+        Categoria categoria = CategoriaMapper.toEntity(request);
 
         return categoriaRepository.save(categoria);
     }
@@ -49,13 +54,19 @@ public class CategoriaService  {
                 .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrada categoria com o id %d", id)));
     }
 
-    public Categoria atualizar(Integer id, Categoria categoria) {
-        if (!categoriaRepository.existsById(id)) {
-            throw new EntidadeNaoEncontradaException(String.format("Não foi encontrado uma categoria com o id %d", id));
+    public Categoria atualizar(Integer id, CategoriaRequestDto request) {
+        Categoria existente = categoriaRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(
+                        String.format("Não foi encontrada categoria com o id %d", id)));
+
+        String nomeAtual = existente.getNome() == null ? "" : existente.getNome();
+        if (!nomeAtual.equalsIgnoreCase(request.getNome()) && categoriaRepository.existsByNomeIgnoreCase(request.getNome())) {
+            throw new RecursoExisteException("Já existe uma categoria cadastrada com esse nome.");
         }
 
-        categoria.setIdCategoria(id);
-        return categoriaRepository.save(categoria);
+        existente.setNome(request.getNome());
+        existente.setRotatividade(request.getRotatividade());
+        return categoriaRepository.save(existente);
     }
 
     public void deletar(Integer id) {

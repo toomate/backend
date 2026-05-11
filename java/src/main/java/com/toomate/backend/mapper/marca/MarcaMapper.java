@@ -1,8 +1,8 @@
-package com.toomate.backend.dto.marca;
+package com.toomate.backend.mapper.marca;
 
-import com.toomate.backend.dto.fornecedor.FornecedorResponseDto;
-import com.toomate.backend.dto.insumo.InsumoMapperDto;
-import com.toomate.backend.dto.insumo.InsumoResponseDto;
+import com.toomate.backend.dto.marca.MarcaRequestDto;
+import com.toomate.backend.dto.marca.MarcaResponseDto;
+import com.toomate.backend.mapper.insumo.InsumoMapper;
 import com.toomate.backend.mapper.fornecedor.FornecedorMapper;
 import com.toomate.backend.model.Fornecedor;
 import com.toomate.backend.model.Insumo;
@@ -10,7 +10,7 @@ import com.toomate.backend.model.Marca;
 
 import java.util.List;
 
-public class MarcaMapperDto {
+public class MarcaMapper {
     public static Marca toEntity(MarcaRequestDto dto) {
         if (dto == null) {
             return null;
@@ -43,13 +43,13 @@ public class MarcaMapperDto {
         MarcaResponseDto dto = new MarcaResponseDto();
         dto.setIdMarca(marca.getIdMarca());
         dto.setNome(marca.getNomeMarca());
-        dto.setInsumo(InsumoMapperDto.toDto(marca.getInsumo()));
+        dto.setInsumo(InsumoMapper.toDto(marca.getInsumo()));
         dto.setFornecedor(FornecedorMapper.toResponse(marca.getFornecedor()));
         return dto;
     }
 
     public static List<MarcaResponseDto> toDto(List<Marca> entity) {
-        return entity.stream().map(marca -> new MarcaResponseDto(marca.getIdMarca(), marca.getNomeMarca(), InsumoMapperDto.toDto(marca.getInsumo()), FornecedorMapper.toResponse(marca.getFornecedor()))).toList();
+        return entity.stream().map(marca -> new MarcaResponseDto(marca.getIdMarca(), marca.getNomeMarca(), InsumoMapper.toDto(marca.getInsumo()), FornecedorMapper.toResponse(marca.getFornecedor()))).toList();
     }
 
 }

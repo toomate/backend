@@ -1,12 +1,12 @@
 package com.toomate.backend.controller;
 
-import com.toomate.backend.categoria.application.usecase.CategoriaUseCase;
-import com.toomate.backend.categoria.domain.model.CategoriaDomain;
-import com.toomate.backend.categoria.interfaces.rest.CategoriaDtoMapper;
+import com.toomate.backend.mapper.categoria.CategoriaMapper;
 import com.toomate.backend.dto.categoria.CategoriaRequestDto;
 import com.toomate.backend.dto.categoria.CategoriaResponseDto;
 import com.toomate.backend.dto.fornecedor.FornecedorResponseDto;
 import com.toomate.backend.mapper.fornecedor.FornecedorMapper;
+import com.toomate.backend.model.Categoria;
+import com.toomate.backend.service.CategoriaService;
 import com.toomate.backend.service.MarcaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -31,11 +31,11 @@ import java.util.List;
 @SecurityRequirement(name = "Bearer")
 public class CategoriaController {
 
-    private final CategoriaUseCase categoriaUseCase;
+    private final CategoriaService categoriaService;
     private final MarcaService marcaService;
 
-    public CategoriaController(CategoriaUseCase categoriaUseCase, MarcaService marcaService) {
-        this.categoriaUseCase = categoriaUseCase;
+    public CategoriaController(CategoriaService categoriaService, MarcaService marcaService) {
+        this.categoriaService = categoriaService;
         this.marcaService = marcaService;
     }
 
@@ -48,9 +48,7 @@ public class CategoriaController {
             })
     @GetMapping
     public ResponseEntity<List<CategoriaResponseDto>> listar() {
-        List<CategoriaResponseDto> dtos = categoriaUseCase.listar().stream()
-                .map(CategoriaDtoMapper::toResponse)
-                .toList();
+        List<CategoriaResponseDto> dtos = CategoriaMapper.toResponseDto(categoriaService.listar());
 
         if (dtos.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -68,9 +66,7 @@ public class CategoriaController {
             })
     @GetMapping("/por-nome")
     public ResponseEntity<List<CategoriaResponseDto>> filtroNome(@RequestParam String nome) {
-        List<CategoriaResponseDto> dtos = categoriaUseCase.listarPorNome(nome).stream()
-                .map(CategoriaDtoMapper::toResponse)
-                .toList();
+        List<CategoriaResponseDto> dtos = CategoriaMapper.toResponseDto(categoriaService.listarPorNome(nome));
 
         if (dtos.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -88,7 +84,7 @@ public class CategoriaController {
             })
     @GetMapping("/{id}/fornecedores")
     public ResponseEntity<List<FornecedorResponseDto>> listarFornecedoresPorCategoria(@PathVariable Integer id) {
-        categoriaUseCase.buscarPorId(id);
+        categoriaService.categoriaPorId(id);
         List<FornecedorResponseDto> fornecedores = FornecedorMapper.toResponseList(
                 marcaService.listarFornecedoresPorCategoria(id)
         );
@@ -109,8 +105,8 @@ public class CategoriaController {
             })
     @PostMapping
     public ResponseEntity<CategoriaResponseDto> cadastrar(@Valid @RequestBody CategoriaRequestDto categoria) {
-        CategoriaDomain criada = categoriaUseCase.cadastrar(categoria.getNome(), categoria.getRotatividade());
-        return ResponseEntity.status(201).body(CategoriaDtoMapper.toResponse(criada));
+        Categoria criada = categoriaService.cadastrar(categoria);
+        return ResponseEntity.status(201).body(CategoriaMapper.toDto(criada));
     }
 
     @Operation(summary = "Deletar categoria",
@@ -120,7 +116,7 @@ public class CategoriaController {
             })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Integer id) {
-        categoriaUseCase.deletar(id);
+        categoriaService.deletar(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -132,7 +128,7 @@ public class CategoriaController {
             })
     @PutMapping("/{id}")
     public ResponseEntity<Void> atualizar(@PathVariable Integer id, @Valid @RequestBody CategoriaRequestDto categoria) {
-        categoriaUseCase.atualizar(id, categoria.getNome(), categoria.getRotatividade());
+        categoriaService.atualizar(id, categoria);
         return ResponseEntity.noContent().build();
     }
 }

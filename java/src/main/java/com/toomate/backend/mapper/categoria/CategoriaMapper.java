@@ -1,10 +1,12 @@
-package com.toomate.backend.dto.categoria;
+package com.toomate.backend.mapper.categoria;
 
+import com.toomate.backend.dto.categoria.CategoriaRequestDto;
+import com.toomate.backend.dto.categoria.CategoriaResponseDto;
 import com.toomate.backend.model.Categoria;
 
 import java.util.List;
 
-public class CategoriaMapperDto {
+public class CategoriaMapper {
     // Converte DTO para Entidade
     public static Categoria toEntity(CategoriaRequestDto dto) {
         if (dto == null) {
@@ -33,6 +35,6 @@ public class CategoriaMapperDto {
     }
 
     public static List<CategoriaResponseDto> toResponseDto(List<Categoria> entity) {
-        return entity.stream().map(CategoriaMapperDto::toDto).toList();
+        return entity.stream().map(CategoriaMapper::toDto).toList();
     }
 }

@@ -1,6 +1,6 @@
 package com.toomate.backend.controller;
 
-import com.toomate.backend.dto.insumo.InsumoMapperDto;
+import com.toomate.backend.mapper.insumo.InsumoMapper;
 import com.toomate.backend.dto.insumo.InsumoRequestDto;
 import com.toomate.backend.dto.insumo.InsumoResponseDto;
 import com.toomate.backend.model.Categoria;
@@ -49,7 +49,7 @@ public class InsumoController {
             })
     @GetMapping
     public ResponseEntity<List<InsumoResponseDto>> listar() {
-        List<InsumoResponseDto> insumos = InsumoMapperDto.toDto(insumoService.listar());
+        List<InsumoResponseDto> insumos = InsumoMapper.toDto(insumoService.listar());
 
         if (insumos.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -87,10 +87,10 @@ public class InsumoController {
             return ResponseEntity.status(409).build();
         }
         Categoria categoria = categoriaService.categoriaPorId(insumo.getFkCategoria());
-        Insumo insumoCadastrar = InsumoMapperDto.toEntity(insumo, categoria);
+        Insumo insumoCadastrar = InsumoMapper.toEntity(insumo, categoria);
         Insumo corpo = insumoService.cadastrar(insumoCadastrar);
 
-        InsumoResponseDto responseDto = InsumoMapperDto.toDto(corpo);
+        InsumoResponseDto responseDto = InsumoMapper.toDto(corpo);
         return ResponseEntity.status(201).body(responseDto);
     }
 
@@ -116,7 +116,7 @@ public class InsumoController {
     public ResponseEntity<Void> atualizar(@PathVariable Integer id, @RequestBody @Valid InsumoRequestDto insumo) {
         if (insumoService.existePorId(id)) {
             Categoria categoria = categoriaService.categoriaPorId(insumo.getFkCategoria());
-            Insumo insumoAtualizado = InsumoMapperDto.toEntity(insumo, categoria);
+            Insumo insumoAtualizado = InsumoMapper.toEntity(insumo, categoria);
             insumoService.atualizar(id, insumoAtualizado);
             return ResponseEntity.noContent().build();
         }

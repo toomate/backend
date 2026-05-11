@@ -5,7 +5,7 @@ import com.toomate.backend.dto.estoque_grupo.EstoqueGrupo;
 import com.toomate.backend.dto.estoque_grupo.EstoqueMapper;
 import com.toomate.backend.dto.estoque_grupo.EstoqueVencimento;
 import com.toomate.backend.dto.estoque_grupo.VencimentoView;
-import com.toomate.backend.dto.lote.LoteMapperDto;
+import com.toomate.backend.mapper.lote.LoteMapper;
 import com.toomate.backend.dto.lote.LotePatchDto;
 import com.toomate.backend.dto.lote.LoteRequestDto;
 import com.toomate.backend.dto.lote.LoteResponseDto;
@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,7 +44,7 @@ public class LoteController {
             })
     @GetMapping
     public ResponseEntity<List<LoteResponseDto>> listar() {
-        List<LoteResponseDto> lote = LoteMapperDto.toDto(loteService.listar());
+        List<LoteResponseDto> lote = LoteMapper.toDto(loteService.listar());
 
         if (lote.isEmpty()) {
             return ResponseEntity.status(204).build();
@@ -65,7 +64,7 @@ public class LoteController {
     public ResponseEntity<LoteResponseDto> pegarPorId(@PathVariable Integer id) {
         Lote lote = loteService.listarPorId(id);
 
-        LoteResponseDto loteDto = LoteMapperDto.toDto(lote);
+        LoteResponseDto loteDto = LoteMapper.toDto(lote);
         return ResponseEntity.status(200).body(loteDto);
     }
 
@@ -147,9 +146,9 @@ public class LoteController {
         }
         Usuario usuario = usuarioService.usuarioPorId(lote.getFkUsuario());
         Marca marca = marcaService.marcaPorId(lote.getFkMarca());
-        Lote corpo = loteService.cadastrar(LoteMapperDto.toEntity(lote, usuario, marca));
+        Lote corpo = loteService.cadastrar(LoteMapper.toEntity(lote, usuario, marca));
 
-        LoteResponseDto loteResponse = LoteMapperDto.toDto(corpo);
+        LoteResponseDto loteResponse = LoteMapper.toDto(corpo);
         return ResponseEntity.status(201).body(loteResponse);
     }
 
@@ -177,7 +176,7 @@ public class LoteController {
         if (loteService.existePorId(id)) {
             Usuario usuario = usuarioService.usuarioPorId(lote.getFkUsuario());
             Marca marca = marcaService.marcaPorId(lote.getFkMarca());
-            Lote loteAtualizado = LoteMapperDto.toEntity(lote, usuario, marca);
+            Lote loteAtualizado = LoteMapper.toEntity(lote, usuario, marca);
             loteService.atualizar(id, loteAtualizado);
             return ResponseEntity.status(201).build();
         }

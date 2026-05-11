@@ -1,7 +1,6 @@
 package com.toomate.backend.service;
 
-import com.sun.source.tree.ModuleTree;
-import com.toomate.backend.dto.categoria.CategoriaMapperDto;
+import com.toomate.backend.mapper.categoria.CategoriaMapper;
 import com.toomate.backend.dto.categoria.CategoriaRequestDto;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
@@ -15,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +42,7 @@ class CategoriaServiceTest {
         @DisplayName("Deve cadastrar uma caegoria com sucesso")
         void deveCadastrarUmaCategoriaComSucesso() {
             CategoriaRequestDto dto = new CategoriaRequestDto("teste");
-            Categoria esperado = CategoriaMapperDto.toEntity(dto);
+            Categoria esperado = CategoriaMapper.toEntity(dto);
 
             Mockito.when(categoriaRepository.save(any(Categoria.class))).thenReturn(esperado);
 
@@ -116,24 +114,26 @@ class CategoriaServiceTest {
         @DisplayName("Deve lançar exceção quando a categoria não for encontrada")
         void deveLancarExcecaoQuandoCategoriaNaoExistir() {
             Integer id = 1;
-            Mockito.when(categoriaRepository.existsById(id)).thenReturn(false);
+            CategoriaRequestDto request = new CategoriaRequestDto("teste");
 
-            assertThrows(EntidadeNaoEncontradaException.class, () -> categoriaService.atualizar(id, new Categoria()));
+            Mockito.when(categoriaRepository.findById(id)).thenReturn(Optional.empty());
+
+            assertThrows(EntidadeNaoEncontradaException.class, () -> categoriaService.atualizar(id, request));
         }
 
         @Test
         @DisplayName("Deve atualizar com sucesso uma categoria")
         void deveAtualizarComSucessoUmaCategoria() {
             Integer id = 1;
-            Categoria categoria = new Categoria();
-            Categoria esperado = new Categoria();
-            esperado.setNome("atualizado");
+            CategoriaRequestDto request = new CategoriaRequestDto("atualizado");
+            Categoria existente = new Categoria(id, "antigo", false);
+            Categoria esperado = new Categoria(id, "atualizado", false);
 
-            Mockito.when(categoriaRepository.existsById(id)).thenReturn(true);
-
+            Mockito.when(categoriaRepository.findById(id)).thenReturn(Optional.of(existente));
+            Mockito.when(categoriaRepository.existsByNomeIgnoreCase("atualizado")).thenReturn(false);
             Mockito.when(categoriaRepository.save(any(Categoria.class))).thenReturn(esperado);
 
-            Categoria recebido = categoriaService.atualizar(id, categoria);
+            Categoria recebido = categoriaService.atualizar(id, request);
 
             assertEquals("atualizado", recebido.getNome());
         }

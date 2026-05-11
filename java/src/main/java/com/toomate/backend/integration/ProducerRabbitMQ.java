@@ -2,15 +2,13 @@ package com.toomate.backend.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toomate.backend.config.rabbit.RabbitPropertiesConfiguration;
-import com.toomate.backend.dto.insumo.InsumoMapperDto;
+import com.toomate.backend.mapper.insumo.InsumoMapper;
 import com.toomate.backend.dto.insumo.InsumoNotificationDto;
 import com.toomate.backend.model.Insumo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
 @Component
@@ -30,7 +28,7 @@ public class ProducerRabbitMQ {
 
         String exchangeName = properties.exchange().name();
 
-        InsumoNotificationDto notificationDto = InsumoMapperDto.toNotification(insumo, atual);
+        InsumoNotificationDto notificationDto = InsumoMapper.toNotification(insumo, atual);
 
         try{
             log.info("Quantidade atual do insumo %s é %.2f, abaixo do mínimo de %d".formatted(
