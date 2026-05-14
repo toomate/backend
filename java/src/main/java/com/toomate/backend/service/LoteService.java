@@ -84,9 +84,9 @@ public class LoteService implements LoteListener {
 
         lote = loteRepository.save(lote);
         notificarMudanca(lote.getMarca().getInsumo());
-        log.info("Usuário {} cadastrou um novo lote da marca: {} com {} {}", usuarioLogado, lote.getMarca().getNomeMarca(), lote.getQuantidadeMedida(), lote.getMarca().getInsumo().getUnidadeMedida());
+        log.info("Usuário {} cadastrou um novo lote da marca: {} com {} {}", usuarioLogado, lote.getMarca().getNomeMarca(), lote.getQuantidadeMedida(), lote.getUnidadeMedida());
         auditService.registrar(usuarioLogado, "CADASTRO", "LOTE",
-                String.format("Cadastrou lote da marca %s com %.2f %s", lote.getMarca().getNomeMarca(), lote.getQuantidadeMedida(), lote.getMarca().getInsumo().getUnidadeMedida()));
+                String.format("Cadastrou lote da marca %s com %.2f %s", lote.getMarca().getNomeMarca(), lote.getQuantidadeMedida(), lote.getUnidadeMedida()));
         return lote;
     }
 

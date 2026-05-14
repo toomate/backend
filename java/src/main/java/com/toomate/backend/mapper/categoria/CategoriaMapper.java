@@ -15,7 +15,6 @@ public class CategoriaMapper {
 
         Categoria entity = new Categoria();
         entity.setNome(dto.getNome());
-        entity.setRotatividade(dto.getRotatividade());
 
         return entity;
     }
@@ -29,7 +28,6 @@ public class CategoriaMapper {
         CategoriaResponseDto dto = new CategoriaResponseDto();
         dto.setIdCategoria(entity.getIdCategoria());
         dto.setNome(entity.getNome());
-        dto.setRotatividade(entity.getRotatividade());
 
         return dto;
     }

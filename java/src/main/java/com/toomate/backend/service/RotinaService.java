@@ -80,7 +80,7 @@ public class RotinaService {
             Insumo insumo = insumoService.insumoPorId(atual.getInsumoId());
             RotinaInsumo rotinaInsumo = new RotinaInsumo();
             rotinaInsumo.setInsumo(insumo);
-            rotinaInsumo.setQuantidadeMedida(Math.abs(atual.getQuantidadeMedida()));
+            rotinaInsumo.setQuantidadeInsumo(Math.abs(atual.getQuantidadeInsumo()));
             rotinaInsumo.setRotina(rotina);
             rotinas.add(rotinaInsumo);
         }
@@ -111,7 +111,7 @@ public class RotinaService {
 
 
         for (RotinaInsumo relacao : relacoes) {
-            Double qtdNecessaria = Math.abs(relacao.getQuantidadeMedida());
+            Double qtdNecessaria = Math.abs(Double.valueOf(relacao.getQuantidadeInsumo()));
 
             List<Lote> lotesDisponiveis = loteService.lotePorInsumoId(relacao.getInsumo().getIdInsumo());
             System.out.println("Lotes encontrados: " + lotesDisponiveis.size());

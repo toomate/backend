@@ -65,7 +65,6 @@ public class CategoriaService  {
         }
 
         existente.setNome(request.getNome());
-        existente.setRotatividade(request.getRotatividade());
         return categoriaRepository.save(existente);
     }
 

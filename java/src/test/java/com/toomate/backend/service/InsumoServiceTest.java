@@ -60,8 +60,8 @@ class InsumoServiceTest {
         List<Insumo> insumos = new ArrayList<>();
         Categoria carboidrato = new Categoria(1, "carboidrato");
         Categoria bebida = new Categoria(2, "bebida");
-        insumos.add(new Insumo(1, "arroz", carboidrato, 3, "kg"));
-        insumos.add(new Insumo(2, "café", bebida, 5, "ml"));
+        insumos.add(new Insumo(1, "arroz", carboidrato, 3, true));
+        insumos.add(new Insumo(2, "café", bebida, 5, true));
         when(repository.findAll()).thenReturn(insumos);
         //ACT
         List<Insumo> atual = repository.findAll();
@@ -89,7 +89,7 @@ class InsumoServiceTest {
         //Arrange
         List<Insumo> insumos = new ArrayList<>();
         Categoria bebida = new Categoria(1, "bebida");
-        Insumo cafe =   new Insumo(1, "café", bebida, 5, "ml");
+        Insumo cafe =   new Insumo(1, "café", bebida, 5, true);
         insumos.add(cafe);
         when(repository.findByNomeContainingIgnoreCase("café")).thenReturn(insumos);
         //ACT
@@ -117,7 +117,7 @@ class InsumoServiceTest {
             insumoRequestDto.setNome("aaa");
             insumoRequestDto.setFkCategoria(1);
             insumoRequestDto.setQtdMinima(5);
-            insumoRequestDto.setUnidadeMedida("kg");
+            insumoRequestDto.setRotatividade(true);
             Categoria categoria = new Categoria();
             categoria.setIdCategoria(1);
             categoria.setNome("lucas");
@@ -126,7 +126,7 @@ class InsumoServiceTest {
             insumo.setCategoria(categoria);
             insumo.setNome(insumoRequestDto.getNome());
             insumo.setQtdMinima(insumoRequestDto.getQtdMinima());
-            insumo.setUnidadeMedida(insumoRequestDto.getUnidadeMedida());
+            insumo.setRotatividade(insumoRequestDto.getRotatividade());
             when(repository.save(insumo)).thenReturn(insumo);
             Insumo atual = service.cadastrar(insumo);
             assertEquals(atual, insumo);
@@ -138,7 +138,7 @@ class InsumoServiceTest {
             insumoRequestDto.setNome("aaa");
             insumoRequestDto.setFkCategoria(1);
             insumoRequestDto.setQtdMinima(5);
-            insumoRequestDto.setUnidadeMedida("kg");
+            insumoRequestDto.setRotatividade(true);
             Categoria categoria = new Categoria();
             categoria.setIdCategoria(1);
             categoria.setNome("lucas");
@@ -147,7 +147,7 @@ class InsumoServiceTest {
             insumo.setCategoria(categoria);
             insumo.setNome(insumoRequestDto.getNome());
             insumo.setQtdMinima(insumoRequestDto.getQtdMinima());
-            insumo.setUnidadeMedida(insumoRequestDto.getUnidadeMedida());
+            insumo.setRotatividade(insumoRequestDto.getRotatividade());
             assertThrows(EntradaInvalidaException.class, ()->service.cadastrar(null));
         }
     }
@@ -184,7 +184,7 @@ class InsumoServiceTest {
             insumoRequestDto.setNome("aaa");
             insumoRequestDto.setFkCategoria(1);
             insumoRequestDto.setQtdMinima(5);
-            insumoRequestDto.setUnidadeMedida("kg");
+            insumoRequestDto.setRotatividade(true);
             Categoria categoria = new Categoria();
             categoria.setIdCategoria(1);
             categoria.setNome("lucas");
@@ -193,7 +193,7 @@ class InsumoServiceTest {
             insumo.setCategoria(categoria);
             insumo.setNome(insumoRequestDto.getNome());
             insumo.setQtdMinima(insumoRequestDto.getQtdMinima());
-            insumo.setUnidadeMedida(insumoRequestDto.getUnidadeMedida());
+            insumo.setRotatividade(insumoRequestDto.getRotatividade());
             when(repository.existsById(1)).thenReturn(true);
             when(repository.save(insumo)).thenReturn(insumo);
             Insumo atual = service.atualizar(insumo.getIdInsumo(), insumo);
@@ -206,7 +206,7 @@ class InsumoServiceTest {
             insumoRequestDto.setNome("aaa");
             insumoRequestDto.setFkCategoria(1);
             insumoRequestDto.setQtdMinima(5);
-            insumoRequestDto.setUnidadeMedida("kg");
+            insumoRequestDto.setRotatividade(true);
             Categoria categoria = new Categoria();
             categoria.setIdCategoria(1);
             categoria.setNome("lucas");
@@ -215,7 +215,7 @@ class InsumoServiceTest {
             insumo.setCategoria(categoria);
             insumo.setNome(insumoRequestDto.getNome());
             insumo.setQtdMinima(insumoRequestDto.getQtdMinima());
-            insumo.setUnidadeMedida(insumoRequestDto.getUnidadeMedida());
+            insumo.setRotatividade(insumoRequestDto.getRotatividade());
             when(repository.existsById(1)).thenReturn(false);
             assertThrows(EntidadeNaoEncontradaException.class, ()->service.atualizar(1, insumo));
         }
@@ -253,7 +253,7 @@ class InsumoServiceTest {
             insumoRequestDto.setNome("aaa");
             insumoRequestDto.setFkCategoria(1);
             insumoRequestDto.setQtdMinima(5);
-            insumoRequestDto.setUnidadeMedida("kg");
+            insumoRequestDto.setRotatividade(true);
             Categoria categoria = new Categoria();
             categoria.setIdCategoria(1);
             categoria.setNome("lucas");
@@ -262,7 +262,7 @@ class InsumoServiceTest {
             insumo.setCategoria(categoria);
             insumo.setNome(insumoRequestDto.getNome());
             insumo.setQtdMinima(insumoRequestDto.getQtdMinima());
-            insumo.setUnidadeMedida(insumoRequestDto.getUnidadeMedida());
+            insumo.setRotatividade(insumoRequestDto.getRotatividade());
             when(repository.findById(1)).thenReturn(Optional.of(insumo));
             Insumo atual = service.insumoPorId(1);
             assertEquals(insumo, atual);

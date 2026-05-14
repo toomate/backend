@@ -17,19 +17,9 @@ public class Categoria {
     @Schema(description = "Nome da categoria", example = "carboidrato")
     private String nome;
 
-    private Boolean rotatividade;
-
     public Categoria(Integer idCategoria, String nome) {
         this.idCategoria = idCategoria;
         this.nome = nome;
-    }
-
-    public Boolean getRotatividade() {
-        return rotatividade;
-    }
-
-    public void setRotatividade(Boolean rotatividade) {
-        this.rotatividade = rotatividade;
     }
 
     public Integer getIdCategoria() {
@@ -51,13 +41,4 @@ public class Categoria {
     public Categoria() {
     }
 
-    public Categoria(Integer idCategoria, String nome, Boolean rotatividade) {
-        this.idCategoria = idCategoria;
-        this.nome = nome;
-        this.rotatividade = rotatividade;
-    }
-
-    public void inverterRotatividade(){
-        rotatividade = !rotatividade;
-    }
 }

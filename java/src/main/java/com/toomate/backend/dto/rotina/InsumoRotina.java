@@ -1,10 +1,8 @@
 package com.toomate.backend.dto.rotina;
 
-import com.toomate.backend.model.Insumo;
-
 public class InsumoRotina {
     private Integer insumoId;
-    private Double quantidadeMedida;
+    private Integer quantidadeInsumo;
 
     public Integer getInsumoId() {
         return insumoId;
@@ -14,11 +12,11 @@ public class InsumoRotina {
         this.insumoId = insumoId;
     }
 
-    public Double getQuantidadeMedida() {
-        return quantidadeMedida;
+    public Integer getQuantidadeInsumo() {
+        return quantidadeInsumo;
     }
 
-    public void setQuantidadeMedida(Double quantidadeMedida) {
-        this.quantidadeMedida = quantidadeMedida;
+    public void setQuantidadeInsumo(Integer quantidadeInsumo) {
+        this.quantidadeInsumo = quantidadeInsumo;
     }
 }

@@ -21,10 +21,14 @@ public class LoteResponseDto {
     private UsuarioResponseDto usuario;
     @Schema(description = "Usuario que cadastrou o lote")
     private MarcaResponseDto marca;
+    @Schema(description = "Unidade medida do lote", example = "kg")
+    private String unidadeMedida;
+    @Schema(description = "Quantidade total de insumos daquele lote", example = "100")
+    private Integer quantidadeTotal;
 
     public LoteResponseDto(){}
 
-    public LoteResponseDto(Integer idLote, LocalDate dataValidade, Double precoUnitario, Double quantidadeMedida, LocalDate dataEntrada, UsuarioResponseDto usuario, MarcaResponseDto marca) {
+    public LoteResponseDto(Integer idLote, LocalDate dataValidade, Double precoUnitario, Double quantidadeMedida, LocalDate dataEntrada, UsuarioResponseDto usuario, MarcaResponseDto marca, String unidadeMedida, Integer quantidadeTotal) {
         this.idLote = idLote;
         this.dataValidade = dataValidade;
         this.precoUnitario = precoUnitario;
@@ -32,6 +36,8 @@ public class LoteResponseDto {
         this.dataEntrada = dataEntrada;
         this.usuario = usuario;
         this.marca = marca;
+        this.unidadeMedida = unidadeMedida;
+        this.quantidadeTotal = quantidadeTotal;
     }
 
     public Integer getIdLote() {
@@ -88,5 +94,21 @@ public class LoteResponseDto {
 
     public void setMarca(MarcaResponseDto marca) {
         this.marca = marca;
+    }
+
+    public String getUnidadeMedida() {
+        return unidadeMedida;
+    }
+
+    public void setUnidadeMedida(String unidadeMedida) {
+        this.unidadeMedida = unidadeMedida;
+    }
+
+    public Integer getQuantidadeTotal() {
+        return quantidadeTotal;
+    }
+
+    public void setQuantidadeTotal(Integer quantidadeTotal) {
+        this.quantidadeTotal = quantidadeTotal;
     }
 }

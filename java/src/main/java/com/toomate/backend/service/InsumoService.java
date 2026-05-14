@@ -88,7 +88,7 @@ public class InsumoService {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
-    public List<String> listarUnidadesDeMedida() {
-        return insumoRepository.listarUnidadesDeMedida();
-    }
+//    public List<String> listarUnidadesDeMedida() {
+//        return insumoRepository.listarUnidadesDeMedida();
+//    }
 }

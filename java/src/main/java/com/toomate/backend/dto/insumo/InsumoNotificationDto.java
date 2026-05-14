@@ -19,8 +19,8 @@ public class InsumoNotificationDto {
         this.body = new BodyInsumoNotification(
                 insumo.getNome(),
                 insumo.getQtdMinima(),
-                quantidadeAtual,
-                insumo.getUnidadeMedida()
+                quantidadeAtual
+//                insumo.getUnidadeMedida()
         );
     }
 

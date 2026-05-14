@@ -8,9 +8,6 @@ public class CategoriaRequestDto {
     @Schema(description = "Nome da categoria", example = "carboidrato")
     private String nome;
 
-    @Schema(description = "Indica se a categoria possui alta rotatividade", example = "true")
-    private Boolean rotatividade;
-
     public CategoriaRequestDto() {
     }
 
@@ -18,10 +15,6 @@ public class CategoriaRequestDto {
         this.nome = nome;
     }
 
-    public CategoriaRequestDto(String nome, Boolean rotatividade) {
-        this.nome = nome;
-        this.rotatividade = rotatividade;
-    }
 
     public String getNome() {
         return nome;
@@ -31,11 +24,4 @@ public class CategoriaRequestDto {
         this.nome = nome;
     }
 
-    public Boolean getRotatividade() {
-        return rotatividade;
-    }
-
-    public void setRotatividade(Boolean rotatividade) {
-        this.rotatividade = rotatividade;
-    }
 }

@@ -17,8 +17,8 @@ public class Insumo {
     private Categoria categoria;
     @Schema(description = "Quantidade minima de insumo para alertar", example = "5")
     private Integer qtdMinima;
-    @Schema(description = "Quantidade de medida do insumo", example = "kg")
-    private String unidadeMedida;
+    @Schema(description = "Rotatividade do insumo", example = "true")
+    private Boolean rotatividade;
 
     public String getNome() {
         return nome;
@@ -52,20 +52,20 @@ public class Insumo {
         this.qtdMinima = qtdMinima;
     }
 
-    public String getUnidadeMedida() {
-        return unidadeMedida;
+    public Boolean getRotatividade() {
+        return rotatividade;
     }
 
-    public void setUnidadeMedida(String unidadeMedida) {
-        this.unidadeMedida = unidadeMedida;
+    public void setRotatividade(Boolean rotatividade) {
+        this.rotatividade = rotatividade;
     }
 
-    public Insumo(Integer idInsumo, String nome, Categoria categoria, Integer qtdMinima, String unidadeMedida) {
+    public Insumo(Integer idInsumo, String nome, Categoria categoria, Integer qtdMinima, Boolean rotatividade) {
         this.idInsumo = idInsumo;
         this.nome = nome;
         this.categoria = categoria;
         this.qtdMinima = qtdMinima;
-        this.unidadeMedida = unidadeMedida;
+        this.rotatividade = rotatividade;
     }
 
     public Insumo() {

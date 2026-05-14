@@ -9,5 +9,5 @@ public class BodyInsumoNotification {
     String nome;
     Integer quantidadeMinima;
     Double quantidadeAtual;
-    String unidadeMedida;
+//    String unidadeMedida;
 }

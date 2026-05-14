@@ -10,15 +10,15 @@ public class InsumoRequestDto {
     private String nome;
     @Schema(description = "Quantidade minima de insumo para alertar", example = "5")
     private Integer qtdMinima;
-    @Schema(description = "Quantidade de medida do insumo", example = "kg")
-    private String unidadeMedida;
+    @Schema(description = "Rotatividade do insumo", example = "true")
+    private Boolean rotatividade;
     @NotNull(message = "Categoria do insumo e obrigatoria.")
     private Integer fkCategoria;
 
-    public InsumoRequestDto(String nome, Integer qtdMinima, String unidadeMedida, Integer fkCategoria) {
+    public InsumoRequestDto(String nome, Integer qtdMinima, Boolean rotatividade, Integer fkCategoria) {
         this.nome = nome;
         this.qtdMinima = qtdMinima;
-        this.unidadeMedida = unidadeMedida;
+        this.rotatividade = rotatividade;
         this.fkCategoria = fkCategoria;
     }
 
@@ -41,12 +41,12 @@ public class InsumoRequestDto {
         this.qtdMinima = qtdMinima;
     }
 
-    public String getUnidadeMedida() {
-        return unidadeMedida;
+    public Boolean getRotatividade() {
+        return rotatividade;
     }
 
-    public void setUnidadeMedida(String unidadeMedida) {
-        this.unidadeMedida = unidadeMedida;
+    public void setRotatividade(Boolean rotatividade) {
+        this.rotatividade = rotatividade;
     }
 
     public Integer getFkCategoria() {

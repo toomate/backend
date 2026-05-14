@@ -19,7 +19,7 @@ public class InsumoMapper {
         entity.setNome(dto.getNome());
         entity.setCategoria(categoria);
         entity.setQtdMinima(dto.getQtdMinima());
-        entity.setUnidadeMedida(dto.getUnidadeMedida());
+        entity.setRotatividade(dto.getRotatividade());
 
         return entity;
     }
@@ -33,14 +33,13 @@ public class InsumoMapper {
         dto.setIdInsumo(entity.getIdInsumo());
         dto.setNome(entity.getNome());
         dto.setQtdMinima(entity.getQtdMinima());
-        dto.setUnidadeMedida(entity.getUnidadeMedida());
+        dto.setRotatividade(entity.getRotatividade());
 
         Categoria categoria = entity.getCategoria();
         if (categoria != null) {
             CategoriaResponseDto categoriaDto = new CategoriaResponseDto();
             categoriaDto.setIdCategoria(categoria.getIdCategoria());
             categoriaDto.setNome(categoria.getNome());
-            categoriaDto.setRotatividade(categoria.getRotatividade());
             dto.setCategoria(categoriaDto);
         }
 

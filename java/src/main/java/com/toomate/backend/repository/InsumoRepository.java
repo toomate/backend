@@ -13,6 +13,6 @@ public interface InsumoRepository extends JpaRepository<Insumo, Integer> {
 
     Insumo findByNome(String nome);
 
-    @Query("select i.unidadeMedida from Insumo i group by i.unidadeMedida")
-    List<String> listarUnidadesDeMedida();
+//    @Query("select i.unidadeMedida from Insumo i group by i.unidadeMedida")
+//    List<String> listarUnidadesDeMedida();
 }

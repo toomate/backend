@@ -14,14 +14,14 @@ public class RotinaInsumo {
     @ManyToOne
     @JoinColumn(name = "idInsumo")
     private Insumo insumo;
-    private Double quantidadeMedida;
+    private Integer quantidadeInsumo;
 
-    public Double getQuantidadeMedida() {
-        return quantidadeMedida;
+    public Integer getQuantidadeInsumo() {
+        return quantidadeInsumo;
     }
 
-    public void setQuantidadeMedida(Double quantidadeMedida) {
-        this.quantidadeMedida = quantidadeMedida;
+    public void setQuantidadeInsumo(Integer quantidadeInsumo) {
+        this.quantidadeInsumo = quantidadeInsumo;
     }
 
     public Integer getId() {

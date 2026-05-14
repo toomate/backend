@@ -23,6 +23,10 @@ public class Lote {
     private Double precoUnitario;
     @Schema(description = "quantidade da medida)", example = "5")
     private Double quantidadeMedida;
+    @Schema(description = "Unidade da medida", example = "kg")
+    private String unidadeMedida;
+    @Schema(description = "Quantidade total de insumos daquele lote", example = "100")
+    private Integer quantidadeTotal;
 
     @ManyToOne
     @JoinColumn(name = "fkMarca", referencedColumnName = "idMarca")
@@ -72,6 +76,22 @@ public class Lote {
 
     public void setQuantidadeMedida(Double quantidadeMedida) {
         this.quantidadeMedida = quantidadeMedida;
+    }
+
+    public String getUnidadeMedida() {
+        return unidadeMedida;
+    }
+
+    public void setUnidadeMedida(String unidadeMedida) {
+        this.unidadeMedida = unidadeMedida;
+    }
+
+    public Integer getQuantidadeTotal() {
+        return quantidadeTotal;
+    }
+
+    public void setQuantidadeTotal(Integer quantidadeTotal) {
+        this.quantidadeTotal = quantidadeTotal;
     }
 
     public void adicionarQuantidadeMedida(Double quantidadeMedida){
