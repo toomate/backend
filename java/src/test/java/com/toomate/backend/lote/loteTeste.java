@@ -1,5 +1,6 @@
 package com.toomate.backend.lote;
 
+import com.toomate.backend.audit.AuditService;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.integration.ProducerRabbitMQ;
 import com.toomate.backend.model.*;
@@ -31,8 +32,12 @@ public class loteTeste {
     @Mock
     private ProducerRabbitMQ producerRabbitMQ;
 
+    @Mock
+    public AuditService auditService;
+
     @InjectMocks
     public LoteService loteService;
+
 
     @BeforeEach
     void setupAutenticacao() {
@@ -98,7 +103,7 @@ public class loteTeste {
     }
 
     public Lote criarLoteValido(){
-        Insumo insumo = new Insumo(1, "arroz", null, 20, "kilos");
+        Insumo insumo = new Insumo(1, "arroz", null, 20, true);
         Marca marca = new Marca();
         marca.setInsumo(insumo);
         Usuario usuario = new Usuario();

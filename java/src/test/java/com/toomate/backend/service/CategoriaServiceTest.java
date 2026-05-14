@@ -126,8 +126,8 @@ class CategoriaServiceTest {
         void deveAtualizarComSucessoUmaCategoria() {
             Integer id = 1;
             CategoriaRequestDto request = new CategoriaRequestDto("atualizado");
-            Categoria existente = new Categoria(id, "antigo", false);
-            Categoria esperado = new Categoria(id, "atualizado", false);
+            Categoria existente = new Categoria(id, "antigo");
+            Categoria esperado = new Categoria(id, "atualizado");
 
             Mockito.when(categoriaRepository.findById(id)).thenReturn(Optional.of(existente));
             Mockito.when(categoriaRepository.existsByNomeIgnoreCase("atualizado")).thenReturn(false);
