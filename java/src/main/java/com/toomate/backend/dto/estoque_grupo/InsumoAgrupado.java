@@ -7,17 +7,19 @@ public class InsumoAgrupado {
     private Integer idMarca;
     private String nomeMarca;
     private Integer idLote;
-    private Double quantidadeMedida; // vai vir do Lote
+    private Double quantidadeMedida;
+    private Integer quantidadeTotal; // vai vir do Lote// vai vir do Lote
     private Integer quantidadeMinima;
     private String unidadeMedida; // vai vir do insumo
     private LocalDate dataValidade; // lote
 
-    public InsumoAgrupado(Integer idInsumo, Integer idMarca, String nomeMarca, Integer idLote, Double quantidadeMedida, Integer quantidadeMinima, String unidadeMedida, LocalDate dataValidade) {
+    public InsumoAgrupado(Integer idInsumo, Integer idMarca, String nomeMarca, Integer idLote, Double quantidadeMedida, Integer quantidadeTotal, Integer quantidadeMinima, String unidadeMedida, LocalDate dataValidade) {
         this.idInsumo = idInsumo;
         this.idMarca = idMarca;
         this.nomeMarca = nomeMarca;
         this.idLote = idLote;
         this.quantidadeMedida = quantidadeMedida;
+        this.quantidadeTotal = quantidadeTotal;
         this.quantidadeMinima = quantidadeMinima;
         this.unidadeMedida = unidadeMedida;
         this.dataValidade = dataValidade;
@@ -85,5 +87,13 @@ public class InsumoAgrupado {
 
     public void setDataValidade(LocalDate dataValidade) {
         this.dataValidade = dataValidade;
+    }
+
+    public Integer getQuantidadeTotal() {
+        return quantidadeTotal;
+    }
+
+    public void setQuantidadeTotal(Integer quantidadeTotal) {
+        this.quantidadeTotal = quantidadeTotal;
     }
 }

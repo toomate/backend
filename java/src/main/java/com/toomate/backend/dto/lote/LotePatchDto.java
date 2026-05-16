@@ -2,7 +2,7 @@ package com.toomate.backend.dto.lote;
 
 public class LotePatchDto {
     private Integer id;
-    private Double quantidadeMedida;
+    private Integer quantidadeTotal;
 
     public Integer getId() {
         return id;
@@ -12,11 +12,11 @@ public class LotePatchDto {
         this.id = id;
     }
 
-    public Double getQuantidadeMedida() {
-        return quantidadeMedida;
+    public Integer getQuantidadeTotal() {
+        return quantidadeTotal;
     }
 
-    public void setQuantidadeMedida(Double quantidadeMedida) {
-        this.quantidadeMedida = quantidadeMedida;
+    public void setQuantidadeTotal(Integer quantidadeTotal) {
+        this.quantidadeTotal = quantidadeTotal;
     }
 }

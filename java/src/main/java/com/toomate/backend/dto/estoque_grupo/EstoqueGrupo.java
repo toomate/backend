@@ -13,6 +13,7 @@ public class EstoqueGrupo {
     private String insumo;
     private Integer qtdMinima;
     private Double qtdTotal;
+    private Double qtdAtual;
     private String medida;
     private LocalDate dtVencimento;
     private List<InsumoAgrupado> itens;
@@ -22,8 +23,15 @@ public class EstoqueGrupo {
         for (InsumoAgrupado atual : itens) {
             qtd += atual.getQuantidadeMedida();
         }
+        this.qtdTotal = qtd;
+    }
 
-        qtdTotal = qtd;
+    public void calcularQtdAtual() {
+        Double qtd = 0.0;
+        for (InsumoAgrupado atual : itens) {
+            qtd += atual.getQuantidadeTotal();
+        }
+        this.qtdAtual = qtd;
     }
 
     public void calcularMenorData() {
@@ -38,20 +46,20 @@ public class EstoqueGrupo {
         }
     }
 
-    public EstoqueGrupo(Integer fkCategoria, Integer fkInsumo, String categoria, String insumo, Integer qtdMinima, Double qtdTotal, String medida, LocalDate dtVencimento, List<InsumoAgrupado> itens) {
+    public EstoqueGrupo(Integer fkCategoria, Integer fkInsumo, String categoria, String insumo, Integer qtdMinima, Double qtdTotal, Double qtdAtual, String medida, LocalDate dtVencimento, List<InsumoAgrupado> itens) {
         this.fkCategoria = fkCategoria;
         this.fkInsumo = fkInsumo;
         this.categoria = categoria;
         this.insumo = insumo;
         this.qtdMinima = qtdMinima;
         this.qtdTotal = qtdTotal;
+        this.qtdAtual = qtdAtual;
         this.medida = medida;
         this.dtVencimento = dtVencimento;
         this.itens = itens;
     }
 
-    public EstoqueGrupo() {
-    }
+    public EstoqueGrupo(){}
 
     public Integer getFkCategoria() {
         return fkCategoria;
@@ -99,6 +107,14 @@ public class EstoqueGrupo {
 
     public void setQtdTotal(Double qtdTotal) {
         this.qtdTotal = qtdTotal;
+    }
+
+    public Double getQtdAtual() {
+        return qtdAtual;
+    }
+
+    public void setQtdAtual(Double qtdAtual) {
+        this.qtdAtual = qtdAtual;
     }
 
     public String getMedida() {

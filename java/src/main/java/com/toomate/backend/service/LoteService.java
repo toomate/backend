@@ -238,12 +238,14 @@ public class LoteService implements LoteListener {
                 grupo.setInsumo(item.getNomeInsumo());
                 grupo.setQtdMinima(item.getQtdMinima());
                 grupo.setMedida(item.getUnidadeMedida());
+                grupo.setQtdAtual(item.getQuantidadeMedida());
                 grupo.setItens(new ArrayList<>());
 
                 mapa.put(fkInsumo, grupo);
             }
-            mapa.get(fkInsumo).getItens().add(new InsumoAgrupado(item.getIdInsumo(), item.getIdMarca(), item.getNomeMarca(), item.getIdLote(), item.getQuantidadeMedida(), item.getQtdMinima(), item.getUnidadeMedida(), item.getDataValidade()));
+            mapa.get(fkInsumo).getItens().add(new InsumoAgrupado(item.getIdInsumo(), item.getIdMarca(), item.getNomeMarca(), item.getIdLote(), item.getQuantidadeMedida(), item.getQuantidadeTotal(), item.getQtdMinima(), item.getUnidadeMedida(), item.getDataValidade()));
             mapa.get(fkInsumo).calcularQtdTotal();
+            mapa.get(fkInsumo).calcularQtdAtual();
             mapa.get(fkInsumo).calcularMenorData();
         }
 
@@ -281,7 +283,7 @@ public class LoteService implements LoteListener {
             log.info("Usuário {} atualizou a quantidade do lote: {} às {}", usuarioLogado, dto.getId(), LocalDateTime.now());
             auditService.registrar(usuarioLogado, "ATUALIZACAO", "LOTE", "Atualizou quantidade do lote ID: " + dto.getId());
 
-            lote.setQuantidadeMedida(dto.getQuantidadeMedida());
+            lote.setQuantidadeTotal(dto.getQuantidadeTotal());
         }
     }
 
