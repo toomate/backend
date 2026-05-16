@@ -184,7 +184,7 @@ public class LoteController {
     }
 
     @PutMapping("/adicionarEstoque/{id}")
-    public ResponseEntity<Lote> adicionar(@RequestBody Double quantidadeMedida, @PathVariable Integer id) {
+    public ResponseEntity<Lote> adicionar(@RequestBody Integer quantidadeMedida, @PathVariable Integer id) {
         if (loteService.existePorId(id)) {
             loteService.adicionarQuantidade(id, quantidadeMedida);
             return ResponseEntity.status(201).build();
@@ -193,7 +193,7 @@ public class LoteController {
     }
 
     @PutMapping("/removerEstoque/{id}")
-    public ResponseEntity<Lote> remover(@RequestBody Double quantidadeMedida, @PathVariable Integer id) {
+    public ResponseEntity<Lote> remover(@RequestBody Integer quantidadeMedida, @PathVariable Integer id) {
         if (loteService.existePorId(id)) {
             loteService.removerQuantidade(id, quantidadeMedida);
             return ResponseEntity.status(201).build();

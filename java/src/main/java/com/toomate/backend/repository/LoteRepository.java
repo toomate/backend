@@ -34,7 +34,7 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
             JOIN l.marca m
             JOIN m.insumo i
             JOIN i.categoria c
-            WHERE l.quantidadeMedida > 0
+            WHERE l.quantidadeTotal > 0
             """)
     List<EstoqueGeral> buscarEstoque();
 
@@ -58,7 +58,7 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
             JOIN l.marca m
             JOIN m.insumo i
             JOIN i.categoria c
-            WHERE l.quantidadeMedida > 0
+            WHERE l.quantidadeTotal > 0
             AND c.nome = :categoria
             """)
     List<EstoqueGeral> buscarEstoquePorCategoria(String categoria);
@@ -82,7 +82,7 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
             JOIN l.marca m
             JOIN m.insumo i
             JOIN i.categoria c
-            WHERE l.quantidadeMedida > 0
+            WHERE l.quantidadeTotal > 0
             AND i.nome LIKE %:insumo%
             """)
     List<EstoqueGeral> pesquisarEstoquePorInsumo(String insumo);
@@ -99,7 +99,7 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
             FROM Lote l
             JOIN l.marca m
             JOIN m.insumo i
-            WHERE l.quantidadeMedida > 0
+            WHERE l.quantidadeTotal > 0
             ORDER BY l.dataValidade""")
     List<EstoqueVencimento> buscarEstoqueVencimento();
 

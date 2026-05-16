@@ -1,5 +1,6 @@
 package com.toomate.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -10,6 +11,7 @@ public class RotinaInsumo {
     private Integer id;
     @ManyToOne
     @JoinColumn(name = "idRotina")
+    @JsonIgnore
     private Rotina rotina;
     @ManyToOne
     @JoinColumn(name = "idInsumo")

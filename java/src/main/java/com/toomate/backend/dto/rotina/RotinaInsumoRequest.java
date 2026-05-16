@@ -1,5 +1,7 @@
 package com.toomate.backend.dto.rotina;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 
 public class RotinaInsumoRequest {

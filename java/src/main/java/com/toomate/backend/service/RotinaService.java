@@ -76,6 +76,7 @@ public class RotinaService {
         Rotina rotina = rotinaRepository.findById(request.getFkRotina()).orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrada uma rotina com o id %d", request.getFkRotina())));
 
         List<RotinaInsumo> rotinas = new ArrayList<>();
+
         for (InsumoRotina atual : insumos) {
             Insumo insumo = insumoService.insumoPorId(atual.getInsumoId());
             RotinaInsumo rotinaInsumo = new RotinaInsumo();
@@ -83,6 +84,7 @@ public class RotinaService {
             rotinaInsumo.setQuantidadeInsumo(Math.abs(atual.getQuantidadeInsumo()));
             rotinaInsumo.setRotina(rotina);
             rotinas.add(rotinaInsumo);
+            rotina.getRotinaInsumos().add(rotinaInsumo);
         }
 
         return rotinaInsumoRepository.saveAll(rotinas);
@@ -108,10 +110,8 @@ public class RotinaService {
         List<RotinaInsumo> relacoes = rotinaInsumoRepository.findAllByRotinaId(id);
         System.out.println("relações encontradas: " + relacoes.size());
 
-
-
         for (RotinaInsumo relacao : relacoes) {
-            Double qtdNecessaria = Math.abs(Double.valueOf(relacao.getQuantidadeInsumo()));
+            Integer qtdNecessaria = Math.abs((relacao.getQuantidadeInsumo()));
 
             List<Lote> lotesDisponiveis = loteService.lotePorInsumoId(relacao.getInsumo().getIdInsumo());
             System.out.println("Lotes encontrados: " + lotesDisponiveis.size());
@@ -120,12 +120,12 @@ public class RotinaService {
                 if (qtdNecessaria <= 0) break;
                 System.out.println("Qtd necessária inicial: " + qtdNecessaria);
 
-                if (lote.getQuantidadeMedida() >= qtdNecessaria) {
+                if (lote.getQuantidadeTotal() >= qtdNecessaria) {
                     loteService.removerQuantidade(lote.getIdLote(), qtdNecessaria);
-                    qtdNecessaria = 0.0;
+                    qtdNecessaria = 0;
                 } else {
-                    qtdNecessaria -= lote.getQuantidadeMedida();
-                    loteService.removerQuantidade(lote.getIdLote(), lote.getQuantidadeMedida());
+                    qtdNecessaria -= lote.getQuantidadeTotal();
+                    loteService.removerQuantidade(lote.getIdLote(), lote.getQuantidadeTotal());
                 }
             }
 

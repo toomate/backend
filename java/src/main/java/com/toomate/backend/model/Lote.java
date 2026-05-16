@@ -94,12 +94,12 @@ public class Lote {
         this.quantidadeTotal = quantidadeTotal;
     }
 
-    public void adicionarQuantidadeMedida(Double quantidadeMedida){
-        this.quantidadeMedida += quantidadeMedida;
+    public void adicionarQuantidadeMedida(Integer quantidadeMedida){
+        this.quantidadeTotal += quantidadeMedida;
     }
 
-    public void removerQuantidadeMedida(Double quantidadeMedida){
-        this.quantidadeMedida -= quantidadeMedida;
+    public void removerQuantidadeMedida(Integer quantidadeMedida){
+        this.quantidadeTotal -= quantidadeMedida;
     }
 
     public Marca getMarca() {

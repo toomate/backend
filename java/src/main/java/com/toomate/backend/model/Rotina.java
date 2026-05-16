@@ -2,6 +2,7 @@ package com.toomate.backend.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,7 +13,7 @@ public class Rotina {
     private Integer id;
     private String titulo;
     @OneToMany(mappedBy = "rotina", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RotinaInsumo> rotinaInsumos;
+    private List<RotinaInsumo> rotinaInsumos = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -28,5 +29,12 @@ public class Rotina {
 
     public void setTitulo(String titulo) {
         this.titulo = titulo;
+    }
+
+    public List<RotinaInsumo> getRotinaInsumos() {
+        return rotinaInsumos;
+    }
+    public void setRotinaInsumos(List<RotinaInsumo> rotinaInsumos) {
+        this.rotinaInsumos = rotinaInsumos;
     }
 }

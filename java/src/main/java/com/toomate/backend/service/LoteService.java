@@ -128,14 +128,14 @@ public class LoteService implements LoteListener {
                 .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrado nenhuma marca com o id %d", id)));
     }
 
-    public void removerQuantidade(Integer id, Double quantidadeMedida) {
+    public void removerQuantidade(Integer id, Integer quantidadeMedida) {
         if (!loteRepository.existsById(id)) {
             throw new EntidadeNaoEncontradaException(String.format("Não foi encontrado lote com o id %d", id));
         }
 
         Lote lote = loteRepository.findById(id)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrado lote com o id %d", id)));
-        if (lote.getQuantidadeMedida() - quantidadeMedida < 0) {
+        if (lote.getQuantidadeTotal() - quantidadeMedida < 0) {
             throw new EntradaInvalidaException("Quantidade medida não pode ser negativa");
         }
 
@@ -147,7 +147,7 @@ public class LoteService implements LoteListener {
 
     }
 
-    public void adicionarQuantidade(Integer id, Double quantidadeMedida) {
+    public void adicionarQuantidade(Integer id, Integer quantidadeMedida) {
         if (!loteRepository.existsById(id)) {
             throw new EntidadeNaoEncontradaException(String.format("Não foi encontrado lote com o id %d", id));
         }
