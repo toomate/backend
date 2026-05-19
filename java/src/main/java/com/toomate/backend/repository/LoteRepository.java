@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface LoteRepository extends JpaRepository<Lote, Integer> {
 
-    @Query("select  COALESCE(SUM(L.quantidadeMedida), 0) from Lote L JOIN L.marca M JOIN M.insumo I WHERE I.idInsumo = :idInsumo")
+    @Query("select  COALESCE(SUM(L.quantidadeTotal), 0) from Lote L JOIN L.marca M JOIN M.insumo I WHERE I.idInsumo = :idInsumo")
     Double getEstoqueInsumo(@Param("idInsumo") Integer idInsumo);
 
     @Query("""

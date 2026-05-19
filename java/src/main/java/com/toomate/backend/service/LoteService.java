@@ -40,7 +40,9 @@ public class LoteService implements LoteListener {
 
     @Override
     public void notificarMudanca(Insumo insumo) {
+        log.info("MUDANÇA NO INSUMO " + insumo.getNome());
         Double total = loteRepository.getEstoqueInsumo(insumo.getIdInsumo());
+        log.info("QUANTIDADE TOTAL %f MINIMA %d".formatted(total, insumo.getQtdMinima()));
         if (total < insumo.getQtdMinima()) {
             producerRabbitMQ.enviarNotif(insumo, total);
         }
@@ -264,16 +266,6 @@ public class LoteService implements LoteListener {
         Map<Integer, Lote> mapa = lotes.stream()
                 .collect(Collectors.toMap(Lote::getIdLote, e -> e));
 
-        List<Insumo> alterados = lotes.stream()
-                .map(Lote::getMarca)
-                .filter(Objects::nonNull)
-                .map(Marca::getInsumo)
-                .filter(Objects::nonNull)
-                .distinct()
-                .toList();
-
-        alterados.forEach(this::notificarMudanca);
-
         for (LotePatchDto dto : request) {
             Lote lote = mapa.get(dto.getId());
 
@@ -285,6 +277,17 @@ public class LoteService implements LoteListener {
 
             lote.setQuantidadeTotal(dto.getQuantidadeTotal());
         }
+
+        List<Insumo> alterados = lotes.stream()
+                .map(Lote::getMarca)
+                .filter(Objects::nonNull)
+                .map(Marca::getInsumo)
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+
+        alterados.forEach(this::notificarMudanca);
+
     }
 
     public List<Lote> lotePorInsumoId(Integer id) {
