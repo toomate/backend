@@ -27,6 +27,14 @@ spring:
       simple:
         concurrency: 2
         max-concurrency: 10
+  cache:
+    type: redis
+    cache-names:
+      - toomate
+  data:
+    redis:
+      host: localhost
+      port: 6379
 server:
   error:
     include-message: always
@@ -50,6 +58,7 @@ management:
 logging:
   level:
     com.toomate.backend: INFO
+    org.springframework.cache.interceptor.CacheInterceptor: TRACE  # mostra hits/misses no log
 
 broker:
   exchange:
