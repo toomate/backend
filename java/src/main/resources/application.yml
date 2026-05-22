@@ -46,6 +46,9 @@ management:
   endpoint:
     prometheus:
       enabled: true
+  metrics:
+    tags:
+      application: backend
 
 logging:
   level:
