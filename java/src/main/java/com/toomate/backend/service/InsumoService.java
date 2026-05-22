@@ -6,6 +6,8 @@ import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.model.Insumo;
 import com.toomate.backend.repository.InsumoRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,11 @@ public class InsumoService {
         return insumoRepository.findByNomeContainingIgnoreCase(nome);
     }
 
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "estoque", key = "'todos'"),
+            @CacheEvict(cacheNames = "lotes", key = "'todos'"),
+            @CacheEvict(cacheNames = "vencimentos", key = "'todos'")
+    })
     public Insumo cadastrar(Insumo insumo) {
         String usuarioLogado = getUsuarioLogado();
         if (insumo == null) {
@@ -42,6 +49,11 @@ public class InsumoService {
         return insumoRepository.save(insumo);
     }
 
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "estoque", key = "'todos'"),
+            @CacheEvict(cacheNames = "lotes", key = "'todos'"),
+            @CacheEvict(cacheNames = "vencimentos", key = "'todos'")
+    })
     public void deletar(Integer id) {
         String usuarioLogado = getUsuarioLogado();
         if (!insumoRepository.existsById(id)) {
@@ -54,6 +66,11 @@ public class InsumoService {
         auditService.registrar(usuarioLogado, "DELECAO", "INSUMO", "Deletou insumo ID: " + id);
     }
 
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "estoque", key = "'todos'"),
+            @CacheEvict(cacheNames = "lotes", key = "'todos'"),
+            @CacheEvict(cacheNames = "vencimentos", key = "'todos'")
+    })
     public Insumo atualizar(Integer id, Insumo insumo) {
         String usuarioLogado = getUsuarioLogado();
         if (!insumoRepository.existsById(id)) {
@@ -80,6 +97,7 @@ public class InsumoService {
                         String.format("Nao foi encontrado insumo com o id %d", id))
         );
     }
+
     public List<Insumo> insumosPorId(List<Integer> ids) {
         return insumoRepository.findAllById(ids);
     }

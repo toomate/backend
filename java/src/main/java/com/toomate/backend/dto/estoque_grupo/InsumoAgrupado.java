@@ -25,6 +25,9 @@ public class InsumoAgrupado {
         this.dataValidade = dataValidade;
     }
 
+    public InsumoAgrupado() {
+    }
+
     public Integer getIdInsumo() {
         return idInsumo;
     }

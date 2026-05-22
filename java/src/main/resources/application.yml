@@ -29,8 +29,7 @@ spring:
         max-concurrency: 10
   cache:
     type: redis
-    cache-names:
-      - toomate
+
   data:
     redis:
       host: localhost

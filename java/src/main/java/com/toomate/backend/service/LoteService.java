@@ -11,6 +11,9 @@ import com.toomate.backend.integration.ProducerRabbitMQ;
 import com.toomate.backend.model.*;
 import com.toomate.backend.observer.LoteListener;
 import com.toomate.backend.repository.LoteRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,6 +51,7 @@ public class LoteService implements LoteListener {
         }
     }
 
+    @Cacheable(cacheNames = "lote", key = "'todos'")
     public List<Lote> listar() {
         return loteRepository.findAll();
     }
@@ -58,6 +62,11 @@ public class LoteService implements LoteListener {
                         String.format("Não foi encontrado lote com o id %d", id)));
     }
 
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "estoque", key = "'todos'"),
+            @CacheEvict(cacheNames = "lotes", key = "'todos'"),
+            @CacheEvict(cacheNames = "vencimentos", key = "'todos'")
+    })
     public Lote cadastrar(Lote lote) {
         String usuarioLogado = getUsuarioLogado();
         if (lote == null) {
@@ -92,6 +101,11 @@ public class LoteService implements LoteListener {
         return lote;
     }
 
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "estoque", key = "'todos'"),
+            @CacheEvict(cacheNames = "lotes", key = "'todos'"),
+            @CacheEvict(cacheNames = "vencimentos", key = "'todos'")
+    })
     public void deletar(Integer id) {
         String usuarioLogado = getUsuarioLogado();
         if (!loteRepository.existsById(id)) {
@@ -110,6 +124,11 @@ public class LoteService implements LoteListener {
         }
     }
 
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "estoque", key = "'todos'"),
+            @CacheEvict(cacheNames = "lotes", key = "'todos'"),
+            @CacheEvict(cacheNames = "vencimentos", key = "'todos'")
+    })
     public Lote atualizar(Integer id, Lote lote) {
         if (!loteRepository.existsById(id)) {
             throw new EntidadeNaoEncontradaException(String.format("Não foi encontrado lote com o id %d", id));
@@ -163,6 +182,7 @@ public class LoteService implements LoteListener {
         }
     }
 
+    @Cacheable(cacheNames = "estoque", key = "'todos'")
     public List<EstoqueGrupo> buscarEstoque() {
         List<EstoqueGeral> estoque = loteRepository.buscarEstoque();
 
@@ -186,7 +206,7 @@ public class LoteService implements LoteListener {
 
         return new ArrayList<>(estoqueResponse.values());
     }
-
+    @Cacheable(cacheNames = "vencimentos", key = "'todos'")
     public List<EstoqueVencimento> buscarEstoqueVencimento() {
         return loteRepository.buscarEstoqueVencimento();
     }
@@ -254,6 +274,11 @@ public class LoteService implements LoteListener {
         return mapa;
     }
 
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "estoque", key = "'todos'"),
+            @CacheEvict(cacheNames = "lotes", key = "'todos'"),
+            @CacheEvict(cacheNames = "vencimentos", key = "'todos'")
+    })
     @Transactional
     public void atualizarQuantidades(List<LotePatchDto> request) {
         String usuarioLogado = getUsuarioLogado();

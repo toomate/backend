@@ -19,6 +19,9 @@ public class EstoqueVencimento {
         this.dataValidade = dataValidade;
     }
 
+    public EstoqueVencimento() {
+    }
+
     public Integer getIdLote() {
         return idLote;
     }
