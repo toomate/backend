@@ -20,6 +20,7 @@ public class Lote {
     @Schema(description = "data de entrada)", example = "2025-10-19")
     private LocalDate dataEntrada;
     @Schema(description = "preço unitário)", example = "25.99")
+    @Column(name = "precoUnit")
     private Double precoUnitario;
     @Schema(description = "quantidade da medida)", example = "5")
     private Double quantidadeMedida;
