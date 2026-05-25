@@ -14,6 +14,8 @@ import com.toomate.backend.repository.LoteRepository;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -54,6 +56,10 @@ public class LoteService implements LoteListener {
     @Cacheable(cacheNames = "lote", key = "'todos'")
     public List<Lote> listar() {
         return loteRepository.findAll();
+    }
+
+    public Page<Lote> listarPaginado(Pageable pageable) {
+        return loteRepository.findAll(pageable);
     }
 
     public Lote listarPorId(Integer id) {

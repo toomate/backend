@@ -4,6 +4,7 @@ import com.toomate.backend.audit.AuditLog;
 import com.toomate.backend.audit.AuditService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +35,25 @@ public class AuditController {
 
         LocalDate dataConsulta = data != null ? data : LocalDate.now();
         List<AuditLog> logs = auditService.listar(dataConsulta);
+
+        if (logs.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(logs);
+    }
+
+    @Operation(summary = "Listar logs de auditoria paginado",
+               description = "Retorna uma página de eventos de auditoria de um dia, ordenados do mais recente para o mais antigo.")
+    @GetMapping("/paginado")
+    public ResponseEntity<Page<AuditLog>> listarPaginado(
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data,
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "20") int tamanho) {
+
+        LocalDate dataConsulta = data != null ? data : LocalDate.now();
+        Page<AuditLog> logs = auditService.listarPaginado(dataConsulta, pagina, tamanho);
 
         if (logs.isEmpty()) {
             return ResponseEntity.noContent().build();

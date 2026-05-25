@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +45,28 @@ public class UsuarioController {
             return ResponseEntity.status(204).build();
         }
         return ResponseEntity.status(200).body(usuarios);
+    }
+
+    @Operation(summary = "Listar usuários paginado",
+            description = "Retorna uma página de usuários para tabelas de listagem.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Página de usuários",
+                            content = @Content(mediaType = "application/json")),
+                    @ApiResponse(responseCode = "204", description = "Sem conteúdo")
+            })
+    @GetMapping("/paginado")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<Page<UsuarioResponseDto>> listarPaginado(
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamanho
+    ) {
+        Page<UsuarioResponseDto> resultado = usuarioService.listarPaginado(PageRequest.of(pagina, tamanho));
+
+        if (resultado.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        return ResponseEntity.status(200).body(resultado);
     }
 
     @Operation(summary = "Buscar usuário pelo id",

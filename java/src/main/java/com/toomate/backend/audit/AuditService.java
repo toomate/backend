@@ -3,6 +3,10 @@ package com.toomate.backend.audit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.regions.Region;
@@ -88,5 +92,25 @@ public class AuditService {
             }
         }
         return logs;
+    }
+
+    public Page<AuditLog> listarPaginado(LocalDate data, int pagina, int tamanho) {
+        List<AuditLog> todos = new ArrayList<>(listar(data));
+        todos.sort((a, b) -> {
+            String ta = a.getTimestamp() == null ? "" : a.getTimestamp();
+            String tb = b.getTimestamp() == null ? "" : b.getTimestamp();
+            return tb.compareTo(ta);
+        });
+
+        int total = todos.size();
+        Pageable pageable = PageRequest.of(pagina, tamanho);
+        int inicio = (int) pageable.getOffset();
+
+        if (inicio >= total) {
+            return new PageImpl<>(List.of(), pageable, total);
+        }
+
+        int fim = Math.min(inicio + tamanho, total);
+        return new PageImpl<>(todos.subList(inicio, fim), pageable, total);
     }
 }

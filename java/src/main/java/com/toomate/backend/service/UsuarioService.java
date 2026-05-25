@@ -11,6 +11,8 @@ import com.toomate.backend.mapper.usuario.UsuarioMapper;
 import com.toomate.backend.model.Marca;
 import com.toomate.backend.model.Usuario;
 import com.toomate.backend.repository.UsuarioRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -47,6 +49,10 @@ public class UsuarioService {
 
     public List<UsuarioResponseDto> listar() {
         return UsuarioMapper.toResponse(usuarioRepository.findAll());
+    }
+
+    public Page<UsuarioResponseDto> listarPaginado(Pageable pageable) {
+        return usuarioRepository.findAll(pageable).map(UsuarioMapper::toResponse);
     }
 
     public UsuarioResponseDto buscarPorId(Integer id) {
