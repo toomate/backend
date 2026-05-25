@@ -97,8 +97,8 @@ public class AuditService {
     public Page<AuditLog> listarPaginado(LocalDate data, int pagina, int tamanho) {
         List<AuditLog> todos = new ArrayList<>(listar(data));
         todos.sort((a, b) -> {
-            String ta = a.getTimestamp() == null ? "" : a.getTimestamp();
-            String tb = b.getTimestamp() == null ? "" : b.getTimestamp();
+            String ta = a.timestamp() == null ? "" : a.timestamp();
+            String tb = b.timestamp() == null ? "" : b.timestamp();
             return tb.compareTo(ta);
         });
 
