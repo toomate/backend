@@ -9,6 +9,7 @@ import com.toomate.backend.mapper.lote.LoteMapper;
 import com.toomate.backend.dto.lote.LotePatchDto;
 import com.toomate.backend.dto.lote.LoteRequestDto;
 import com.toomate.backend.dto.lote.LoteResponseDto;
+import com.toomate.backend.dto.lote.ResumoLotesPeriodoDto;
 import com.toomate.backend.model.*;
 import com.toomate.backend.service.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,9 +18,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -56,7 +59,7 @@ public class LoteController {
     }
 
     @Operation(summary = "Listar lotes paginado",
-            description = "Retorna uma página de lotes para uso em tabelas de listagem.",
+            description = "Retorna uma página de lotes para uso em tabelas de listagem. Aceita filtro de período opcional (dataInicial e dataFinal).",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Página de lotes",
                             content = @Content(mediaType = "application/json")),
@@ -65,15 +68,36 @@ public class LoteController {
     @GetMapping("/paginado")
     public ResponseEntity<Page<LoteResponseDto>> listarPaginado(
             @RequestParam(defaultValue = "0") int pagina,
-            @RequestParam(defaultValue = "10") int tamanho
+            @RequestParam(defaultValue = "10") int tamanho,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicial,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFinal
     ) {
-        Page<Lote> resultado = loteService.listarPaginado(PageRequest.of(pagina, tamanho));
+        Page<Lote> resultado = loteService.listarPaginadoPorPeriodo(
+                dataInicial, dataFinal, PageRequest.of(pagina, tamanho));
 
         if (resultado.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
 
         return ResponseEntity.status(200).body(resultado.map(LoteMapper::toDto));
+    }
+
+    @Operation(summary = "Resumo de lotes por período",
+            description = "Retorna o total de valor e quantidade de registros de lotes no período. Útil para acompanhar o total real (não da página).",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Resumo do período",
+                            content = @Content(mediaType = "application/json"))
+            })
+    @GetMapping("/resumo-periodo")
+    public ResponseEntity<ResumoLotesPeriodoDto> resumoPorPeriodo(
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicial,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFinal
+    ) {
+        return ResponseEntity.ok(loteService.resumoPorPeriodo(dataInicial, dataFinal));
     }
 
     @Operation(summary = "Busca um lote pelo id",

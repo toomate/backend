@@ -3,10 +3,13 @@ package com.toomate.backend.repository;
 import com.toomate.backend.dto.estoque_grupo.EstoqueGeral;
 import com.toomate.backend.dto.estoque_grupo.EstoqueVencimento;
 import com.toomate.backend.model.Lote;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -105,4 +108,21 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
 
     @Query("SELECT l FROM Lote l WHERE l.marca.insumo.idInsumo = :idInsumo ORDER BY l.dataValidade ASC")
     List<Lote> lotePorIdInsumo(Integer idInsumo);
+
+    Page<Lote> findByDataEntradaBetween(LocalDate dataInicial, LocalDate dataFinal, Pageable pageable);
+
+    @Query("""
+            SELECT COALESCE(SUM(l.precoUnitario * l.quantidadeTotal), 0)
+            FROM Lote l
+            WHERE l.dataEntrada BETWEEN :dataInicial AND :dataFinal
+            """)
+    Double somarValorPorPeriodo(@Param("dataInicial") LocalDate dataInicial,
+                                @Param("dataFinal") LocalDate dataFinal);
+
+    @Query("""
+            SELECT COALESCE(SUM(l.precoUnitario * l.quantidadeTotal), 0) FROM Lote l
+            """)
+    Double somarValorTotal();
+
+    long countByDataEntradaBetween(LocalDate dataInicial, LocalDate dataFinal);
 }

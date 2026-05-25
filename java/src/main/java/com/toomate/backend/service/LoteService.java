@@ -4,6 +4,7 @@ import com.toomate.backend.audit.AuditService;
 import com.toomate.backend.dto.Kpi;
 import com.toomate.backend.dto.estoque_grupo.*;
 import com.toomate.backend.dto.lote.LotePatchDto;
+import com.toomate.backend.dto.lote.ResumoLotesPeriodoDto;
 import com.toomate.backend.enums.StatusVencimento;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -60,6 +62,25 @@ public class LoteService implements LoteListener {
 
     public Page<Lote> listarPaginado(Pageable pageable) {
         return loteRepository.findAll(pageable);
+    }
+
+    public Page<Lote> listarPaginadoPorPeriodo(LocalDate dataInicial, LocalDate dataFinal, Pageable pageable) {
+        if (dataInicial == null || dataFinal == null) {
+            return loteRepository.findAll(pageable);
+        }
+        return loteRepository.findByDataEntradaBetween(dataInicial, dataFinal, pageable);
+    }
+
+    public ResumoLotesPeriodoDto resumoPorPeriodo(LocalDate dataInicial, LocalDate dataFinal) {
+        if (dataInicial == null || dataFinal == null) {
+            Double total = Optional.ofNullable(loteRepository.somarValorTotal()).orElse(0.0);
+            long registros = loteRepository.count();
+            return new ResumoLotesPeriodoDto(total, registros);
+        }
+
+        Double total = Optional.ofNullable(loteRepository.somarValorPorPeriodo(dataInicial, dataFinal)).orElse(0.0);
+        long registros = loteRepository.countByDataEntradaBetween(dataInicial, dataFinal);
+        return new ResumoLotesPeriodoDto(total, registros);
     }
 
     public Lote listarPorId(Integer id) {
