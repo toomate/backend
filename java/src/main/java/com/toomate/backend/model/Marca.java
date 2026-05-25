@@ -13,8 +13,8 @@ public class Marca{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Id númerico da marca(incrementa automaticamente)", example = "1")
     private Integer idMarca;
-    @Schema(description = "descricao", example = "camil")
-    private String descricao;
+    // @Schema(description = "descricao", example = "camil")
+    // private String descricao;
     @Schema(description = "valor da medida", example = "200.5")
     private Double valorMedida;
     @Schema(description = "unidade da medida", example = "kg")
