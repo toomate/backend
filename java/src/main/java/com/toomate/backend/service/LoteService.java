@@ -24,12 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -233,6 +228,7 @@ public class LoteService implements LoteListener {
 
         return new ArrayList<>(estoqueResponse.values());
     }
+
     @Cacheable(cacheNames = "vencimentos", key = "'todos'")
     public List<EstoqueVencimento> buscarEstoqueVencimento() {
         return loteRepository.buscarEstoqueVencimento();
@@ -292,12 +288,19 @@ public class LoteService implements LoteListener {
 
                 mapa.put(fkInsumo, grupo);
             }
+
             mapa.get(fkInsumo).getItens().add(new InsumoAgrupado(item.getIdInsumo(), item.getIdMarca(), item.getNomeMarca(), item.getIdLote(), item.getQuantidadeMedida(), item.getQuantidadeTotal(), item.getQtdMinima(), item.getUnidadeMedida(), item.getDataValidade()));
             mapa.get(fkInsumo).calcularQtdTotal();
             mapa.get(fkInsumo).calcularQtdAtual();
             mapa.get(fkInsumo).calcularMenorData();
         }
 
+        for (EstoqueGrupo grupo : mapa.values()) {
+            grupo.getItens().sort(Comparator
+                    .comparing(
+                            InsumoAgrupado::getDataValidade)
+                    .thenComparing(InsumoAgrupado::getQuantidadeTotal));
+        }
         return mapa;
     }
 
