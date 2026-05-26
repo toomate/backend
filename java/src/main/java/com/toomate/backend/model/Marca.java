@@ -15,10 +15,10 @@ public class Marca{
     private Integer idMarca;
     // @Schema(description = "descricao", example = "camil")
     // private String descricao;
-    @Schema(description = "valor da medida", example = "200.5")
-    private Double valorMedida;
-    @Schema(description = "unidade da medida", example = "kg")
-    private String unidadeMedida;
+//    @Schema(description = "valor da medida", example = "200.5")
+//    private Double valorMedida;
+//    @Schema(description = "unidade da medida", example = "kg")
+//    private String unidadeMedida;
     @Schema(description = "nome da marca", example = "camil")
     private String nomeMarca;
 

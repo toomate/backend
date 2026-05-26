@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 @Entity
 public class HistoricoLote {
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idHistorico;
     @ManyToOne

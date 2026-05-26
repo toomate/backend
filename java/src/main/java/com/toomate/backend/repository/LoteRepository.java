@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public interface LoteRepository extends JpaRepository<Lote, Integer> {
 
-    @Query("select  COALESCE(SUM(L.quantidadeTotal), 0) from Lote L JOIN L.marca M JOIN M.insumo I WHERE I.idInsumo = :idInsumo")
+    @Query("select  COALESCE(SUM(L.quantidadeAtual), 0) from Lote L JOIN L.marca M JOIN M.insumo I WHERE I.idInsumo = :idInsumo")
     Double getEstoqueInsumo(@Param("idInsumo") Integer idInsumo);
 
     @Query("""
@@ -28,7 +28,7 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
             m.idMarca,
             m.nomeMarca,
             l.idLote,
-            l.quantidadeTotal,
+            l.quantidadeAtual,
             l.quantidadeMedida,
             l.unidadeMedida,
             l.dataValidade
@@ -37,7 +37,7 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
             JOIN l.marca m
             JOIN m.insumo i
             JOIN i.categoria c
-            WHERE l.quantidadeTotal > 0
+            WHERE l.quantidadeAtual > 0
             """)
     List<EstoqueGeral> buscarEstoque();
 
@@ -52,7 +52,7 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
             m.idMarca,
             m.nomeMarca,
             l.idLote,
-            l.quantidadeTotal,
+            l.quantidadeAtual,
             l.quantidadeMedida,
             l.unidadeMedida,
             l.dataValidade
@@ -61,7 +61,7 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
             JOIN l.marca m
             JOIN m.insumo i
             JOIN i.categoria c
-            WHERE l.quantidadeTotal > 0
+            WHERE l.quantidadeAtual > 0
             AND c.nome = :categoria
             """)
     List<EstoqueGeral> buscarEstoquePorCategoria(String categoria);
@@ -76,7 +76,7 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
             m.idMarca,
             m.nomeMarca,
             l.idLote,
-            l.quantidadeTotal,
+            l.quantidadeAtual,
             l.quantidadeMedida,
             l.unidadeMedida,
             l.dataValidade
@@ -85,7 +85,7 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
             JOIN l.marca m
             JOIN m.insumo i
             JOIN i.categoria c
-            WHERE l.quantidadeTotal > 0
+            WHERE l.quantidadeAtual > 0
             AND i.nome LIKE %:insumo%
             """)
     List<EstoqueGeral> pesquisarEstoquePorInsumo(String insumo);
@@ -102,7 +102,7 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
             FROM Lote l
             JOIN l.marca m
             JOIN m.insumo i
-            WHERE l.quantidadeTotal > 0
+            WHERE l.quantidadeAtual > 0
             ORDER BY l.dataValidade""")
     List<EstoqueVencimento> buscarEstoqueVencimento();
 
@@ -112,7 +112,7 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
     Page<Lote> findByDataEntradaBetween(LocalDate dataInicial, LocalDate dataFinal, Pageable pageable);
 
     @Query("""
-            SELECT COALESCE(SUM(l.precoUnitario * l.quantidadeTotal), 0)
+            SELECT COALESCE(SUM(l.precoUnitario * l.quantidadeAtual), 0)
             FROM Lote l
             WHERE l.dataEntrada BETWEEN :dataInicial AND :dataFinal
             """)
@@ -120,7 +120,7 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
                                 @Param("dataFinal") LocalDate dataFinal);
 
     @Query("""
-            SELECT COALESCE(SUM(l.precoUnitario * l.quantidadeTotal), 0) FROM Lote l
+            SELECT COALESCE(SUM(l.precoUnitario * l.quantidadeAtual), 0) FROM Lote l
             """)
     Double somarValorTotal();
 
