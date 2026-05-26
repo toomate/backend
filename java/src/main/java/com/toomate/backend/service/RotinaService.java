@@ -120,12 +120,12 @@ public class RotinaService {
                 if (qtdNecessaria <= 0) break;
                 System.out.println("Qtd necessária inicial: " + qtdNecessaria);
 
-                if (lote.getQuantidadeTotal() >= qtdNecessaria) {
+                if (lote.getQuantidadeAtual() >= qtdNecessaria) {
                     loteService.removerQuantidade(lote.getIdLote(), qtdNecessaria);
                     qtdNecessaria = 0;
                 } else {
-                    qtdNecessaria -= lote.getQuantidadeTotal();
-                    loteService.removerQuantidade(lote.getIdLote(), lote.getQuantidadeTotal());
+                    qtdNecessaria -= lote.getQuantidadeAtual();
+                    loteService.removerQuantidade(lote.getIdLote(), lote.getQuantidadeAtual());
                 }
             }
 

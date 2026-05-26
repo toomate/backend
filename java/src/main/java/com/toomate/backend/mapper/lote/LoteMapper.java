@@ -24,7 +24,8 @@ public class LoteMapper {
         entity.setUsuario(usuario);
         entity.setMarca(marca);
         entity.setUnidadeMedida(dto.getUnidadeMedida());
-        entity.setQuantidadeTotal(dto.getQuantidadeTotal());
+        entity.setQuantidadeOriginal(dto.getQuantidadeOriginal());
+        entity.setQuantidadeAtual(dto.getQuantidadeAtual());
         return entity;
     }
 
@@ -42,11 +43,12 @@ public class LoteMapper {
         dto.setUsuario(UsuarioMapper.toResponse(lote.getUsuario()));
         dto.setMarca(MarcaMapper.toDto(lote.getMarca()));
         dto.setUnidadeMedida(lote.getUnidadeMedida());
-        dto.setQuantidadeTotal(lote.getQuantidadeTotal());
+        dto.setQuantidadeAtual(lote.getQuantidadeAtual());
+        dto.setQuantidadeOriginal(lote.getQuantidadeOriginal());
         return dto;
     }
 
     public static List<LoteResponseDto> toDto(List<Lote> entity) {
-        return entity.stream().map(lote -> new LoteResponseDto(lote.getIdLote(), lote.getDataValidade(), lote.getPrecoUnitario(), lote.getQuantidadeMedida(), lote.getDataEntrada(), UsuarioMapper.toResponse(lote.getUsuario()), MarcaMapper.toDto(lote.getMarca()), lote.getUnidadeMedida(), lote.getQuantidadeTotal())).toList();
+        return entity.stream().map(LoteMapper::toDto).toList();
     }
 }

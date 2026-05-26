@@ -20,7 +20,9 @@ public class LoteRequestDto {
     @Schema(description = "data de entrada)", example = "2025-10-19")
     private LocalDate dataEntrada;
     @Schema(description = "Quantidade total de insumos daquele lote", example = "100")
-    private Integer quantidadeTotal;
+    private Integer quantidadeOriginal;
+    @Schema(description = "Quantidade atual de insumos daquele lote", example = "100")
+    private Integer quantidadeAtual;
 
     @Schema(description = "FK da marca dos insumos do lote")
     private Integer fkMarca;
@@ -29,15 +31,32 @@ public class LoteRequestDto {
     private Integer fkUsuario;
 
 
-    public LoteRequestDto(LocalDate dataValidade, Double precoUnitario, Double quantidadeMedida, String unidadeMedida, LocalDate dataEntrada, Integer quantidadeTotal, Integer fkMarca, Integer fkUsuario) {
+    public LoteRequestDto(LocalDate dataValidade, Double precoUnitario, Double quantidadeMedida, String unidadeMedida, LocalDate dataEntrada, Integer quantidadeOriginal, Integer quantidadeAtual, Integer fkMarca, Integer fkUsuario) {
         this.dataValidade = dataValidade;
         this.precoUnitario = precoUnitario;
         this.quantidadeMedida = quantidadeMedida;
         this.unidadeMedida = unidadeMedida;
         this.dataEntrada = dataEntrada;
-        this.quantidadeTotal = quantidadeTotal;
+        this.quantidadeOriginal = quantidadeOriginal;
+        this.quantidadeAtual = quantidadeAtual;
         this.fkMarca = fkMarca;
         this.fkUsuario = fkUsuario;
+    }
+
+    public Integer getQuantidadeOriginal() {
+        return quantidadeOriginal;
+    }
+
+    public void setQuantidadeOriginal(Integer quantidadeOriginal) {
+        this.quantidadeOriginal = quantidadeOriginal;
+    }
+
+    public Integer getQuantidadeAtual() {
+        return quantidadeAtual;
+    }
+
+    public void setQuantidadeAtual(Integer quantidadeAtual) {
+        this.quantidadeAtual = quantidadeAtual;
     }
 
     public Integer getFkMarca() {
@@ -89,11 +108,11 @@ public class LoteRequestDto {
     }
 
     public Integer getQuantidadeTotal() {
-        return quantidadeTotal;
+        return quantidadeOriginal;
     }
 
-    public void setQuantidadeTotal(Integer quantidadeTotal) {
-        this.quantidadeTotal = quantidadeTotal;
+    public void setQuantidadeTotal(Integer quantidadeOriginal) {
+        this.quantidadeOriginal = quantidadeOriginal;
     }
 
     public LocalDate getDataEntrada() {

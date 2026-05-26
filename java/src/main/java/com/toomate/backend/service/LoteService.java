@@ -183,7 +183,7 @@ public class LoteService implements LoteListener {
 
         Lote lote = loteRepository.findById(id)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrado lote com o id %d", id)));
-        if (lote.getQuantidadeTotal() - quantidadeMedida < 0) {
+        if (lote.getQuantidadeAtual() - quantidadeMedida < 0) {
             throw new EntradaInvalidaException("Quantidade medida não pode ser negativa");
         }
 
@@ -327,7 +327,7 @@ public class LoteService implements LoteListener {
             log.info("Usuário {} atualizou a quantidade do lote: {} às {}", usuarioLogado, dto.getId(), LocalDateTime.now());
             auditService.registrar(usuarioLogado, "ATUALIZACAO", "LOTE", "Atualizou quantidade do lote ID: " + dto.getId());
 
-            lote.setQuantidadeTotal(dto.getQuantidadeTotal());
+            lote.setQuantidadeAtual(dto.getQuantidadeTotal());
         }
 
         List<Insumo> alterados = lotes.stream()

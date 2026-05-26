@@ -27,7 +27,8 @@ public class Lote {
     @Schema(description = "Unidade da medida", example = "kg")
     private String unidadeMedida;
     @Schema(description = "Quantidade total de insumos daquele lote", example = "100")
-    private Integer quantidadeTotal;
+    private Integer quantidadeAtual;
+    private Integer quantidadeOriginal;
 
     @ManyToOne
     @JoinColumn(name = "fkMarca", referencedColumnName = "idMarca")
@@ -38,6 +39,21 @@ public class Lote {
     @JoinColumn(name = "fkUsuario", referencedColumnName = "idUsuario")
     @Schema(description = "Usuario que cadastrou o lote")
     private Usuario usuario;
+
+    public Lote(Integer idLote, LocalDate dataValidade, LocalDate dataEntrada, Double precoUnitario, Double quantidadeMedida, String unidadeMedida, Integer quantidadeAtual, Integer quantidadeOriginal, Marca marca, Usuario usuario) {
+        this.idLote = idLote;
+        this.dataValidade = dataValidade;
+        this.dataEntrada = dataEntrada;
+        this.precoUnitario = precoUnitario;
+        this.quantidadeMedida = quantidadeMedida;
+        this.unidadeMedida = unidadeMedida;
+        this.quantidadeAtual = quantidadeAtual;
+        this.quantidadeOriginal = quantidadeOriginal;
+        this.marca = marca;
+        this.usuario = usuario;
+    }
+
+    public Lote(){}
 
     public Integer getIdLote() {
         return idLote;
@@ -79,6 +95,14 @@ public class Lote {
         this.quantidadeMedida = quantidadeMedida;
     }
 
+    public void adicionarQuantidadeMedida(Integer quantidadeMedida){
+        this.quantidadeAtual += quantidadeMedida;
+    }
+
+    public void removerQuantidadeMedida(Integer quantidadeMedida){
+        this.quantidadeAtual -= quantidadeMedida;
+    }
+
     public String getUnidadeMedida() {
         return unidadeMedida;
     }
@@ -87,20 +111,20 @@ public class Lote {
         this.unidadeMedida = unidadeMedida;
     }
 
-    public Integer getQuantidadeTotal() {
-        return quantidadeTotal;
+    public Integer getQuantidadeAtual() {
+        return quantidadeAtual;
     }
 
-    public void setQuantidadeTotal(Integer quantidadeTotal) {
-        this.quantidadeTotal = quantidadeTotal;
+    public void setQuantidadeAtual(Integer quantidadeAtual) {
+        this.quantidadeAtual = quantidadeAtual;
     }
 
-    public void adicionarQuantidadeMedida(Integer quantidadeMedida){
-        this.quantidadeTotal += quantidadeMedida;
+    public Integer getQuantidadeOriginal() {
+        return quantidadeOriginal;
     }
 
-    public void removerQuantidadeMedida(Integer quantidadeMedida){
-        this.quantidadeTotal -= quantidadeMedida;
+    public void setQuantidadeOriginal(Integer quantidadeOriginal) {
+        this.quantidadeOriginal = quantidadeOriginal;
     }
 
     public Marca getMarca() {

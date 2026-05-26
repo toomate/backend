@@ -24,11 +24,13 @@ public class LoteResponseDto {
     @Schema(description = "Unidade medida do lote", example = "kg")
     private String unidadeMedida;
     @Schema(description = "Quantidade total de insumos daquele lote", example = "100")
-    private Integer quantidadeTotal;
+    private Integer quantidadeOriginal;
+    @Schema(description = "Quantidade atual de insumos daquele lote", example = "100")
+    private Integer quantidadeAtual;
 
     public LoteResponseDto(){}
 
-    public LoteResponseDto(Integer idLote, LocalDate dataValidade, Double precoUnitario, Double quantidadeMedida, LocalDate dataEntrada, UsuarioResponseDto usuario, MarcaResponseDto marca, String unidadeMedida, Integer quantidadeTotal) {
+    public LoteResponseDto(Integer idLote, LocalDate dataValidade, Double precoUnitario, Double quantidadeMedida, LocalDate dataEntrada, UsuarioResponseDto usuario, MarcaResponseDto marca, String unidadeMedida, Integer quantidadeOriginal, Integer quantidadeAtual) {
         this.idLote = idLote;
         this.dataValidade = dataValidade;
         this.precoUnitario = precoUnitario;
@@ -37,7 +39,8 @@ public class LoteResponseDto {
         this.usuario = usuario;
         this.marca = marca;
         this.unidadeMedida = unidadeMedida;
-        this.quantidadeTotal = quantidadeTotal;
+        this.quantidadeOriginal = quantidadeOriginal;
+        this.quantidadeAtual = quantidadeAtual;
     }
 
     public Integer getIdLote() {
@@ -104,11 +107,19 @@ public class LoteResponseDto {
         this.unidadeMedida = unidadeMedida;
     }
 
-    public Integer getQuantidadeTotal() {
-        return quantidadeTotal;
+    public Integer getQuantidadeOriginal() {
+        return quantidadeOriginal;
     }
 
-    public void setQuantidadeTotal(Integer quantidadeTotal) {
-        this.quantidadeTotal = quantidadeTotal;
+    public void setQuantidadeOriginal(Integer quantidadeOriginal) {
+        this.quantidadeOriginal = quantidadeOriginal;
+    }
+
+    public Integer getQuantidadeAtual() {
+        return quantidadeAtual;
+    }
+
+    public void setQuantidadeAtual(Integer quantidadeAtual) {
+        this.quantidadeAtual = quantidadeAtual;
     }
 }
