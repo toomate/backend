@@ -11,7 +11,7 @@ public class Fornecedor {
     @Column(name = "idFornecedor")
     private Integer id;
     @Schema(description = "Link para redirecionamento para o Whatsapp", example = "https://web.whatsapp.com/")
-    private String link;
+    private String linkWhatsapp;
     @Schema(description = "Razão social do fornecedor", example = "Atacado São Paulo")
     private String razaoSocial;
     @Schema(description = "Telefone do fornecedor", example = "11987654321")
@@ -25,12 +25,12 @@ public class Fornecedor {
         this.id = id;
     }
 
-    public String getLink() {
-        return link;
+    public String getLinkWhatsapp() {
+        return linkWhatsapp;
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    public void setLinkWhatsapp(String linkWhatsapp) {
+        this.linkWhatsapp = linkWhatsapp;
     }
 
     public String getRazaoSocial() {

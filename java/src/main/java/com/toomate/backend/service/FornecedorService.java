@@ -61,7 +61,7 @@ public class FornecedorService {
         fornecedor.setRazaoSocial(razaoSocialNormalizada);
         String telefoneNormalizado = normalizarTelefone(telefone);
         fornecedor.setTelefone(telefoneNormalizado);
-        fornecedor.setLink(gerarLinkWhatsapp(telefoneNormalizado));
+        fornecedor.setLinkWhatsapp(gerarLinkWhatsapp(telefoneNormalizado));
 
         Fornecedor salvo = fornecedorRepository.save(fornecedor);
         auditService.registrar(getUsuarioLogado(), "CADASTRO", "FORNECEDOR", "Cadastrou fornecedor: " + salvo.getRazaoSocial());
@@ -81,7 +81,7 @@ public class FornecedorService {
         atual.setRazaoSocial(novaRazaoSocial);
         String telefoneNormalizado = normalizarTelefone(telefone);
         atual.setTelefone(telefoneNormalizado);
-        atual.setLink(gerarLinkWhatsapp(telefoneNormalizado));
+        atual.setLinkWhatsapp(gerarLinkWhatsapp(telefoneNormalizado));
 
         Fornecedor atualizado = fornecedorRepository.save(atual);
         auditService.registrar(getUsuarioLogado(), "ATUALIZACAO", "FORNECEDOR", "Atualizou fornecedor: " + atualizado.getRazaoSocial());

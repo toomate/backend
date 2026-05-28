@@ -16,7 +16,7 @@ public final class FornecedorMapper {
 
         FornecedorResponseDto dto = new FornecedorResponseDto();
         dto.setIdFornecedor(entity.getId());
-        dto.setLink(entity.getLink());
+        dto.setLink(entity.getLinkWhatsapp());
         dto.setRazaoSocial(entity.getRazaoSocial());
         dto.setTelefone(entity.getTelefone());
         return dto;
