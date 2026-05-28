@@ -27,19 +27,19 @@ public class RotinaController {
 
     @GetMapping
     public ResponseEntity<PageResponseDto<RotinaResponseDto>> listar(@RequestParam(defaultValue = "0") Integer pagina, @RequestParam(defaultValue = "16") Integer tamanho,
-                                                                     @RequestParam(required = false) String titulo){
+                                                                     @RequestParam(required = false) String titulo) {
         Page<Rotina> rotinas = rotinaService.listarComPaginacao(pagina, tamanho, titulo);
         PageResponseDto<RotinaResponseDto> response = new PageResponseDto<RotinaResponseDto>().de(rotinas.map(RotinaMapper::toResponse));
         return ResponseEntity.status(200).body(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Rotina> buscarPorId(@PathVariable Integer id){
+    public ResponseEntity<Rotina> buscarPorId(@PathVariable Integer id) {
         return ResponseEntity.status(200).body(rotinaService.buscarPorId(id));
     }
 
     @PostMapping
-    public ResponseEntity<Rotina> cadastrar(@RequestBody RotinaRequestDto request){
+    public ResponseEntity<Rotina> cadastrar(@RequestBody RotinaRequestDto request) {
         return ResponseEntity.status(201).body(rotinaService.cadastrar(request));
     }
 
@@ -49,18 +49,18 @@ public class RotinaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Rotina> atualizar(@PathVariable Integer id, @RequestBody RotinaRequestDto rotina){
+    public ResponseEntity<Rotina> atualizar(@PathVariable Integer id, @RequestBody RotinaRequestDto rotina) {
         return ResponseEntity.status(200).body(rotinaService.atualizar(rotina, id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Integer id){
+    public ResponseEntity<Void> deletar(@PathVariable Integer id) {
         rotinaService.deletar(id);
         return ResponseEntity.status(204).build();
     }
 
     @PutMapping("/baixa/{id}")
-    public ResponseEntity<Void> darBaixa(@PathVariable Integer id){
+    public ResponseEntity<Void> darBaixa(@PathVariable Integer id) {
         rotinaService.darBaixa(id);
         return ResponseEntity.status(204).build();
     }

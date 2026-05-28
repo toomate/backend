@@ -5,6 +5,7 @@ import com.toomate.backend.dto.Kpi;
 import com.toomate.backend.dto.estoque_grupo.*;
 import com.toomate.backend.dto.lote.LotePatchDto;
 import com.toomate.backend.dto.lote.ResumoLotesPeriodoDto;
+import com.toomate.backend.dto.page.PageResponseDto;
 import com.toomate.backend.enums.StatusVencimento;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
@@ -16,6 +17,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -85,7 +88,7 @@ public class LoteService implements LoteListener {
     }
 
     @Caching(evict = {
-            @CacheEvict(cacheNames = "estoque", key = "'todos'"),
+            @CacheEvict(cacheNames = "estoque", key = "{#pagina, #tamanho}"),
             @CacheEvict(cacheNames = "lotes", key = "'todos'"),
             @CacheEvict(cacheNames = "vencimentos", key = "'todos'")
     })
@@ -124,7 +127,7 @@ public class LoteService implements LoteListener {
     }
 
     @Caching(evict = {
-            @CacheEvict(cacheNames = "estoque", key = "'todos'"),
+            @CacheEvict(cacheNames = "estoque", key = "{#pagina, #tamanho}"),
             @CacheEvict(cacheNames = "lotes", key = "'todos'"),
             @CacheEvict(cacheNames = "vencimentos", key = "'todos'")
     })
@@ -147,7 +150,7 @@ public class LoteService implements LoteListener {
     }
 
     @Caching(evict = {
-            @CacheEvict(cacheNames = "estoque", key = "'todos'"),
+            @CacheEvict(cacheNames = "estoque", key = "{#pagina, #tamanho}"),
             @CacheEvict(cacheNames = "lotes", key = "'todos'"),
             @CacheEvict(cacheNames = "vencimentos", key = "'todos'")
     })
@@ -204,13 +207,23 @@ public class LoteService implements LoteListener {
         }
     }
 
-    @Cacheable(cacheNames = "estoque", key = "'todos'")
-    public List<EstoqueGrupo> buscarEstoque() {
-        List<EstoqueGeral> estoque = loteRepository.buscarEstoque();
+    @Cacheable(cacheNames = "estoque", key = "{#pagina, #tamanho}")
+    public PageResponseDto<EstoqueGrupo> buscarEstoque(Integer pagina, Integer tamanho) {
+        List<EstoqueGeral> tudo = loteRepository.buscarEstoque();
 
-        Map<Integer, EstoqueGrupo> estoqueResponse = estruturarJson(estoque);
+        Map<Integer, EstoqueGrupo> agrupado = estruturarJson(tudo);
 
-        return new ArrayList<>(estoqueResponse.values());
+        List<EstoqueGrupo> grupos = new ArrayList<>(agrupado.values());
+
+        int inicio = pagina * tamanho;
+        int fim = Math.min(inicio + tamanho, grupos.size());
+
+        List<EstoqueGrupo> pageContent = grupos.subList(inicio, fim);
+        PageRequest pgRequest = PageRequest.of(pagina, tamanho);
+
+        Page<EstoqueGrupo> response = new PageImpl<>(pageContent, pgRequest, grupos.size());
+
+        return new PageResponseDto<EstoqueGrupo>().de(response);
     }
 
     public List<EstoqueGrupo> buscarEstoquePorCategoria(String categoria) {
@@ -305,7 +318,7 @@ public class LoteService implements LoteListener {
     }
 
     @Caching(evict = {
-            @CacheEvict(cacheNames = "estoque", key = "'todos'"),
+            @CacheEvict(cacheNames = "estoque", key = "{#pagina, #tamanho}"),
             @CacheEvict(cacheNames = "lotes", key = "'todos'"),
             @CacheEvict(cacheNames = "vencimentos", key = "'todos'")
     })

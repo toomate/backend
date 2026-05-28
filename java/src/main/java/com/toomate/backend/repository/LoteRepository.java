@@ -38,8 +38,8 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
             JOIN m.insumo i
             JOIN i.categoria c
             WHERE l.quantidadeAtual > 0
-            ORDER BY l.dataValidade ASC,
-            l.quantidadeAtual ASC,
+            ORDER BY l.quantidadeAtual ASC,
+            l.dataValidade ASC,
             i.nome ASC
             """)
     List<EstoqueGeral> buscarEstoque();
@@ -66,8 +66,8 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
             JOIN i.categoria c
             WHERE l.quantidadeAtual > 0
             AND c.nome = :categoria
-            ORDER BY l.dataValidade ASC,
-            l.quantidadeAtual ASC,
+            ORDER BY l.quantidadeAtual ASC,
+            l.dataValidade ASC,
             i.nome ASC
             """)
     List<EstoqueGeral> buscarEstoquePorCategoria(String categoria);
@@ -93,8 +93,8 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
             JOIN i.categoria c
             WHERE l.quantidadeAtual > 0
             AND i.nome LIKE %:insumo%
-            ORDER BY l.dataValidade ASC,
-            l.quantidadeAtual ASC,
+            ORDER BY l.quantidadeAtual ASC,
+            l.dataValidade ASC,
             i.nome ASC
             """)
     List<EstoqueGeral> pesquisarEstoquePorInsumo(String insumo);
