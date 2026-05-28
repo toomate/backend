@@ -6,6 +6,9 @@ import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.mapper.boleto.BoletoMapper;
 import com.toomate.backend.model.Boleto;
 import com.toomate.backend.repository.BoletoRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -35,6 +38,11 @@ public class BoletoService {
 
     public List<Boleto> listarBoletos() {
         return boletoRepository.findAll();
+    }
+
+    public Page<Boleto> listarBoletosPaginado(Integer pagina, Integer tamanho) {
+        Pageable pageable = PageRequest.of(Math.max(pagina, 0), Math.max(tamanho, 1));
+        return boletoRepository.findAll(pageable);
     }
 
     public Boleto buscarPorId(Integer id) {

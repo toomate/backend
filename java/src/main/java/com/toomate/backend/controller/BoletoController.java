@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,6 +58,19 @@ public class BoletoController {
 
         return ResponseEntity.status(200).body(boletos);
 
+    }
+
+    @Operation(summary = "Listar boletos paginado",
+            description = "Retorna uma página de boletos (codigo 200)",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Página de boletos",
+                            content = @Content(mediaType = "application/json"))
+            })
+    @GetMapping("/paginado")
+    public ResponseEntity<Page<Boleto>> listarPaginado(
+            @RequestParam(defaultValue = "0") Integer pagina,
+            @RequestParam(defaultValue = "10") Integer tamanho) {
+        return ResponseEntity.ok(boletoService.listarBoletosPaginado(pagina, tamanho));
     }
 
     @Operation(summary = "Buscar boleto por id",
