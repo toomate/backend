@@ -49,7 +49,7 @@ class FornecedorServiceTest {
     void setup() {
         exemploFornecedor = new Fornecedor();
         exemploFornecedor.setId(1);
-        exemploFornecedor.setLink("https://wa.me/5511987654321");
+        exemploFornecedor.setLinkWhatsapp("https://wa.me/5511987654321");
         exemploFornecedor.setRazaoSocial("Atacado Sao Paulo");
         exemploFornecedor.setTelefone("11987654321");
 
@@ -124,7 +124,7 @@ class FornecedorServiceTest {
     void cadastrarSucessoTeste() {
         Fornecedor salvo = new Fornecedor();
         salvo.setId(5);
-        salvo.setLink("https://wa.me/5511987654321");
+        salvo.setLinkWhatsapp("https://wa.me/5511987654321");
         salvo.setRazaoSocial(razaoSocialValida);
         salvo.setTelefone("5511987654321");
 
@@ -167,7 +167,7 @@ class FornecedorServiceTest {
         Fornecedor existente = new Fornecedor();
         existente.setId(1);
         existente.setRazaoSocial("Nome Antigo");
-        existente.setLink("https://old.link");
+        existente.setLinkWhatsapp("https://old.link");
         existente.setTelefone("11111111111");
 
         when(fornecedorRepository.findById(1)).thenReturn(Optional.of(existente));
@@ -179,7 +179,7 @@ class FornecedorServiceTest {
         assertNotNull(resultado);
         assertEquals(1, resultado.getId());
         assertEquals("Novo Nome", resultado.getRazaoSocial());
-        assertEquals("https://wa.me/5511999999999", resultado.getLink());
+        assertEquals("https://wa.me/5511999999999", resultado.getLinkWhatsapp());
         assertEquals("5511999999999", resultado.getTelefone());
         verify(fornecedorRepository, times(1)).findById(1);
         verify(fornecedorRepository, times(1)).existsByRazaoSocialIgnoreCase("Novo Nome");
