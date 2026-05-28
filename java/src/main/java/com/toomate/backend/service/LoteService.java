@@ -211,35 +211,49 @@ public class LoteService implements LoteListener {
     public PageResponseDto<EstoqueGrupo> buscarEstoque(Integer pagina, Integer tamanho) {
         List<EstoqueGeral> tudo = loteRepository.buscarEstoque();
 
-        Map<Integer, EstoqueGrupo> agrupado = estruturarJson(tudo);
-
-        List<EstoqueGrupo> grupos = new ArrayList<>(agrupado.values());
+        List<EstoqueGrupo> agrupado = estruturarJson(tudo);
 
         int inicio = pagina * tamanho;
-        int fim = Math.min(inicio + tamanho, grupos.size());
+        int fim = Math.min(inicio + tamanho, agrupado.size());
 
-        List<EstoqueGrupo> pageContent = grupos.subList(inicio, fim);
+        List<EstoqueGrupo> pageContent = agrupado.subList(inicio, fim);
         PageRequest pgRequest = PageRequest.of(pagina, tamanho);
 
-        Page<EstoqueGrupo> response = new PageImpl<>(pageContent, pgRequest, grupos.size());
+        Page<EstoqueGrupo> response = new PageImpl<>(pageContent, pgRequest, agrupado.size());
 
         return new PageResponseDto<EstoqueGrupo>().de(response);
     }
 
-    public List<EstoqueGrupo> buscarEstoquePorCategoria(String categoria) {
+    public PageResponseDto<EstoqueGrupo> buscarEstoquePorCategoria(String categoria, Integer pagina, Integer tamanho) {
         List<EstoqueGeral> estoque = loteRepository.buscarEstoquePorCategoria(categoria);
 
-        Map<Integer, EstoqueGrupo> estoqueResponse = estruturarJson(estoque);
+        List<EstoqueGrupo> agrupado = estruturarJson(estoque);
 
-        return new ArrayList<>(estoqueResponse.values());
+        int inicio = pagina * tamanho;
+        int fim = Math.min(inicio + tamanho, agrupado.size());
+
+        List<EstoqueGrupo> pageContent = agrupado.subList(inicio, fim);
+        PageRequest pgRequest = PageRequest.of(pagina, tamanho);
+
+        Page<EstoqueGrupo> response = new PageImpl<>(pageContent, pgRequest, agrupado.size());
+
+        return new PageResponseDto<EstoqueGrupo>().de(response);
     }
 
-    public List<EstoqueGrupo> pesquisarEstoquePorInsumo(String insumo) {
+    public PageResponseDto<EstoqueGrupo> pesquisarEstoquePorInsumo(String insumo, Integer pagina, Integer tamanho) {
         List<EstoqueGeral> estoque = loteRepository.pesquisarEstoquePorInsumo(insumo);
 
-        Map<Integer, EstoqueGrupo> estoqueResponse = estruturarJson(estoque);
+        List<EstoqueGrupo> agrupado = estruturarJson(estoque);
 
-        return new ArrayList<>(estoqueResponse.values());
+        int inicio = pagina * tamanho;
+        int fim = Math.min(inicio + tamanho, agrupado.size());
+
+        List<EstoqueGrupo> pageContent = agrupado.subList(inicio, fim);
+        PageRequest pgRequest = PageRequest.of(pagina, tamanho);
+
+        Page<EstoqueGrupo> response = new PageImpl<>(pageContent, pgRequest, agrupado.size());
+
+        return new PageResponseDto<EstoqueGrupo>().de(response);
     }
 
     @Cacheable(cacheNames = "vencimentos", key = "'todos'")
@@ -281,7 +295,7 @@ public class LoteService implements LoteListener {
     }
 
 
-    private Map<Integer, EstoqueGrupo> estruturarJson(List<EstoqueGeral> estoque) {
+    private List<EstoqueGrupo> estruturarJson(List<EstoqueGeral> estoque) {
         Map<Integer, EstoqueGrupo> mapa = new LinkedHashMap<>();
         for (EstoqueGeral item : estoque) {
             Integer fkInsumo = item.getIdInsumo();
@@ -308,13 +322,17 @@ public class LoteService implements LoteListener {
             mapa.get(fkInsumo).calcularMenorData();
         }
 
-        for (EstoqueGrupo grupo : mapa.values()) {
-            grupo.getItens().sort(Comparator
-                    .comparing(
-                            InsumoAgrupado::getDataValidade)
-                    .thenComparing(InsumoAgrupado::getQuantidadeTotal));
-        }
-        return mapa;
+        List<EstoqueGrupo> lista = new ArrayList<>(mapa.values());
+
+        lista.sort(
+                Comparator
+                        .comparing((EstoqueGrupo grupo) -> grupo.getQtdAtual() < grupo.getQtdMinima())
+                        .reversed()
+                        .thenComparing(EstoqueGrupo::getQtdAtual)
+                        .thenComparing(EstoqueGrupo::getDtVencimento)
+        );
+
+        return lista;
     }
 
     @Caching(evict = {

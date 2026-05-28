@@ -117,7 +117,7 @@ public class LoteController {
     }
 
     @GetMapping("/estoque")
-    public ResponseEntity<PageResponseDto<EstoqueGrupo>> buscarEstoque(@RequestParam(defaultValue = "0") Integer pagina, @RequestParam(defaultValue = "10") Integer tamanho) {
+    public ResponseEntity<PageResponseDto<EstoqueGrupo>> buscarEstoque(@RequestParam(defaultValue = "0") Integer pagina, @RequestParam(defaultValue = "8") Integer tamanho) {
         PageResponseDto<EstoqueGrupo> estoque = loteService.buscarEstoque(pagina, tamanho);
 
         if (estoque.getConteudo().isEmpty()) {
@@ -128,10 +128,10 @@ public class LoteController {
     }
 
     @GetMapping("/estoque/{categoria}")
-    public ResponseEntity<List<EstoqueGrupo>> buscarEstoquePorCategoria(@PathVariable String categoria) {
-        List<EstoqueGrupo> estoque = loteService.buscarEstoquePorCategoria(categoria);
+    public ResponseEntity<PageResponseDto<EstoqueGrupo>> buscarEstoquePorCategoria(@PathVariable String categoria, @RequestParam(defaultValue = "0") Integer pagina, @RequestParam(defaultValue = "8") Integer tamanho) {
+        PageResponseDto<EstoqueGrupo> estoque = loteService.buscarEstoquePorCategoria(categoria, pagina, tamanho);
 
-        if (estoque.isEmpty()) {
+        if (estoque.getConteudo().isEmpty()) {
             return ResponseEntity.status(204).build();
         }
 
@@ -139,10 +139,10 @@ public class LoteController {
     }
 
     @GetMapping("/estoque/search")
-    public ResponseEntity<List<EstoqueGrupo>> pesquisarEstoquePorInsumo(@RequestParam String insumo) {
-        List<EstoqueGrupo> estoque = loteService.pesquisarEstoquePorInsumo(insumo);
+    public ResponseEntity<PageResponseDto<EstoqueGrupo>> pesquisarEstoquePorInsumo(@RequestParam String insumo, @RequestParam(defaultValue = "0") Integer pagina, @RequestParam(defaultValue = "8") Integer tamanho) {
+        PageResponseDto<EstoqueGrupo> estoque = loteService.pesquisarEstoquePorInsumo(insumo, pagina, tamanho);
 
-        if (estoque.isEmpty()) {
+        if (estoque.getConteudo().isEmpty()) {
             return ResponseEntity.status(204).build();
         }
 
