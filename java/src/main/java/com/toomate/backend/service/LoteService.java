@@ -328,8 +328,8 @@ public class LoteService implements LoteListener {
                 Comparator
                         .comparing((EstoqueGrupo grupo) -> grupo.getQtdAtual() < grupo.getQtdMinima())
                         .reversed()
-                        .thenComparing(EstoqueGrupo::getQtdAtual)
                         .thenComparing(EstoqueGrupo::getDtVencimento)
+                        .thenComparing(EstoqueGrupo::getQtdAtual)
         );
 
         return lista;

@@ -117,7 +117,7 @@ public class LoteController {
     }
 
     @GetMapping("/estoque")
-    public ResponseEntity<PageResponseDto<EstoqueGrupo>> buscarEstoque(@RequestParam(defaultValue = "0") Integer pagina, @RequestParam(defaultValue = "8") Integer tamanho) {
+    public ResponseEntity<PageResponseDto<EstoqueGrupo>> buscarEstoque(@RequestParam(defaultValue = "0") Integer pagina, @RequestParam(defaultValue = "10") Integer tamanho) {
         PageResponseDto<EstoqueGrupo> estoque = loteService.buscarEstoque(pagina, tamanho);
 
         if (estoque.getConteudo().isEmpty()) {
