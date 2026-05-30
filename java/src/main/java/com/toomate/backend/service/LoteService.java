@@ -12,6 +12,7 @@ import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.integration.ProducerRabbitMQ;
 import com.toomate.backend.model.*;
 import com.toomate.backend.observer.LoteListener;
+import com.toomate.backend.repository.HistoricoLoteRepository;
 import com.toomate.backend.repository.LoteRepository;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -37,11 +38,13 @@ public class LoteService implements LoteListener {
     private final LoteRepository loteRepository;
     private final ProducerRabbitMQ producerRabbitMQ;
     private final AuditService auditService;
+    private final HistoricoLoteRepository historicoLoteRepository;
 
-    public LoteService(LoteRepository loteRepository, ProducerRabbitMQ producerRabbitMQ, AuditService auditService) {
+    public LoteService(LoteRepository loteRepository, ProducerRabbitMQ producerRabbitMQ, AuditService auditService, HistoricoLoteRepository historicoLoteRepository) {
         this.loteRepository = loteRepository;
         this.producerRabbitMQ = producerRabbitMQ;
         this.auditService = auditService;
+        this.historicoLoteRepository = historicoLoteRepository;
     }
 
     @Override
@@ -352,6 +355,15 @@ public class LoteService implements LoteListener {
         return lista;
     }
 
+    private void guardarHistorico(Lote lote, Integer quantidadeRetirada) {
+        HistoricoLote historico = new HistoricoLote();
+        historico.setLote(lote);
+        historico.setQuantidadeRetirada(quantidadeRetirada);
+        historico.setDataHoraAlteracao(LocalDateTime.now());
+
+        historicoLoteRepository.save(historico);
+    }
+
     @Caching(evict = {
             @CacheEvict(cacheNames = "estoque", allEntries = true),
             @CacheEvict(cacheNames = "lote", allEntries = true),
@@ -378,6 +390,8 @@ public class LoteService implements LoteListener {
             }
             log.info("Usuário {} atualizou a quantidade do lote: {} às {}", usuarioLogado, dto.getId(), LocalDateTime.now());
             auditService.registrar(usuarioLogado, "ATUALIZACAO", "LOTE", "Atualizou quantidade do lote ID: " + dto.getId());
+
+            guardarHistorico(lote, lote.getQuantidadeAtual() - dto.getQuantidadeTotal());
 
             lote.setQuantidadeAtual(dto.getQuantidadeTotal());
         }
