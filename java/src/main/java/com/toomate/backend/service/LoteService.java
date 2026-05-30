@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -88,9 +89,10 @@ public class LoteService implements LoteListener {
     }
 
     @Caching(evict = {
-            @CacheEvict(cacheNames = "estoque", key = "{#pagina, #tamanho}"),
-            @CacheEvict(cacheNames = "lotes", key = "'todos'"),
-            @CacheEvict(cacheNames = "vencimentos", key = "'todos'")
+            @CacheEvict(cacheNames = "estoque", allEntries = true),
+            @CacheEvict(cacheNames = "lote", allEntries = true),
+            @CacheEvict(cacheNames = "vencimentos", allEntries = true)
+
     })
     public Lote cadastrar(Lote lote) {
         String usuarioLogado = getUsuarioLogado();
@@ -127,9 +129,10 @@ public class LoteService implements LoteListener {
     }
 
     @Caching(evict = {
-            @CacheEvict(cacheNames = "estoque", key = "{#pagina, #tamanho}"),
-            @CacheEvict(cacheNames = "lotes", key = "'todos'"),
-            @CacheEvict(cacheNames = "vencimentos", key = "'todos'")
+            @CacheEvict(cacheNames = "estoque", allEntries = true),
+            @CacheEvict(cacheNames = "lote", allEntries = true),
+            @CacheEvict(cacheNames = "vencimentos", allEntries = true)
+
     })
     public void deletar(Integer id) {
         String usuarioLogado = getUsuarioLogado();
@@ -150,9 +153,10 @@ public class LoteService implements LoteListener {
     }
 
     @Caching(evict = {
-            @CacheEvict(cacheNames = "estoque", key = "{#pagina, #tamanho}"),
-            @CacheEvict(cacheNames = "lotes", key = "'todos'"),
-            @CacheEvict(cacheNames = "vencimentos", key = "'todos'")
+            @CacheEvict(cacheNames = "estoque", allEntries = true),
+            @CacheEvict(cacheNames = "lote", allEntries = true),
+            @CacheEvict(cacheNames = "vencimentos", allEntries = true)
+
     })
     public Lote atualizar(Integer id, Lote lote) {
         if (!loteRepository.existsById(id)) {
@@ -174,6 +178,12 @@ public class LoteService implements LoteListener {
                 .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrado nenhuma marca com o id %d", id)));
     }
 
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "estoque", allEntries = true),
+            @CacheEvict(cacheNames = "lote", allEntries = true),
+            @CacheEvict(cacheNames = "vencimentos", allEntries = true)
+
+    })
     public void removerQuantidade(Integer id, Integer quantidadeMedida) {
         if (!loteRepository.existsById(id)) {
             throw new EntidadeNaoEncontradaException(String.format("Não foi encontrado lote com o id %d", id));
@@ -193,6 +203,12 @@ public class LoteService implements LoteListener {
 
     }
 
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "estoque", allEntries = true),
+            @CacheEvict(cacheNames = "lote", allEntries = true),
+            @CacheEvict(cacheNames = "vencimentos", allEntries = true)
+
+    })
     public void adicionarQuantidade(Integer id, Integer quantidadeMedida) {
         if (!loteRepository.existsById(id)) {
             throw new EntidadeNaoEncontradaException(String.format("Não foi encontrado lote com o id %d", id));
@@ -328,17 +344,19 @@ public class LoteService implements LoteListener {
                 Comparator
                         .comparing((EstoqueGrupo grupo) -> grupo.getQtdAtual() < grupo.getQtdMinima())
                         .reversed()
-                        .thenComparing(EstoqueGrupo::getDtVencimento)
+                        .thenComparing((EstoqueGrupo grupo) -> ChronoUnit.DAYS.between(LocalDate.now(), grupo.getDtVencimento()) <= 7, Comparator.reverseOrder())
                         .thenComparing(EstoqueGrupo::getQtdAtual)
+                        .thenComparing(EstoqueGrupo::getDtVencimento)
         );
 
         return lista;
     }
 
     @Caching(evict = {
-            @CacheEvict(cacheNames = "estoque", key = "{#pagina, #tamanho}"),
-            @CacheEvict(cacheNames = "lotes", key = "'todos'"),
-            @CacheEvict(cacheNames = "vencimentos", key = "'todos'")
+            @CacheEvict(cacheNames = "estoque", allEntries = true),
+            @CacheEvict(cacheNames = "lote", allEntries = true),
+            @CacheEvict(cacheNames = "vencimentos", allEntries = true)
+
     })
     @Transactional
     public void atualizarQuantidades(List<LotePatchDto> request) {
