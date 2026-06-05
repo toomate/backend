@@ -19,6 +19,8 @@ public class Lote {
     private LocalDate dataValidade;
     @Schema(description = "data de entrada)", example = "2025-10-19")
     private LocalDate dataEntrada;
+    @Schema(description = "mostra se o estoque está ativo", example = "true")
+    private Boolean ativo;
     @Schema(description = "preço unitário)", example = "25.99")
     @Column(name = "precoUnit")
     private Double precoUnitario;
@@ -40,10 +42,11 @@ public class Lote {
     @Schema(description = "Usuario que cadastrou o lote")
     private Usuario usuario;
 
-    public Lote(Integer idLote, LocalDate dataValidade, LocalDate dataEntrada, Double precoUnitario, Double quantidadeMedida, String unidadeMedida, Integer quantidadeAtual, Integer quantidadeOriginal, Marca marca, Usuario usuario) {
+    public Lote(Integer idLote, LocalDate dataValidade, LocalDate dataEntrada, Boolean ativo, Double precoUnitario, Double quantidadeMedida, String unidadeMedida, Integer quantidadeAtual, Integer quantidadeOriginal, Marca marca, Usuario usuario) {
         this.idLote = idLote;
         this.dataValidade = dataValidade;
         this.dataEntrada = dataEntrada;
+        this.ativo = ativo;
         this.precoUnitario = precoUnitario;
         this.quantidadeMedida = quantidadeMedida;
         this.unidadeMedida = unidadeMedida;
@@ -77,6 +80,14 @@ public class Lote {
 
     public void setDataEntrada(LocalDate dataEntrada) {
         this.dataEntrada = dataEntrada;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
     }
 
     public Double getPrecoUnitario() {

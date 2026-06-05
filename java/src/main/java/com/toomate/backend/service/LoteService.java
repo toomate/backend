@@ -172,6 +172,20 @@ public class LoteService implements LoteListener {
         return lote;
     }
 
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "estoque", allEntries = true),
+            @CacheEvict(cacheNames = "lote", allEntries = true),
+            @CacheEvict(cacheNames = "vencimentos", allEntries = true)
+
+    })
+    public Lote excluirLote(Integer idLote) {
+        Lote lote = loteRepository.findById(idLote).orElseThrow(() -> new EntidadeNaoEncontradaException("Não foi encontrado um lote com o id " + idLote));
+
+        lote.setAtivo(false);
+
+        return loteRepository.save(lote);
+    }
+
     public Boolean existePorId(Integer id) {
         return loteRepository.existsById(id);
     }

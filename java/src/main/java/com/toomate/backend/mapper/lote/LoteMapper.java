@@ -19,6 +19,7 @@ public class LoteMapper {
         Lote entity = new Lote();
         entity.setDataEntrada(dto.getDataEntrada());
         entity.setDataValidade(dto.getDataValidade());
+        entity.setAtivo(dto.getAtivo());
         entity.setPrecoUnitario(dto.getPrecoUnitario());
         entity.setQuantidadeMedida(dto.getQuantidadeMedida());
         entity.setUsuario(usuario);
@@ -38,6 +39,7 @@ public class LoteMapper {
         dto.setIdLote(lote.getIdLote());
         dto.setDataEntrada(lote.getDataEntrada());
         dto.setDataValidade(lote.getDataValidade());
+        dto.setAtivo(lote.getAtivo());
         dto.setPrecoUnitario(lote.getPrecoUnitario());
         dto.setQuantidadeMedida(lote.getQuantidadeMedida());
         dto.setUsuario(UsuarioMapper.toResponse(lote.getUsuario()));

@@ -13,6 +13,8 @@ public class LoteRequestDto {
     private LocalDate dataValidade;
     @Schema(description = "preço unitário)", example = "25.99")
     private Double precoUnitario;
+    @Schema(description = "mostra se o estoque está ativo", example = "true")
+    private Boolean ativo;
     @Schema(description = "quantidade da medida)", example = "5")
     private Double quantidadeMedida;
     @Schema(description = "unidade da medida", example = "kg")
@@ -31,9 +33,10 @@ public class LoteRequestDto {
     private Integer fkUsuario;
 
 
-    public LoteRequestDto(LocalDate dataValidade, Double precoUnitario, Double quantidadeMedida, String unidadeMedida, LocalDate dataEntrada, Integer quantidadeOriginal, Integer quantidadeAtual, Integer fkMarca, Integer fkUsuario) {
+    public LoteRequestDto(LocalDate dataValidade, Double precoUnitario, Boolean ativo, Double quantidadeMedida, String unidadeMedida, LocalDate dataEntrada, Integer quantidadeOriginal, Integer quantidadeAtual, Integer fkMarca, Integer fkUsuario) {
         this.dataValidade = dataValidade;
         this.precoUnitario = precoUnitario;
+        this.ativo = ativo;
         this.quantidadeMedida = quantidadeMedida;
         this.unidadeMedida = unidadeMedida;
         this.dataEntrada = dataEntrada;
@@ -121,5 +124,13 @@ public class LoteRequestDto {
 
     public void setDataEntrada(LocalDate dataEntrada) {
         this.dataEntrada = dataEntrada;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
     }
 }

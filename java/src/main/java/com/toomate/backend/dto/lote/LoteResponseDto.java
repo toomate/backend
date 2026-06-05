@@ -11,6 +11,8 @@ public class LoteResponseDto {
     private Integer idLote;
     @Schema(description = "data de validade)", example = "2025-10-19")
     private LocalDate dataValidade;
+    @Schema(description = "mostra se o estoque está ativo", example = "true")
+    private Boolean ativo;
     @Schema(description = "preço unitário)", example = "25.99")
     private Double precoUnitario;
     @Schema(description = "quantidade da medida)", example = "5")
@@ -30,9 +32,10 @@ public class LoteResponseDto {
 
     public LoteResponseDto(){}
 
-    public LoteResponseDto(Integer idLote, LocalDate dataValidade, Double precoUnitario, Double quantidadeMedida, LocalDate dataEntrada, UsuarioResponseDto usuario, MarcaResponseDto marca, String unidadeMedida, Integer quantidadeOriginal, Integer quantidadeAtual) {
+    public LoteResponseDto(Integer idLote, LocalDate dataValidade, Boolean ativo, Double precoUnitario, Double quantidadeMedida, LocalDate dataEntrada, UsuarioResponseDto usuario, MarcaResponseDto marca, String unidadeMedida, Integer quantidadeOriginal, Integer quantidadeAtual) {
         this.idLote = idLote;
         this.dataValidade = dataValidade;
+        this.ativo = ativo;
         this.precoUnitario = precoUnitario;
         this.quantidadeMedida = quantidadeMedida;
         this.dataEntrada = dataEntrada;
@@ -121,5 +124,13 @@ public class LoteResponseDto {
 
     public void setQuantidadeAtual(Integer quantidadeAtual) {
         this.quantidadeAtual = quantidadeAtual;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
     }
 }
