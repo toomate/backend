@@ -83,6 +83,7 @@ public class RotinaService {
             rotinaInsumo.setInsumo(insumo);
             rotinaInsumo.setQuantidadeInsumo(Math.abs(atual.getQuantidadeInsumo()));
             rotinaInsumo.setRotina(rotina);
+            rotinaInsumo.setUnidadeMedida(atual.getUnidadeMedida());
             rotinas.add(rotinaInsumo);
             rotina.getRotinaInsumos().add(rotinaInsumo);
         }
@@ -103,37 +104,70 @@ public class RotinaService {
 
     @Transactional
     public void darBaixa(Integer id) {
-        if (!rotinaRepository.existsById(id)) {
-            throw new EntidadeNaoEncontradaException(String.format("Não foi encontrada uma rotina com este id %d", id));
 
+        if (!rotinaRepository.existsById(id)) {
+            throw new EntidadeNaoEncontradaException(
+                    String.format("Não foi encontrada uma rotina com este id %d", id)
+            );
         }
-        List<RotinaInsumo> relacoes = rotinaInsumoRepository.findAllByRotinaId(id);
-        System.out.println("relações encontradas: " + relacoes.size());
+
+        List<RotinaInsumo> relacoes =
+                rotinaInsumoRepository.findAllByRotinaId(id);
 
         for (RotinaInsumo relacao : relacoes) {
-            Integer qtdNecessaria = Math.abs((relacao.getQuantidadeInsumo()));
 
-            List<Lote> lotesDisponiveis = loteService.lotePorInsumoId(relacao.getInsumo().getIdInsumo());
-            System.out.println("Lotes encontrados: " + lotesDisponiveis.size());
+            double restante = relacao.getQuantidadeInsumo();
 
-            for (Lote lote : lotesDisponiveis) {
-                if (qtdNecessaria <= 0) break;
-                System.out.println("Qtd necessária inicial: " + qtdNecessaria);
+            List<Lote> lotesDisponiveis =
+                    loteService.lotePorInsumoId(
+                            relacao.getInsumo().getIdInsumo()
+                    );
 
-                if (lote.getQuantidadeAtual() >= qtdNecessaria) {
-                    loteService.removerQuantidade(lote.getIdLote(), qtdNecessaria);
-                    qtdNecessaria = 0;
-                } else {
-                    qtdNecessaria -= lote.getQuantidadeAtual();
-                    loteService.removerQuantidade(lote.getIdLote(), lote.getQuantidadeAtual());
+            List<Lote> lotesValidos = lotesDisponiveis.stream()
+                    .filter(l -> l.getUnidadeMedida()
+                            .equalsIgnoreCase(relacao.getUnidadeMedida()))
+                    .toList();
+
+            double estoqueTotal = 0.0;
+
+            for (Lote lote : lotesValidos) {
+
+                if (!lote.getUnidadeMedida().equalsIgnoreCase(relacao.getUnidadeMedida())) continue;
+
+                estoqueTotal += lote.getQuantidadeAtual()
+                        * lote.getQuantidadeMedida();
+            }
+
+            if (estoqueTotal < restante) {
+                throw new EntradaInvalidaException(
+                        "Estoque insuficiente para: "
+                                + relacao.getInsumo().getNome()
+                );
+            }
+
+            for (Lote lote : lotesValidos) {
+
+                if (restante <= 0) break;
+
+                int pacotesDisponiveis = lote.getQuantidadeAtual();
+                double porPacote = lote.getQuantidadeMedida();
+
+                for (int i = 0; i < pacotesDisponiveis && restante > 0; i++) {
+                    restante -= porPacote;
+                    loteService.removerQuantidade(
+                            lote.getIdLote(),
+                            1
+                    );
                 }
             }
-
-            if (qtdNecessaria > 0) {
-                throw new EntradaInvalidaException("Faltou estoque para: " + relacao.getInsumo().getNome());
-            }
         }
-        auditService.registrar(getUsuarioLogado(), "BAIXA", "ROTINA", "Deu baixa no estoque pela rotina ID: " + id);
+
+        auditService.registrar(
+                getUsuarioLogado(),
+                "BAIXA",
+                "ROTINA",
+                "Deu baixa no estoque pela rotina ID: " + id
+        );
     }
 
     public Rotina atualizar(RotinaRequestDto rotina, Integer id) {

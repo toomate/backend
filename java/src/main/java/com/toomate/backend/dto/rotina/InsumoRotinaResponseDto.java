@@ -4,11 +4,13 @@ public class InsumoRotinaResponseDto {
     private Integer id;
     private String nome;
     private Integer quantidade;
+    private String unidadeMedida;
 
-    public InsumoRotinaResponseDto(Integer id, String nome, Integer quantidade) {
+    public InsumoRotinaResponseDto(Integer id, String nome, Integer quantidade, String unidadeMedida) {
         this.id = id;
         this.nome = nome;
         this.quantidade = quantidade;
+        this.unidadeMedida = unidadeMedida;
     }
 
     public Integer getId() {
@@ -33,5 +35,13 @@ public class InsumoRotinaResponseDto {
 
     public void setQuantidade(Integer quantidade) {
         this.quantidade = quantidade;
+    }
+
+    public String getUnidadeMedida() {
+        return unidadeMedida;
+    }
+
+    public void setUnidadeMedida(String unidadeMedida) {
+        this.unidadeMedida = unidadeMedida;
     }
 }

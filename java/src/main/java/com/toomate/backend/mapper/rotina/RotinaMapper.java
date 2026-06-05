@@ -37,7 +37,8 @@ public class RotinaMapper {
                         .map(ri -> new InsumoRotinaResponseDto(
                                 ri.getInsumo().getIdInsumo(),
                                 ri.getInsumo().getNome(),
-                                ri.getQuantidadeInsumo()
+                                ri.getQuantidadeInsumo(),
+                                ri.getUnidadeMedida()
                         ))
                         .toList();
 

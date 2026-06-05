@@ -17,6 +17,7 @@ public class RotinaInsumo {
     @JoinColumn(name = "idInsumo")
     private Insumo insumo;
     private Integer quantidadeInsumo;
+    private String unidadeMedida;
 
     public Integer getQuantidadeInsumo() {
         return quantidadeInsumo;
@@ -48,5 +49,13 @@ public class RotinaInsumo {
 
     public void setInsumo(Insumo insumo) {
         this.insumo = insumo;
+    }
+
+    public String getUnidadeMedida() {
+        return unidadeMedida;
+    }
+
+    public void setUnidadeMedida(String unidadeMedida) {
+        this.unidadeMedida = unidadeMedida;
     }
 }
