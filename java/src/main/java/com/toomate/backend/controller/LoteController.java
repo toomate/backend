@@ -150,16 +150,16 @@ public class LoteController {
     }
 
     @GetMapping("/estoque/vencimentos")
-    public ResponseEntity<List<VencimentoView>> buscarEstoqueVencimento(){
-        List<EstoqueVencimento> vencimentos = loteService.buscarEstoqueVencimento();
+    public ResponseEntity<PageResponseDto<VencimentoView>> buscarEstoqueVencimento(
+            @RequestParam(defaultValue = "0") Integer pagina,
+            @RequestParam(defaultValue = "10") Integer tamanho){
+        PageResponseDto<VencimentoView> vencimentos = loteService.buscarEstoqueVencimentoPaginado(pagina, tamanho);
 
-        if (vencimentos.isEmpty()){
+        if (vencimentos.getConteudo().isEmpty()){
             return ResponseEntity.status(204).build();
         }
 
-        List<VencimentoView> view = EstoqueMapper.toView(vencimentos);
-
-        return ResponseEntity.status(200).body(view);
+        return ResponseEntity.status(200).body(vencimentos);
     }
 
     @GetMapping("/estoque/kpis")
