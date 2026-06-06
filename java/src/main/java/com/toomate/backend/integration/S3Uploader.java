@@ -4,12 +4,24 @@ import com.toomate.backend.exceptions.*;
 import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 
 
 public class S3Uploader {
-    public static final S3Client s3Client = S3Client.builder().build();
+    public static final S3Client s3Client = S3Client.builder()
+            .region(Region.of(resolverRegiao()))
+            .build();
+
+    // Mesma estratégia da auditoria: env AWS_REGION/AWS_DEFAULT_REGION, com fallback us-east-1.
+    private static String resolverRegiao() {
+        String regiao = System.getenv("AWS_REGION");
+        if (regiao == null || regiao.isBlank()) {
+            regiao = System.getenv("AWS_DEFAULT_REGION");
+        }
+        return (regiao == null || regiao.isBlank()) ? "us-east-1" : regiao;
+    }
 
     public static byte[] getImage(String bucketName, String objectKey) {
         System.out.println("Buscando Imagem");

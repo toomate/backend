@@ -14,6 +14,7 @@ public class ArquivoRelacionamento {
     private Arquivo arquivo;
     private Integer idEntidade;
     private String tipoEntidade;
+    private String categoria;
 
     public Integer getId() {
         return id;
@@ -45,5 +46,13 @@ public class ArquivoRelacionamento {
 
     public void setTipoEntidade(String tipoEntidade) {
         this.tipoEntidade = tipoEntidade;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
 }
