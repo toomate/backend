@@ -24,11 +24,18 @@ public class ArquivoRelacionamentoService {
         this.boletoService = boletoService;
     }
 
+    public java.util.List<ArquivoRelacionamento> listarTodos() {
+        return arquivoRelacionamentoRepository.findAll();
+    }
+
     public ArquivoRelacionamento relacionar(Arquivo arquivo, ArquivoRelacionamentoRequestDto relacionamento) {
         ArquivoRelacionamento arquivoRelacionamento = new ArquivoRelacionamento();
         arquivoRelacionamento.setArquivo(arquivo);
         arquivoRelacionamento.setIdEntidade(relacionamento.getIdEntidade());
         arquivoRelacionamento.setTipoEntidade(relacionamento.getTipoEntidade().getTipo());
+        if (relacionamento.getCategoria() != null) {
+            arquivoRelacionamento.setCategoria(relacionamento.getCategoria().name());
+        }
 
         return arquivoRelacionamentoRepository.save(arquivoRelacionamento);
     }

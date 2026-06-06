@@ -1,5 +1,6 @@
 package com.toomate.backend.controller;
 
+import com.toomate.backend.dto.arquivo.ArquivoComprovanteResponseDto;
 import com.toomate.backend.dto.arquivo_relacionamento.ArquivoRelacionamentoRequestDto;
 import com.toomate.backend.integration.S3Uploader;
 import com.toomate.backend.model.Arquivo;
@@ -33,6 +34,16 @@ public class ArquivoController {
             return ResponseEntity.status(204).build();
         }
         return ResponseEntity.status(200).body(arquivos);
+    }
+
+    @GetMapping("/comprovantes")
+    public ResponseEntity<List<ArquivoComprovanteResponseDto>> listarComprovantes() {
+        List<ArquivoComprovanteResponseDto> comprovantes = arquivoService.listarComprovantes();
+
+        if (comprovantes.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        return ResponseEntity.status(200).body(comprovantes);
     }
 
     @GetMapping("/{id}")
