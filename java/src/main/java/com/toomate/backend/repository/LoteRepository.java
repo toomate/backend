@@ -125,7 +125,7 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
     Page<Lote> findByDataEntradaBetween(LocalDate dataInicial, LocalDate dataFinal, Pageable pageable);
 
     @Query("""
-            SELECT COALESCE(SUM(l.precoUnitario * COALESCE(l.quantidadeOriginal, l.quantidadeMedida)), 0)
+            SELECT COALESCE(SUM(l.precoUnitario * COALESCE(l.quantidadeOriginal, l.quantidadeAtual)), 0)
             FROM Lote l
             WHERE l.dataEntrada BETWEEN :dataInicial AND :dataFinal
             """)
@@ -133,7 +133,7 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
                                 @Param("dataFinal") LocalDate dataFinal);
 
     @Query("""
-            SELECT COALESCE(SUM(l.precoUnitario * COALESCE(l.quantidadeOriginal, l.quantidadeMedida)), 0) FROM Lote l
+            SELECT COALESCE(SUM(l.precoUnitario * COALESCE(l.quantidadeOriginal, l.quantidadeAtual)), 0) FROM Lote l
             """)
     Double somarValorTotal();
 

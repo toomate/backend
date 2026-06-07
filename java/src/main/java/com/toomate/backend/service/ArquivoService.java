@@ -151,15 +151,15 @@ public class ArquivoService {
         if (preco == null) {
             return null;
         }
-        // Total verdadeiro da compra: precoUnit * quantidadeOriginal (qtd comprada).
-        // Lotes antigos sem quantidadeOriginal caem na quantidadeMedida.
-        Double quantidade = lote.getQuantidadeOriginal() != null
-                ? lote.getQuantidadeOriginal().doubleValue()
-                : lote.getQuantidadeMedida();
-        if (quantidade == null) {
+        // Total verdadeiro da compra: precoUnit * quantidadeOriginal (unidades compradas).
+        // Lotes antigos sem quantidadeOriginal caem na quantidadeAtual (= original no cadastro).
+        Integer unidades = lote.getQuantidadeOriginal() != null
+                ? lote.getQuantidadeOriginal()
+                : lote.getQuantidadeAtual();
+        if (unidades == null) {
             return preco;
         }
-        return preco * quantidade;
+        return preco * unidades;
     }
 
     public Arquivo buscarPorId(Integer id) {
