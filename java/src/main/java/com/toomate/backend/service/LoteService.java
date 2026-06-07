@@ -15,6 +15,7 @@ import com.toomate.backend.observer.LoteListener;
 import com.toomate.backend.repository.HistoricoLoteRepository;
 import com.toomate.backend.repository.InsumoRepository;
 import com.toomate.backend.repository.LoteRepository;
+import com.toomate.backend.repository.UsuarioRepository;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -31,6 +32,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -38,13 +40,15 @@ import java.util.stream.Collectors;
 public class LoteService implements LoteListener {
     private final LoteRepository loteRepository;
     private final InsumoRepository insumoRepository;
+    private final UsuarioRepository usuarioRepository;
     private final ProducerRabbitMQ producerRabbitMQ;
     private final AuditService auditService;
     private final HistoricoLoteRepository historicoLoteRepository;
 
-    public LoteService(LoteRepository loteRepository, InsumoRepository insumoRepository, ProducerRabbitMQ producerRabbitMQ, AuditService auditService, HistoricoLoteRepository historicoLoteRepository) {
+    public LoteService(LoteRepository loteRepository, InsumoRepository insumoRepository, UsuarioRepository usuarioRepository, ProducerRabbitMQ producerRabbitMQ, AuditService auditService, HistoricoLoteRepository historicoLoteRepository) {
         this.loteRepository = loteRepository;
         this.insumoRepository = insumoRepository;
+        this.usuarioRepository = usuarioRepository;
         this.producerRabbitMQ = producerRabbitMQ;
         this.auditService = auditService;
         this.historicoLoteRepository = historicoLoteRepository;
@@ -135,9 +139,25 @@ public class LoteService implements LoteListener {
 
         lote = loteRepository.save(lote);
         notificarMudanca(lote.getMarca().getInsumo());
-        log.info("Usuário {} cadastrou um novo lote da marca: {} com {} {}", usuarioLogado, lote.getMarca().getNomeMarca(), lote.getQuantidadeMedida(), lote.getUnidadeMedida());
-        auditService.registrar(usuarioLogado, "CADASTRO", "LOTE",
-                String.format("Cadastrou lote da marca %s com %.2f %s", lote.getMarca().getNomeMarca(), lote.getQuantidadeMedida(), lote.getUnidadeMedida()));
+        log.info("Usuário '{}' cadastrou lote ID {} | Marca: {} | Insumo: {} | Qtd original: {} | Medida: {} {} | Preço unit.: R${} | Validade: {}",
+                usuarioLogado, lote.getIdLote(), lote.getMarca().getNomeMarca(),
+                lote.getMarca().getInsumo().getNome(), lote.getQuantidadeOriginal(),
+                lote.getQuantidadeMedida(), lote.getUnidadeMedida(),
+                lote.getPrecoUnitario(), lote.getDataValidade());
+        auditService.registrar(usuarioLogado, "CADASTRO", "LOTE", lote.getIdLote(),
+                String.format("Cadastrou lote da marca '%s' (insumo: %s) | %d un x %.2f %s a R$%.2f/un | validade: %s",
+                        lote.getMarca().getNomeMarca(), lote.getMarca().getInsumo().getNome(),
+                        lote.getQuantidadeOriginal(), lote.getQuantidadeMedida(), lote.getUnidadeMedida(),
+                        lote.getPrecoUnitario(), lote.getDataValidade()),
+                null,
+                Map.of("marca", lote.getMarca().getNomeMarca(),
+                        "insumo", lote.getMarca().getInsumo().getNome(),
+                        "quantidadeOriginal", lote.getQuantidadeOriginal(),
+                        "quantidadeAtual", lote.getQuantidadeAtual(),
+                        "quantidadeMedida", lote.getQuantidadeMedida(),
+                        "unidade", lote.getUnidadeMedida(),
+                        "precoUnitario", lote.getPrecoUnitario(),
+                        "dataValidade", String.valueOf(lote.getDataValidade())));
         return lote;
     }
 
@@ -158,8 +178,22 @@ public class LoteService implements LoteListener {
                 .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não foi encontrado lote com o id %d", id)));
 
         loteRepository.deleteById(id);
-        log.info("Usuário {} deletou o Lote com ID: {}", usuarioLogado, id);
-        auditService.registrar(usuarioLogado, "DELECAO", "LOTE", "Deletou lote ID: " + id);
+        log.info("Usuário '{}' deletou lote ID {} | Marca: {} | Insumo: {} | Qtd atual: {}/{} | Medida: {} {}",
+                usuarioLogado, id, lote.getMarca().getNomeMarca(),
+                lote.getMarca().getInsumo().getNome(), lote.getQuantidadeAtual(),
+                lote.getQuantidadeOriginal(), lote.getQuantidadeMedida(), lote.getUnidadeMedida());
+        auditService.registrar(usuarioLogado, "DELECAO", "LOTE", id,
+                String.format("Deletou lote da marca '%s' (insumo: %s) | %d/%d un x %.2f %s",
+                        lote.getMarca().getNomeMarca(), lote.getMarca().getInsumo().getNome(),
+                        lote.getQuantidadeAtual(), lote.getQuantidadeOriginal(),
+                        lote.getQuantidadeMedida(), lote.getUnidadeMedida()),
+                Map.of("marca", lote.getMarca().getNomeMarca(),
+                        "insumo", lote.getMarca().getInsumo().getNome(),
+                        "quantidadeOriginal", lote.getQuantidadeOriginal(),
+                        "quantidadeAtual", lote.getQuantidadeAtual(),
+                        "quantidadeMedida", lote.getQuantidadeMedida(),
+                        "unidade", lote.getUnidadeMedida()),
+                null);
         if (lote.getMarca() != null && lote.getMarca().getInsumo() != null) {
             notificarMudanca(lote.getMarca().getInsumo());
         }
@@ -403,8 +437,16 @@ public class LoteService implements LoteListener {
             if (lote == null) {
                 throw new EntidadeNaoEncontradaException("Não foi encontrado um lote com o id: " + dto.getId());
             }
-            log.info("Usuário {} atualizou a quantidade do lote: {} às {}", usuarioLogado, dto.getId(), LocalDateTime.now());
-            auditService.registrar(usuarioLogado, "ATUALIZACAO", "LOTE", "Atualizou quantidade do lote ID: " + dto.getId());
+            log.info("Usuário '{}' atualizou quantidade do lote ID {} | Marca: {} | De: {} → Para: {}",
+                    usuarioLogado, dto.getId(),
+                    lote.getMarca() != null ? lote.getMarca().getNomeMarca() : "N/A",
+                    lote.getQuantidadeAtual(), dto.getQuantidadeTotal());
+            auditService.registrar(usuarioLogado, "ATUALIZACAO", "LOTE", dto.getId(),
+                    String.format("Atualizou quantidade do lote (marca: %s) de %d para %d",
+                            lote.getMarca() != null ? lote.getMarca().getNomeMarca() : "N/A",
+                            lote.getQuantidadeAtual(), dto.getQuantidadeTotal()),
+                    Map.of("quantidadeAtual", lote.getQuantidadeAtual()),
+                    Map.of("quantidadeAtual", dto.getQuantidadeTotal()));
 
             guardarHistorico(lote, lote.getQuantidadeAtual() - dto.getQuantidadeTotal());
 
@@ -429,6 +471,9 @@ public class LoteService implements LoteListener {
 
 
     private String getUsuarioLogado() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+        String apelido = SecurityContextHolder.getContext().getAuthentication().getName();
+        return usuarioRepository.findByApelido(apelido)
+                .map(u -> u.getNome() + " (" + u.getApelido() + ")")
+                .orElse(apelido);
     }
 }

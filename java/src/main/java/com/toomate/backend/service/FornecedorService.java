@@ -6,20 +6,27 @@ import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.exceptions.RecursoExisteException;
 import com.toomate.backend.model.Fornecedor;
 import com.toomate.backend.repository.FornecedorRepository;
+import com.toomate.backend.repository.UsuarioRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+import java.util.Map;
+
+@Slf4j
 @Service
 public class FornecedorService {
     private final FornecedorRepository fornecedorRepository;
+    private final UsuarioRepository usuarioRepository;
     private final AuditService auditService;
 
-    public FornecedorService(FornecedorRepository fornecedorRepository, AuditService auditService) {
+    public FornecedorService(FornecedorRepository fornecedorRepository, UsuarioRepository usuarioRepository, AuditService auditService) {
         this.fornecedorRepository = fornecedorRepository;
+        this.usuarioRepository = usuarioRepository;
         this.auditService = auditService;
     }
 
@@ -64,13 +71,20 @@ public class FornecedorService {
         fornecedor.setLinkWhatsapp(gerarLinkWhatsapp(telefoneNormalizado));
 
         Fornecedor salvo = fornecedorRepository.save(fornecedor);
-        auditService.registrar(getUsuarioLogado(), "CADASTRO", "FORNECEDOR", "Cadastrou fornecedor: " + salvo.getRazaoSocial());
+        log.info("Usuário '{}' cadastrou fornecedor ID {} | Razão Social: {} | Tel: {}",
+                getUsuarioLogado(), salvo.getId(), salvo.getRazaoSocial(), salvo.getTelefone());
+        auditService.registrar(getUsuarioLogado(), "CADASTRO", "FORNECEDOR", salvo.getId(),
+                String.format("Cadastrou fornecedor '%s' (tel: %s)", salvo.getRazaoSocial(), salvo.getTelefone()),
+                null,
+                Map.of("razaoSocial", salvo.getRazaoSocial(), "telefone", salvo.getTelefone()));
         return salvo;
     }
 
     public Fornecedor atualizar(Integer id, String razaoSocial, String telefone) {
         validarEntrada(razaoSocial, telefone);
         Fornecedor atual = retornarPeloId(id);
+        String razaoAnterior = atual.getRazaoSocial();
+        String telAnterior = atual.getTelefone();
         String novaRazaoSocial = normalizarTexto(razaoSocial);
 
         if (!atual.getRazaoSocial().equalsIgnoreCase(novaRazaoSocial)
@@ -82,9 +96,13 @@ public class FornecedorService {
         String telefoneNormalizado = normalizarTelefone(telefone);
         atual.setTelefone(telefoneNormalizado);
         atual.setLinkWhatsapp(gerarLinkWhatsapp(telefoneNormalizado));
-
         Fornecedor atualizado = fornecedorRepository.save(atual);
-        auditService.registrar(getUsuarioLogado(), "ATUALIZACAO", "FORNECEDOR", "Atualizou fornecedor: " + atualizado.getRazaoSocial());
+        log.info("Usuário '{}' atualizou fornecedor ID {} | Razão Social: {} → {} | Tel: {} → {}",
+                getUsuarioLogado(), id, razaoAnterior, atualizado.getRazaoSocial(), telAnterior, atualizado.getTelefone());
+        auditService.registrar(getUsuarioLogado(), "ATUALIZACAO", "FORNECEDOR", id,
+                String.format("Atualizou fornecedor '%s'", atualizado.getRazaoSocial()),
+                Map.of("razaoSocial", razaoAnterior, "telefone", telAnterior),
+                Map.of("razaoSocial", atualizado.getRazaoSocial(), "telefone", atualizado.getTelefone()));
         return atualizado;
     }
 
@@ -93,7 +111,13 @@ public class FornecedorService {
             throw new EntidadeNaoEncontradaException(
                     String.format("Nao foi encontrado um fornecedor com o id %d", id));
         }
-        auditService.registrar(getUsuarioLogado(), "DELECAO", "FORNECEDOR", "Deletou fornecedor ID: " + id);
+        Fornecedor fornecedor = fornecedorRepository.findById(id).orElse(null);
+        log.info("Usuário '{}' deletou fornecedor ID {} | Razão Social: {}",
+                getUsuarioLogado(), id, fornecedor != null ? fornecedor.getRazaoSocial() : "N/A");
+        auditService.registrar(getUsuarioLogado(), "DELECAO", "FORNECEDOR", id,
+                String.format("Deletou fornecedor '%s'", fornecedor != null ? fornecedor.getRazaoSocial() : "ID " + id),
+                fornecedor != null ? Map.of("razaoSocial", fornecedor.getRazaoSocial(), "telefone", fornecedor.getTelefone()) : null,
+                null);
         fornecedorRepository.deleteById(id);
     }
 
@@ -129,6 +153,9 @@ public class FornecedorService {
     }
 
     private String getUsuarioLogado() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+        String apelido = SecurityContextHolder.getContext().getAuthentication().getName();
+        return usuarioRepository.findByApelido(apelido)
+                .map(u -> u.getNome() + " (" + u.getApelido() + ")")
+                .orElse(apelido);
     }
 }

@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -43,11 +44,22 @@ public class AuditService {
 
     @Async
     public void registrar(String usuario, String acao, String entidade, String detalhe) {
+        registrar(usuario, acao, entidade, null, detalhe, null, null);
+    }
+
+    @Async
+    public void registrar(String usuario, String acao, String entidade, Integer entidadeId, String detalhe) {
+        registrar(usuario, acao, entidade, entidadeId, detalhe, null, null);
+    }
+
+    @Async
+    public void registrar(String usuario, String acao, String entidade, Integer entidadeId, String detalhe,
+                          Map<String, Object> dadosAnteriores, Map<String, Object> dadosNovos) {
         try {
             String id = UUID.randomUUID().toString();
             LocalDateTime agora = LocalDateTime.now();
 
-            AuditLog evento = new AuditLog(id, agora.toString(), usuario, acao, entidade, detalhe);
+            AuditLog evento = new AuditLog(id, agora.toString(), usuario, acao, entidade, entidadeId, detalhe, dadosAnteriores, dadosNovos);
 
             String json = mapper.writeValueAsString(evento);
 

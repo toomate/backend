@@ -7,6 +7,7 @@ import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.mapper.cliente.ClienteMapper;
 import com.toomate.backend.model.Cliente;
 import com.toomate.backend.repository.ClienteRepository;
+import com.toomate.backend.repository.UsuarioRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +19,12 @@ public class ClienteService {
 
     private final ClienteRepository clienteRepository;
     private final AuditService auditService;
+    private final UsuarioRepository usuarioRepository;
 
-    public ClienteService(ClienteRepository clienteRepository, AuditService auditService){
+    public ClienteService(ClienteRepository clienteRepository, AuditService auditService, UsuarioRepository usuarioRepository){
         this.clienteRepository = clienteRepository;
         this.auditService = auditService;
+        this.usuarioRepository = usuarioRepository;
     }
 
     public Cliente cadastrar(ClienteRequestDto cliente){
@@ -78,6 +81,9 @@ public class ClienteService {
     }
 
     private String getUsuarioLogado() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+        String apelido = SecurityContextHolder.getContext().getAuthentication().getName();
+        return usuarioRepository.findByApelido(apelido)
+                .map(u -> u.getNome() + " (" + u.getApelido() + ")")
+                .orElse(apelido);
     }
 }

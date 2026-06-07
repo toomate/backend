@@ -10,6 +10,7 @@ import com.toomate.backend.mapper.rotina.RotinaMapper;
 import com.toomate.backend.model.*;
 import com.toomate.backend.repository.RotinaInsumoRepository;
 import com.toomate.backend.repository.RotinaRepository;
+import com.toomate.backend.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -29,14 +30,16 @@ public class RotinaService {
     private final LoteService loteService;
     private final MarcaService marcaService;
     private final AuditService auditService;
+    private final UsuarioRepository usuarioRepository;
 
-    public RotinaService(RotinaRepository rotinaRepository, InsumoService insumoService, RotinaInsumoRepository rotinaInsumoRepository, LoteService loteService, MarcaService marcaService, AuditService auditService) {
+    public RotinaService(RotinaRepository rotinaRepository, InsumoService insumoService, RotinaInsumoRepository rotinaInsumoRepository, LoteService loteService, MarcaService marcaService, AuditService auditService, UsuarioRepository usuarioRepository) {
         this.rotinaRepository = rotinaRepository;
         this.insumoService = insumoService;
         this.rotinaInsumoRepository = rotinaInsumoRepository;
         this.loteService = loteService;
         this.marcaService = marcaService;
         this.auditService = auditService;
+        this.usuarioRepository = usuarioRepository;
     }
 
     public List<Rotina> listar() {
@@ -186,6 +189,9 @@ public class RotinaService {
     }
 
     private String getUsuarioLogado() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+        String apelido = SecurityContextHolder.getContext().getAuthentication().getName();
+        return usuarioRepository.findByApelido(apelido)
+                .map(u -> u.getNome() + " (" + u.getApelido() + ")")
+                .orElse(apelido);
     }
 }

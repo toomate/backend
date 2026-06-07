@@ -4,26 +4,27 @@ import com.toomate.backend.audit.AuditService;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.model.Insumo;
-import com.toomate.backend.model.Lote;
 import com.toomate.backend.repository.InsumoRepository;
+import com.toomate.backend.repository.UsuarioRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
 public class InsumoService {
     private final InsumoRepository insumoRepository;
+    private final UsuarioRepository usuarioRepository;
     private final AuditService auditService;
 
-    public InsumoService(InsumoRepository insumoRepository, AuditService auditService) {
+    public InsumoService(InsumoRepository insumoRepository, UsuarioRepository usuarioRepository, AuditService auditService) {
         this.insumoRepository = insumoRepository;
+        this.usuarioRepository = usuarioRepository;
         this.auditService = auditService;
     }
 
@@ -45,10 +46,14 @@ public class InsumoService {
         if (insumo == null) {
             throw new EntradaInvalidaException("O insumo nao pode ser nulo!");
         }
-
-        log.info("Usuário {} cadastrou o insumo: {} às {}", usuarioLogado, insumo.getNome(), LocalDateTime.now());
-        auditService.registrar(usuarioLogado, "CADASTRO", "INSUMO", "Cadastrou insumo: " + insumo.getNome());
-        return insumoRepository.save(insumo);
+        Insumo salvo = insumoRepository.save(insumo);
+        log.info("Usuário '{}' cadastrou insumo ID {} | Nome: {} | Qtd mínima: {}",
+                usuarioLogado, salvo.getIdInsumo(), salvo.getNome(), salvo.getQtdMinima());
+        auditService.registrar(usuarioLogado, "CADASTRO", "INSUMO", salvo.getIdInsumo(),
+                String.format("Cadastrou insumo '%s' com qtd mínima: %d", salvo.getNome(), salvo.getQtdMinima()),
+                null,
+                Map.of("nome", salvo.getNome(), "qtdMinima", salvo.getQtdMinima()));
+        return salvo;
     }
 
     @Caching(evict = {
@@ -63,9 +68,14 @@ public class InsumoService {
                     String.format("Nao foi encontrado nenhum insumo com o id %d", id));
         }
 
+        Insumo insumo = insumoRepository.findById(id).orElse(null);
         insumoRepository.deleteById(id);
-        log.info("Usuário {} deletou o insumo com ID: {} às {}", usuarioLogado, id, LocalDateTime.now());
-        auditService.registrar(usuarioLogado, "DELECAO", "INSUMO", "Deletou insumo ID: " + id);
+        log.info("Usuário '{}' deletou insumo ID {} | Nome: {}",
+                usuarioLogado, id, insumo != null ? insumo.getNome() : "N/A");
+        auditService.registrar(usuarioLogado, "DELECAO", "INSUMO", id,
+                String.format("Deletou insumo '%s'", insumo != null ? insumo.getNome() : "ID " + id),
+                insumo != null ? Map.of("nome", insumo.getNome(), "qtdMinima", insumo.getQtdMinima()) : null,
+                null);
     }
 
     @Caching(evict = {
@@ -79,18 +89,23 @@ public class InsumoService {
             throw new EntidadeNaoEncontradaException(
                     String.format("Nao foi encontrado nenhum insumo com o id %d", id));
         }
+        Insumo anterior = insumoRepository.findById(id).orElse(null);
         insumo.setIdInsumo(id);
-        log.info("Usuário {} atualizou o insumo com ID: {} às {}", usuarioLogado, id, LocalDateTime.now());
-        auditService.registrar(usuarioLogado, "ATUALIZACAO", "INSUMO", "Atualizou insumo ID: " + id);
-        return insumoRepository.save(insumo);
+        Insumo atualizado = insumoRepository.save(insumo);
+        log.info("Usuário '{}' atualizou insumo ID {} | Nome: {} → {}",
+                usuarioLogado, id,
+                anterior != null ? anterior.getNome() : "N/A", atualizado.getNome());
+        auditService.registrar(usuarioLogado, "ATUALIZACAO", "INSUMO", id,
+                String.format("Atualizou insumo '%s'", atualizado.getNome()),
+                anterior != null ? Map.of("nome", anterior.getNome(), "qtdMinima", anterior.getQtdMinima()) : null,
+                Map.of("nome", atualizado.getNome(), "qtdMinima", atualizado.getQtdMinima()));
+        return atualizado;
     }
-
 
     @Caching(evict = {
             @CacheEvict(cacheNames = "estoque", allEntries = true),
             @CacheEvict(cacheNames = "lote", allEntries = true),
             @CacheEvict(cacheNames = "vencimentos", allEntries = true)
-
     })
     public Insumo excluirInsumo(Integer idInsumo) {
         Insumo insumo = insumoRepository.findById(idInsumo).orElseThrow(() -> new EntidadeNaoEncontradaException("Não foi encontrado um insumo com o id " + idInsumo));
@@ -120,10 +135,9 @@ public class InsumoService {
     }
 
     private String getUsuarioLogado() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+        String apelido = SecurityContextHolder.getContext().getAuthentication().getName();
+        return usuarioRepository.findByApelido(apelido)
+                .map(u -> u.getNome() + " (" + u.getApelido() + ")")
+                .orElse(apelido);
     }
-
-//    public List<String> listarUnidadesDeMedida() {
-//        return insumoRepository.listarUnidadesDeMedida();
-//    }
 }

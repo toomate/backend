@@ -5,6 +5,7 @@ import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.exceptions.RecursoExisteException;
 import com.toomate.backend.model.Fornecedor;
 import com.toomate.backend.repository.FornecedorRepository;
+import com.toomate.backend.repository.UsuarioRepository;
 import com.toomate.backend.audit.AuditService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,6 +35,9 @@ class FornecedorServiceTest {
 
     @Mock
     private FornecedorRepository fornecedorRepository;
+
+    @Mock
+    private UsuarioRepository usuarioRepository;
 
     @InjectMocks
     private FornecedorService fornecedorService;
