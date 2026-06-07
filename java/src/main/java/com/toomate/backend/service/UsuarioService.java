@@ -26,6 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -83,8 +84,13 @@ public class UsuarioService {
 
         Usuario usuario = UsuarioMapper.of(request);
         usuarioRepository.save(usuario);
-        log.info("ADM {} criou usuário {}", usuarioLogado, usuario.getApelido());
-        auditService.registrar(usuarioLogado, "CADASTRO", "USUARIO", "Criou usuário: " + usuario.getApelido());
+        log.info("Usuário '{}' cadastrou novo usuário ID {} | Nome: {} | Apelido: {} | Admin: {}",
+                usuarioLogado, usuario.getId(), usuario.getNome(), usuario.getApelido(), usuario.getAdministrador());
+        auditService.registrar(usuarioLogado, "CADASTRO", "USUARIO", usuario.getId(),
+                String.format("Cadastrou usuário '%s' (apelido: %s, admin: %s)",
+                        usuario.getNome(), usuario.getApelido(), usuario.getAdministrador()),
+                null,
+                Map.of("nome", usuario.getNome(), "apelido", usuario.getApelido(), "administrador", usuario.getAdministrador()));
         return UsuarioMapper.toResponse(usuario);
     }
 
@@ -94,8 +100,14 @@ public class UsuarioService {
         }
 
         String usuarioLogado = getUsuarioLogado();
-        log.info("ADM {} deletou usuário dono do ID: {}", usuarioLogado, id);
-        auditService.registrar(usuarioLogado, "DELECAO", "USUARIO", "Deletou usuário ID: " + id);
+        Usuario alvo = usuarioRepository.findById(id).orElse(null);
+        log.info("Usuário '{}' deletou usuário ID {} | Nome: {} | Apelido: {}",
+                usuarioLogado, id, alvo != null ? alvo.getNome() : "N/A", alvo != null ? alvo.getApelido() : "N/A");
+        auditService.registrar(usuarioLogado, "DELECAO", "USUARIO", id,
+                String.format("Deletou usuário '%s' (apelido: %s)",
+                        alvo != null ? alvo.getNome() : "N/A", alvo != null ? alvo.getApelido() : "N/A"),
+                alvo != null ? Map.of("nome", alvo.getNome(), "apelido", alvo.getApelido(), "administrador", alvo.getAdministrador()) : null,
+                null);
         usuarioRepository.deleteById(id);
     }
 
@@ -113,8 +125,12 @@ public class UsuarioService {
 
         usuario.setId(id);
         usuarioRepository.save(usuario);
-        log.info("Usuário {} atualizou usuário {}", usuarioLogado, usuario.getApelido());
-        auditService.registrar(usuarioLogado, "ATUALIZACAO", "USUARIO", "Atualizou usuário: " + usuario.getApelido());
+        log.info("Usuário '{}' atualizou usuário ID {} | Nome: {} → {} | Apelido: {} → {}",
+                usuarioLogado, id, usuarioAtual.getNome(), usuario.getNome(), usuarioAtual.getApelido(), usuario.getApelido());
+        auditService.registrar(usuarioLogado, "ATUALIZACAO", "USUARIO", id,
+                String.format("Atualizou usuário '%s' (apelido: %s)", usuario.getNome(), usuario.getApelido()),
+                Map.of("nome", usuarioAtual.getNome(), "apelido", usuarioAtual.getApelido(), "administrador", usuarioAtual.getAdministrador()),
+                Map.of("nome", usuario.getNome(), "apelido", usuario.getApelido(), "administrador", usuario.getAdministrador()));
         return UsuarioMapper.toResponse(usuario);
     }
 
@@ -125,8 +141,12 @@ public class UsuarioService {
 
         usuario.setAdministrador(adm.getadministrador());
         usuarioRepository.save(usuario);
-        log.info("ADM {} tornou usuário {} um administrador do sistema", usuarioLogado, usuario.getApelido());
-        auditService.registrar(usuarioLogado, "ATUALIZACAO", "USUARIO", "Alterou permissão de administrador do usuário: " + usuario.getApelido());
+        log.info("Usuário '{}' alterou permissão admin do usuário '{}' ID {} | Admin: {} → {}",
+                usuarioLogado, usuario.getApelido(), id, !adm.getadministrador(), adm.getadministrador());
+        auditService.registrar(usuarioLogado, "ATUALIZACAO", "USUARIO", id,
+                String.format("Alterou permissão de administrador do usuário '%s' para: %s", usuario.getApelido(), adm.getadministrador()),
+                Map.of("administrador", !adm.getadministrador()),
+                Map.of("administrador", adm.getadministrador()));
         return UsuarioMapper.toResponse(usuario);
     }
 
@@ -164,7 +184,10 @@ public class UsuarioService {
     }
 
     private String getUsuarioLogado() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+        String apelido = SecurityContextHolder.getContext().getAuthentication().getName();
+        return usuarioRepository.findByApelido(apelido)
+                .map(u -> u.getNome() + " (" + u.getApelido() + ")")
+                .orElse(apelido);
     }
 
     private boolean isBcryptHash(String senha) {

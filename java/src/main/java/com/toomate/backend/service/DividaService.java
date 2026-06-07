@@ -12,6 +12,7 @@ import com.toomate.backend.model.Cliente;
 import com.toomate.backend.model.Divida;
 import com.toomate.backend.repository.ClienteRepository;
 import com.toomate.backend.repository.DividaRepository;
+import com.toomate.backend.repository.UsuarioRepository;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,11 +30,13 @@ public class DividaService {
     private final DividaRepository dividaRepository;
     private final ClienteRepository clienteRepository;
     private final AuditService auditService;
+    private final UsuarioRepository usuarioRepository;
 
-    public DividaService(DividaRepository dividaRepository, ClienteRepository clienteRepository, AuditService auditService) {
+    public DividaService(DividaRepository dividaRepository, ClienteRepository clienteRepository, AuditService auditService, UsuarioRepository usuarioRepository) {
         this.dividaRepository = dividaRepository;
         this.clienteRepository = clienteRepository;
         this.auditService = auditService;
+        this.usuarioRepository = usuarioRepository;
     }
 
     public DividaResponseDto cadastrar(DividaRequestDto divida) {
@@ -122,6 +125,9 @@ public class DividaService {
     }
 
     private String getUsuarioLogado() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+        String apelido = SecurityContextHolder.getContext().getAuthentication().getName();
+        return usuarioRepository.findByApelido(apelido)
+                .map(u -> u.getNome() + " (" + u.getApelido() + ")")
+                .orElse(apelido);
     }
 }

@@ -6,6 +6,7 @@ import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.model.Categoria;
 import com.toomate.backend.model.Insumo;
 import com.toomate.backend.repository.InsumoRepository;
+import com.toomate.backend.repository.UsuarioRepository;
 import com.toomate.backend.audit.AuditService;
 import jakarta.validation.constraints.AssertTrue;
 import org.junit.jupiter.api.AfterEach;
@@ -38,7 +39,9 @@ class InsumoServiceTest {
     @Mock
     private InsumoRepository repository;
     @Mock
-    private AuditService auditService; 
+    private UsuarioRepository usuarioRepository;
+    @Mock
+    private AuditService auditService;
 
     @BeforeEach
     void setupAutenticacao() {
@@ -157,9 +160,14 @@ class InsumoServiceTest {
 
         @Test
         void DeveChamarRepositoryApenasUmaVez(){
+            Insumo insumo = new Insumo();
+            insumo.setIdInsumo(1);
+            insumo.setNome("arroz");
+            insumo.setQtdMinima(3);
+
             when(repository.existsById(anyInt()))
                     .thenReturn(true);
-
+            when(repository.findById(1)).thenReturn(Optional.of(insumo));
             doNothing().when(repository).deleteById(anyInt());
 
             service.deletar(1);
@@ -195,6 +203,7 @@ class InsumoServiceTest {
             insumo.setQtdMinima(insumoRequestDto.getQtdMinima());
             insumo.setRotatividade(insumoRequestDto.getRotatividade());
             when(repository.existsById(1)).thenReturn(true);
+            when(repository.findById(1)).thenReturn(Optional.of(insumo));
             when(repository.save(insumo)).thenReturn(insumo);
             Insumo atual = service.atualizar(insumo.getIdInsumo(), insumo);
             assertEquals(atual, insumo);
