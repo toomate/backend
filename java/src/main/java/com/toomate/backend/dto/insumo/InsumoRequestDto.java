@@ -14,12 +14,15 @@ public class InsumoRequestDto {
     private Boolean rotatividade;
     @NotNull(message = "Categoria do insumo e obrigatoria.")
     private Integer fkCategoria;
+    @Schema(description = "Diz se o insumo está ativo", example = "true")
+    private Boolean ativo;
 
-    public InsumoRequestDto(String nome, Integer qtdMinima, Boolean rotatividade, Integer fkCategoria) {
+    public InsumoRequestDto(String nome, Integer qtdMinima, Boolean rotatividade, Integer fkCategoria, Boolean ativo) {
         this.nome = nome;
         this.qtdMinima = qtdMinima;
         this.rotatividade = rotatividade;
         this.fkCategoria = fkCategoria;
+        this.ativo = ativo;
     }
 
     public InsumoRequestDto() {
@@ -57,4 +60,11 @@ public class InsumoRequestDto {
         this.fkCategoria = fkCategoria;
     }
 
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
+    }
 }

@@ -173,11 +173,6 @@ public class LoteController {
         return ResponseEntity.status(200).body(kpis);
     }
 
-    @PatchMapping("/estoque/{id}")
-    public ResponseEntity<Lote> excluirLote(@PathVariable Integer id){
-        return ResponseEntity.status(200).body(loteService.excluirLote(id));
-    }
-
     @PatchMapping
     public ResponseEntity<Void> atualizarEstoque(@RequestBody List<LotePatchDto> requests){
         loteService.atualizarQuantidades(requests);

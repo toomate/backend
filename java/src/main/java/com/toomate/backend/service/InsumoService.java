@@ -4,6 +4,7 @@ import com.toomate.backend.audit.AuditService;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.model.Insumo;
+import com.toomate.backend.model.Lote;
 import com.toomate.backend.repository.InsumoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -80,6 +81,21 @@ public class InsumoService {
         insumo.setIdInsumo(id);
         log.info("Usuário {} atualizou o insumo com ID: {} às {}", usuarioLogado, id, LocalDateTime.now());
         auditService.registrar(usuarioLogado, "ATUALIZACAO", "INSUMO", "Atualizou insumo ID: " + id);
+        return insumoRepository.save(insumo);
+    }
+
+
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "estoque", allEntries = true),
+            @CacheEvict(cacheNames = "lote", allEntries = true),
+            @CacheEvict(cacheNames = "vencimentos", allEntries = true)
+
+    })
+    public Insumo excluirInsumo(Integer idInsumo) {
+        Insumo insumo = insumoRepository.findById(idInsumo).orElseThrow(() -> new EntidadeNaoEncontradaException("Não foi encontrado um insumo com o id " + idInsumo));
+
+        insumo.setAtivo(false);
+
         return insumoRepository.save(insumo);
     }
 

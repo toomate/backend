@@ -14,6 +14,16 @@ public class InsumoResponseDto {
     private Boolean rotatividade;
     @Schema(description = "Categoria do insumo", example = "carboidrato")
     private CategoriaResponseDto categoria;
+    @Schema(description = "Diz se o insumo está ativo", example = "true")
+    private Boolean ativo;
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
+    }
 
     public Integer getIdInsumo() {
         return idInsumo;

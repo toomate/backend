@@ -60,8 +60,8 @@ class InsumoServiceTest {
         List<Insumo> insumos = new ArrayList<>();
         Categoria carboidrato = new Categoria(1, "carboidrato");
         Categoria bebida = new Categoria(2, "bebida");
-        insumos.add(new Insumo(1, "arroz", carboidrato, 3, true));
-        insumos.add(new Insumo(2, "café", bebida, 5, true));
+        insumos.add(new Insumo(1, "arroz", carboidrato, 3, true, true));
+        insumos.add(new Insumo(2, "café", bebida, 5, true, true));
         when(repository.findAll()).thenReturn(insumos);
         //ACT
         List<Insumo> atual = repository.findAll();
@@ -89,7 +89,7 @@ class InsumoServiceTest {
         //Arrange
         List<Insumo> insumos = new ArrayList<>();
         Categoria bebida = new Categoria(1, "bebida");
-        Insumo cafe =   new Insumo(1, "café", bebida, 5, true);
+        Insumo cafe =   new Insumo(1, "café", bebida, 5, true, true);
         insumos.add(cafe);
         when(repository.findByNomeContainingIgnoreCase("café")).thenReturn(insumos);
         //ACT

@@ -19,6 +19,8 @@ public class Insumo {
     private Integer qtdMinima;
     @Schema(description = "Rotatividade do insumo", example = "true")
     private Boolean rotatividade;
+    @Schema(description = "Diz se o insumo está ativo", example = "true")
+    private Boolean ativo;
 
     public String getNome() {
         return nome;
@@ -60,12 +62,21 @@ public class Insumo {
         this.rotatividade = rotatividade;
     }
 
-    public Insumo(Integer idInsumo, String nome, Categoria categoria, Integer qtdMinima, Boolean rotatividade) {
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    public Insumo(Integer idInsumo, String nome, Categoria categoria, Integer qtdMinima, Boolean rotatividade, Boolean ativo) {
         this.idInsumo = idInsumo;
         this.nome = nome;
         this.categoria = categoria;
         this.qtdMinima = qtdMinima;
         this.rotatividade = rotatividade;
+        this.ativo = ativo;
     }
 
     public Insumo() {

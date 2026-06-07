@@ -4,6 +4,7 @@ import com.toomate.backend.audit.AuditService;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.integration.ProducerRabbitMQ;
 import com.toomate.backend.model.*;
+import com.toomate.backend.repository.InsumoRepository;
 import com.toomate.backend.repository.LoteRepository;
 import com.toomate.backend.service.LoteService;
 import org.junit.jupiter.api.AfterEach;
@@ -18,6 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -28,6 +30,8 @@ public class loteTeste {
 
     @Mock
     private LoteRepository loteRepository;
+    @Mock
+    private InsumoRepository insumoRepository;
 
     @Mock
     private ProducerRabbitMQ producerRabbitMQ;
@@ -56,7 +60,10 @@ public class loteTeste {
     public void validarCadastroCorreto(){
 //        negarNotif();
         Lote lote = criarLoteValido();
+        Insumo insumo = lote.getMarca().getInsumo();
 
+        when(insumoRepository.findById(insumo.getIdInsumo()))
+                .thenReturn(Optional.of(insumo));
         when(loteRepository.save(any(Lote.class)))
                 .thenReturn(lote);
         when(loteRepository.getEstoqueInsumo(anyInt()))
@@ -103,7 +110,7 @@ public class loteTeste {
     }
 
     public Lote criarLoteValido(){
-        Insumo insumo = new Insumo(1, "arroz", null, 20, true);
+        Insumo insumo = new Insumo(1, "arroz", null, 20, true, true);
         Marca marca = new Marca();
         marca.setInsumo(insumo);
         Usuario usuario = new Usuario();

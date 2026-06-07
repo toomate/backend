@@ -13,6 +13,7 @@ import com.toomate.backend.integration.ProducerRabbitMQ;
 import com.toomate.backend.model.*;
 import com.toomate.backend.observer.LoteListener;
 import com.toomate.backend.repository.HistoricoLoteRepository;
+import com.toomate.backend.repository.InsumoRepository;
 import com.toomate.backend.repository.LoteRepository;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -36,12 +37,14 @@ import java.util.stream.Collectors;
 @Service
 public class LoteService implements LoteListener {
     private final LoteRepository loteRepository;
+    private final InsumoRepository insumoRepository;
     private final ProducerRabbitMQ producerRabbitMQ;
     private final AuditService auditService;
     private final HistoricoLoteRepository historicoLoteRepository;
 
-    public LoteService(LoteRepository loteRepository, ProducerRabbitMQ producerRabbitMQ, AuditService auditService, HistoricoLoteRepository historicoLoteRepository) {
+    public LoteService(LoteRepository loteRepository, InsumoRepository insumoRepository, ProducerRabbitMQ producerRabbitMQ, AuditService auditService, HistoricoLoteRepository historicoLoteRepository) {
         this.loteRepository = loteRepository;
+        this.insumoRepository = insumoRepository;
         this.producerRabbitMQ = producerRabbitMQ;
         this.auditService = auditService;
         this.historicoLoteRepository = historicoLoteRepository;
@@ -97,6 +100,7 @@ public class LoteService implements LoteListener {
             @CacheEvict(cacheNames = "vencimentos", allEntries = true)
 
     })
+    @Transactional
     public Lote cadastrar(Lote lote) {
         String usuarioLogado = getUsuarioLogado();
         if (lote == null) {
@@ -122,6 +126,12 @@ public class LoteService implements LoteListener {
         if (lote.getPrecoUnitario() >= 999) {
             throw new EntradaInvalidaException("A quantidade não pode ser maior ou igual a 999,99R$.");
         }
+
+        Insumo insumo = insumoRepository.findById(
+                lote.getMarca().getInsumo().getIdInsumo()
+        ).orElseThrow();
+
+        insumo.setAtivo(true);
 
         lote = loteRepository.save(lote);
         notificarMudanca(lote.getMarca().getInsumo());
@@ -172,20 +182,6 @@ public class LoteService implements LoteListener {
         return lote;
     }
 
-    @Caching(evict = {
-            @CacheEvict(cacheNames = "estoque", allEntries = true),
-            @CacheEvict(cacheNames = "lote", allEntries = true),
-            @CacheEvict(cacheNames = "vencimentos", allEntries = true)
-
-    })
-    public Lote excluirLote(Integer idLote) {
-        Lote lote = loteRepository.findById(idLote).orElseThrow(() -> new EntidadeNaoEncontradaException("Não foi encontrado um lote com o id " + idLote));
-
-        lote.setAtivo(false);
-
-        return loteRepository.save(lote);
-    }
-
     public Boolean existePorId(Integer id) {
         return loteRepository.existsById(id);
     }
@@ -213,6 +209,7 @@ public class LoteService implements LoteListener {
         }
 
         lote.removerQuantidadeMedida(quantidadeMedida);
+        if(lote.getQuantidadeAtual() == 0) lote.setAtivo(false);
         loteRepository.save(lote);
         if (lote.getMarca() != null && lote.getMarca().getInsumo() != null) {
             notificarMudanca(lote.getMarca().getInsumo());
@@ -355,6 +352,9 @@ public class LoteService implements LoteListener {
             mapa.get(fkInsumo).calcularMenorData();
         }
 
+        for (EstoqueGrupo grupo : mapa.values()) {
+            grupo.getItens().removeIf(lote -> lote.getQuantidadeTotal() <= 0);
+        }
         List<EstoqueGrupo> lista = new ArrayList<>(mapa.values());
 
         lista.sort(
