@@ -45,6 +45,8 @@ public class InsumoService {
         if (insumo == null) {
             throw new EntradaInvalidaException("O insumo nao pode ser nulo!");
         }
+
+        insumo.setAtivo(true);
         log.info("Usuário {} cadastrou o insumo: {} às {}", usuarioLogado, insumo.getNome(), LocalDateTime.now());
         auditService.registrar(usuarioLogado, "CADASTRO", "INSUMO", "Cadastrou insumo: " + insumo.getNome());
         return insumoRepository.save(insumo);
