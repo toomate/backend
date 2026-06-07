@@ -148,10 +148,14 @@ public class ArquivoService {
 
     private Double calcularValorLote(Lote lote) {
         Double preco = lote.getPrecoUnitario();
-        Double quantidade = lote.getQuantidadeMedida();
         if (preco == null) {
             return null;
         }
+        // Total verdadeiro da compra: precoUnit * quantidadeOriginal (qtd comprada).
+        // Lotes antigos sem quantidadeOriginal caem na quantidadeMedida.
+        Double quantidade = lote.getQuantidadeOriginal() != null
+                ? lote.getQuantidadeOriginal().doubleValue()
+                : lote.getQuantidadeMedida();
         if (quantidade == null) {
             return preco;
         }
