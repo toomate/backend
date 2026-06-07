@@ -209,7 +209,7 @@ public class LoteService implements LoteListener {
         }
 
         lote.removerQuantidadeMedida(quantidadeMedida);
-        if(lote.getQuantidadeAtual() == 0) lote.setAtivo(false);
+        if (lote.getQuantidadeAtual() == 0) lote.setAtivo(false);
         loteRepository.save(lote);
         if (lote.getMarca() != null && lote.getMarca().getInsumo() != null) {
             notificarMudanca(lote.getMarca().getInsumo());
@@ -359,7 +359,8 @@ public class LoteService implements LoteListener {
 
         lista.sort(
                 Comparator
-                        .comparing((EstoqueGrupo grupo) -> grupo.getQtdAtual() < grupo.getQtdMinima())
+                        .comparing((EstoqueGrupo grupo) -> grupo.getQtdTotal() == 0)
+                        .thenComparing((EstoqueGrupo grupo) -> grupo.getQtdAtual() < grupo.getQtdMinima())
                         .reversed()
                         .thenComparing((EstoqueGrupo grupo) -> ChronoUnit.DAYS.between(LocalDate.now(), grupo.getDtVencimento()) <= 7, Comparator.reverseOrder())
                         .thenComparing(EstoqueGrupo::getQtdAtual)
