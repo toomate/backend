@@ -5,6 +5,7 @@ import com.toomate.backend.dto.Kpi;
 import com.toomate.backend.dto.estoque_grupo.*;
 import com.toomate.backend.dto.lote.LotePatchDto;
 import com.toomate.backend.dto.lote.ResumoLotesPeriodoDto;
+import com.toomate.backend.dto.notification.NotificationDto;
 import com.toomate.backend.dto.page.PageResponseDto;
 import com.toomate.backend.enums.StatusVencimento;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
@@ -61,7 +62,7 @@ public class LoteService implements LoteListener {
         Double total = loteRepository.getEstoqueInsumo(insumo.getIdInsumo());
         log.info("QUANTIDADE TOTAL %f MINIMA %d".formatted(total, insumo.getQtdMinima()));
         if (total < insumo.getQtdMinima()) {
-            producerRabbitMQ.enviarNotif(insumo, total);
+            producerRabbitMQ.enviarNotif(new NotificationDto(insumo, total));
         }
     }
 
@@ -491,5 +492,14 @@ public class LoteService implements LoteListener {
         return usuarioRepository.findByApelido(apelido)
                 .map(u -> u.getNome() + " (" + u.getApelido() + ")")
                 .orElse(apelido);
+    }
+
+    public List<NotificationDto> buscarPorDias(int i) {
+        List<Lote> lotes = loteRepository.buscarLotePorDia(i);
+
+        return lotes.stream()
+                .map(l -> new NotificationDto(l,l.getMarca().getInsumo().getNome()))
+                .toList();
+
     }
 }

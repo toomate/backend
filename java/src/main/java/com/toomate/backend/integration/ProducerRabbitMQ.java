@@ -3,7 +3,8 @@ package com.toomate.backend.integration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toomate.backend.config.rabbit.RabbitPropertiesConfiguration;
 import com.toomate.backend.mapper.insumo.InsumoMapper;
-import com.toomate.backend.dto.insumo.InsumoNotificationDto;
+import com.toomate.backend.dto.notification.NotificationDto;
+import com.toomate.backend.model.Boleto;
 import com.toomate.backend.model.Insumo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.MessageProperties;
@@ -24,18 +25,12 @@ public class ProducerRabbitMQ {
         this.objectMapper = objectMapper;
     }
 
-    public void enviarNotif(Insumo insumo, Double atual){
-
+    public void enviarNotif(NotificationDto notificationDto){
         String exchangeName = properties.exchange().name();
 
-        InsumoNotificationDto notificationDto = InsumoMapper.toNotification(insumo, atual);
-
         try{
-            log.info("Quantidade atual do insumo %s é %.2f, abaixo do mínimo de %d".formatted(
-                    insumo.getNome(), atual, insumo.getQtdMinima()));
 
             String jsonMessage = objectMapper.writeValueAsString(notificationDto);
-
             rabbitTemplate.convertAndSend(exchangeName, "", jsonMessage, message -> {
                 MessageProperties props = message.getMessageProperties();
                 props.setContentType("application/json");

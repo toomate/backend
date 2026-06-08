@@ -1,13 +1,12 @@
-package com.toomate.backend.dto.insumo;
+package com.toomate.backend.dto.notification;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class BodyInsumoNotification {
+public class InsumoNotificationBody implements NotificationBody {
     String nome;
     Integer quantidadeMinima;
     Double quantidadeAtual;
-//    String unidadeMedida;
 }

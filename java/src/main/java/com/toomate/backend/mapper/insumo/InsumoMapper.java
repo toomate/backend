@@ -1,7 +1,7 @@
 package com.toomate.backend.mapper.insumo;
 
 import com.toomate.backend.dto.categoria.CategoriaResponseDto;
-import com.toomate.backend.dto.insumo.InsumoNotificationDto;
+import com.toomate.backend.dto.notification.NotificationDto;
 import com.toomate.backend.dto.insumo.InsumoRequestDto;
 import com.toomate.backend.dto.insumo.InsumoResponseDto;
 import com.toomate.backend.model.Categoria;
@@ -52,11 +52,11 @@ public class InsumoMapper {
         return entity.stream().map(InsumoMapper::toDto).toList();
     }
 
-    public static InsumoNotificationDto toNotification(Insumo insumo, Double atual) {
+    public static NotificationDto toNotification(Insumo insumo, Double atual) {
         if (insumo == null) {
             return null;
         }
-        InsumoNotificationDto dto = new InsumoNotificationDto(insumo, atual);
+        NotificationDto dto = new NotificationDto(insumo, atual);
         return dto;
     }
 }

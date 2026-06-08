@@ -11,10 +11,11 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public interface LoteRepository extends JpaRepository<Lote, Integer> {
 
+
+    //validar cache
     @Query("select  COALESCE(SUM(L.quantidadeAtual), 0) from Lote L JOIN L.marca M JOIN M.insumo I WHERE I.idInsumo = :idInsumo")
     Double getEstoqueInsumo(@Param("idInsumo") Integer idInsumo);
 
@@ -138,4 +139,7 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
     Double somarValorTotal();
 
     long countByDataEntradaBetween(LocalDate dataInicial, LocalDate dataFinal);
+
+    @Query(value = "SELECT * FROM lote WHERE DATEDIFF(dataValidade, CURDATE()) = :dias AND ativo = 1 AND quantidadeAtual > 0;", nativeQuery = true)
+    List<Lote> buscarLotePorDia(@Param("dias") Integer dias);
 }

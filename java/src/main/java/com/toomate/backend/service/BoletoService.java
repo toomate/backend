@@ -10,12 +10,8 @@ import com.toomate.backend.repository.UsuarioRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -50,8 +46,7 @@ public class BoletoService {
 
     public Boleto buscarPorId(Integer id) {
 
-        Boleto boleto = boletoRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException("O boleto não foi encontrado!"));
-        return boleto;
+        return boletoRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException("O boleto não foi encontrado!"));
     }
 
     public Boleto editar(Integer idBoleto, Boleto boleto) {
@@ -78,14 +73,12 @@ public class BoletoService {
 
     public List<Boleto> buscarPorCategoria(String categoria) {
 
-        List<Boleto> boletosEncontrados = boletoRepository.findByCategoriaContainingIgnoreCase(categoria);
-            return boletosEncontrados;
+        return boletoRepository.findByCategoriaContainingIgnoreCase(categoria);
     }
 
     public List<Boleto> buscarPorFornecedor(Integer idFornecedor) {
 
-        List<Boleto> boletosEncontrados = boletoRepository.findByIdFornecedor(idFornecedor);
-            return boletosEncontrados;
+        return boletoRepository.findByIdFornecedor(idFornecedor);
 
     }
 
@@ -103,5 +96,9 @@ public class BoletoService {
         return usuarioRepository.findByApelido(apelido)
                 .map(u -> u.getNome() + " (" + u.getApelido() + ")")
                 .orElse(apelido);
+    }
+
+    public List<Boleto> buscarPorDias(int dias){
+        return boletoRepository.buscarBoletosPorDias(dias);
     }
 }
