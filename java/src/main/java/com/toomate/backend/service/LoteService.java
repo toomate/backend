@@ -38,7 +38,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@Cacheable(cacheNames = "vencimentos", key = "{#pagina, #tamanho}")
 public class LoteService implements LoteListener {
     private final LoteRepository loteRepository;
     private final InsumoRepository insumoRepository;
@@ -322,11 +321,11 @@ public class LoteService implements LoteListener {
         return new PageResponseDto<EstoqueGrupo>().de(response);
     }
 
-    @Cacheable(cacheNames = "vencimentos", key = "'todos'")
     public List<EstoqueVencimento> buscarEstoqueVencimento() {
         return loteRepository.buscarEstoqueVencimento();
     }
 
+    @Cacheable(cacheNames = "vencimentos", key = "{#pagina, #tamanho}")
     public PageResponseDto<VencimentoView> buscarEstoqueVencimentoPaginado(Integer pagina, Integer tamanho) {
         List<EstoqueVencimento> vencimentos = loteRepository.buscarEstoqueVencimento();
         List<VencimentoView> vencimentoViews = EstoqueMapper.toView(vencimentos);
