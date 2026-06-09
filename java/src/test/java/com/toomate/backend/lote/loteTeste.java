@@ -6,6 +6,7 @@ import com.toomate.backend.integration.ProducerRabbitMQ;
 import com.toomate.backend.model.*;
 import com.toomate.backend.repository.InsumoRepository;
 import com.toomate.backend.repository.LoteRepository;
+import com.toomate.backend.repository.UsuarioRepository;
 import com.toomate.backend.service.LoteService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +40,9 @@ public class loteTeste {
     @Mock
     public AuditService auditService;
 
+    @Mock
+    private UsuarioRepository usuarioRepository;
+
     @InjectMocks
     public LoteService loteService;
 
@@ -60,6 +64,9 @@ public class loteTeste {
     public void validarCadastroCorreto(){
 //        negarNotif();
         Lote lote = criarLoteValido();
+        Usuario usuario = new Usuario();
+        usuario.setId(1);
+        usuario.setApelido("operador.teste");
         Insumo insumo = lote.getMarca().getInsumo();
 
         when(insumoRepository.findById(insumo.getIdInsumo()))
@@ -68,9 +75,12 @@ public class loteTeste {
                 .thenReturn(lote);
         when(loteRepository.getEstoqueInsumo(anyInt()))
                 .thenReturn(100.0);
+        when(usuarioRepository.findByApelido("operador.teste"))
+                .thenReturn(Optional.of(usuario));
 
         lote.setQuantidadeMedida(3.0);
         lote.setPrecoUnitario(20.0);
+        lote.setUsuario(usuario);
 
         assertEquals(lote, loteService.cadastrar(lote));
     }

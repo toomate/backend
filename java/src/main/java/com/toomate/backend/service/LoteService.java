@@ -140,6 +140,18 @@ public class LoteService implements LoteListener {
 
         lote = loteRepository.save(lote);
         notificarMudanca(lote.getMarca().getInsumo());
+
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("marca", lote.getMarca().getNomeMarca());
+        map.put("insumo", lote.getMarca().getInsumo().getNome());
+        map.put("quantidadeOriginal", lote.getQuantidadeOriginal());
+        map.put("quantidadeAtual", lote.getQuantidadeAtual());
+        map.put("quantidadeMedida", lote.getQuantidadeMedida());
+        map.put("unidade", lote.getUnidadeMedida());
+        map.put("precoUnitario", lote.getPrecoUnitario());
+        map.put("dataValidade", lote.getDataValidade());
+
         log.info("Usuário '{}' cadastrou lote ID {} | Marca: {} | Insumo: {} | Qtd original: {} | Medida: {} {} | Preço unit.: R${} | Validade: {}",
                 usuarioLogado, lote.getIdLote(), lote.getMarca().getNomeMarca(),
                 lote.getMarca().getInsumo().getNome(), lote.getQuantidadeOriginal(),
@@ -151,14 +163,7 @@ public class LoteService implements LoteListener {
                         lote.getQuantidadeOriginal(), lote.getQuantidadeMedida(), lote.getUnidadeMedida(),
                         lote.getPrecoUnitario(), lote.getDataValidade()),
                 null,
-                Map.of("marca", lote.getMarca().getNomeMarca(),
-                        "insumo", lote.getMarca().getInsumo().getNome(),
-                        "quantidadeOriginal", lote.getQuantidadeOriginal(),
-                        "quantidadeAtual", lote.getQuantidadeAtual(),
-                        "quantidadeMedida", lote.getQuantidadeMedida(),
-                        "unidade", lote.getUnidadeMedida(),
-                        "precoUnitario", lote.getPrecoUnitario(),
-                        "dataValidade", String.valueOf(lote.getDataValidade())));
+                map);
         return lote;
     }
 

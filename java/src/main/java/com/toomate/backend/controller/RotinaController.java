@@ -1,6 +1,7 @@
 package com.toomate.backend.controller;
 
 import com.toomate.backend.dto.page.PageResponseDto;
+import com.toomate.backend.dto.rotina.PreviewBaixaResponseDto;
 import com.toomate.backend.dto.rotina.RotinaInsumoRequest;
 import com.toomate.backend.dto.rotina.RotinaRequestDto;
 import com.toomate.backend.dto.rotina.RotinaResponseDto;
@@ -31,6 +32,11 @@ public class RotinaController {
         Page<Rotina> rotinas = rotinaService.listarComPaginacao(pagina, tamanho, titulo);
         PageResponseDto<RotinaResponseDto> response = new PageResponseDto<RotinaResponseDto>().de(rotinas.map(RotinaMapper::toResponse));
         return ResponseEntity.status(200).body(response);
+    }
+
+    @GetMapping("/{id}/preview")
+    public ResponseEntity<PreviewBaixaResponseDto> mostrarPreview(@PathVariable Integer id){
+        return ResponseEntity.status(200).body(rotinaService.mostrarPreview(id));
     }
 
     @GetMapping("/{id}")

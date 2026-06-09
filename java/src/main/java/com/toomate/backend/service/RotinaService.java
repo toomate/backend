@@ -1,9 +1,7 @@
 package com.toomate.backend.service;
 
 import com.toomate.backend.audit.AuditService;
-import com.toomate.backend.dto.rotina.InsumoRotina;
-import com.toomate.backend.dto.rotina.RotinaInsumoRequest;
-import com.toomate.backend.dto.rotina.RotinaRequestDto;
+import com.toomate.backend.dto.rotina.*;
 import com.toomate.backend.exceptions.EntidadeNaoEncontradaException;
 import com.toomate.backend.exceptions.EntradaInvalidaException;
 import com.toomate.backend.mapper.rotina.RotinaMapper;
@@ -18,9 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class RotinaService {
@@ -193,5 +189,91 @@ public class RotinaService {
         return usuarioRepository.findByApelido(apelido)
                 .map(u -> u.getNome() + " (" + u.getApelido() + ")")
                 .orElse(apelido);
+    }
+
+    public PreviewBaixaResponseDto mostrarPreview(Integer rotinaId) {
+
+        Rotina rotina = rotinaRepository.findById(rotinaId)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(
+                        "Rotina não encontrada"));
+
+        List<RotinaInsumo> relacoes =
+                rotinaInsumoRepository.findAllByRotinaId(rotinaId);
+
+        PreviewBaixaResponseDto response = new PreviewBaixaResponseDto();
+        response.setRotinaId(rotina.getId());
+        response.setTitulo(rotina.getTitulo());
+
+        Map<Integer, Integer> necessidadePorInsumo = new HashMap<>();
+        Map<Integer, String> nomePorInsumo = new HashMap<>();
+
+        for (RotinaInsumo relacao : relacoes) {
+
+            Integer insumoId = relacao.getInsumo().getIdInsumo();
+            Integer qtd = Math.abs(relacao.getQuantidadeInsumo());
+
+            necessidadePorInsumo.merge(insumoId, qtd, Integer::sum);
+            nomePorInsumo.putIfAbsent(insumoId, relacao.getInsumo().getNome());
+        }
+
+        List<ItemBaixaResponseDto> itens = new ArrayList<>();
+
+        for (var entry : necessidadePorInsumo.entrySet()) {
+
+            Integer insumoId = entry.getKey();
+            Integer qtdNecessaria = entry.getValue();
+            Integer qtdOriginal = qtdNecessaria;
+
+            List<Lote> lotesDisponiveis =
+                    loteService.lotePorInsumoId(insumoId);
+
+            List<LoteConsumidoResponseDto> lotesConsumidos = new ArrayList<>();
+
+            String unidadeBase = null;
+
+            for (Lote lote : lotesDisponiveis) {
+
+                if (qtdNecessaria <= 0) break;
+
+                // 🔥 REGRA NOVA: unidade obrigatória e consistente
+                if (unidadeBase == null) {
+                    unidadeBase = lote.getUnidadeMedida();
+                } else if (!unidadeBase.equals(lote.getUnidadeMedida())) {
+                    throw new EntradaInvalidaException(
+                            "Insumo " + nomePorInsumo.get(insumoId) +
+                                    " possui lotes com unidades diferentes"
+                    );
+                }
+
+                int disponivel = lote.getQuantidadeAtual();
+
+                if (disponivel <= 0) continue;
+
+                int consumir = Math.min(disponivel, qtdNecessaria);
+
+                qtdNecessaria -= consumir;
+
+                LoteConsumidoResponseDto dto = new LoteConsumidoResponseDto();
+                dto.setLoteId(lote.getIdLote());
+                dto.setMarca(lote.getMarca().getNomeMarca());
+                dto.setValidade(lote.getDataValidade());
+                dto.setQuantidadeConsumida(consumir);
+                dto.setUnidadeMedida(lote.getUnidadeMedida());
+
+                lotesConsumidos.add(dto);
+            }
+
+            ItemBaixaResponseDto item = new ItemBaixaResponseDto();
+            item.setInsumoId(insumoId);
+            item.setNomeInsumo(nomePorInsumo.get(insumoId));
+            item.setQuantidadeNecessaria(qtdOriginal);
+            item.setUnidadeMedida(unidadeBase); // 🔥 AGORA FAZ SENTIDO
+            item.setLotes(lotesConsumidos);
+
+            itens.add(item);
+        }
+
+        response.setItens(itens);
+        return response;
     }
 }
