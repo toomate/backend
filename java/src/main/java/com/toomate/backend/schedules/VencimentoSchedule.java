@@ -2,27 +2,36 @@ package com.toomate.backend.schedules;
 
 import com.toomate.backend.dto.notification.NotificationDto;
 import com.toomate.backend.integration.ProducerRabbitMQ;
+import com.toomate.backend.model.Boleto;
+import com.toomate.backend.model.Lote;
 import com.toomate.backend.service.LoteService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Slf4j
 @Component
 public class VencimentoSchedule {
-    LoteService LoteService;
-    ProducerRabbitMQ producerRabbitMQ;
+    private final LoteService loteService;
+    private final ProducerRabbitMQ producerRabbitMQ;
 
 
-    public VencimentoSchedule(LoteService LoteService, ProducerRabbitMQ producerRabbitMQ) {
+    public VencimentoSchedule(LoteService loteService, ProducerRabbitMQ producerRabbitMQ) {
         this.producerRabbitMQ = producerRabbitMQ;
-        this.LoteService = LoteService;
+        this.loteService = loteService;
     }
 
     @Scheduled(cron = "0 0 7 * * *")
     public void consultarBoletosSemana(){
-        notificarMicroservico(LoteService.buscarPorDias(7));
-        notificarMicroservico(LoteService.buscarPorDias(0));
+        List<NotificationDto> lotes = loteService.buscarPorDias(7);
+        lotes.addAll(loteService.buscarPorDias(0));
+        log.info("Boletos encontrados: {}", lotes.size());
+        notificarMicroservico(lotes);
     }
 
     private void notificarMicroservico(List<NotificationDto> lotesVencendo){

@@ -140,6 +140,6 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
 
     long countByDataEntradaBetween(LocalDate dataInicial, LocalDate dataFinal);
 
-    @Query(value = "SELECT * FROM lote WHERE DATEDIFF(dataValidade, CURDATE()) = :dias AND ativo = 1 AND quantidadeAtual > 0;", nativeQuery = true)
+    @Query(value = "SELECT * FROM lote as l WHERE DATEDIFF(l.dataValidade, CURDATE()) = :dias AND l.ativo = 1 AND l.quantidadeAtual > 0;", nativeQuery = true)
     List<Lote> buscarLotePorDia(@Param("dias") Integer dias);
 }

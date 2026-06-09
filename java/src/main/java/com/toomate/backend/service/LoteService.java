@@ -494,8 +494,8 @@ public class LoteService implements LoteListener {
                 .orElse(apelido);
     }
 
-    public List<NotificationDto> buscarPorDias(int i) {
-        List<Lote> lotes = loteRepository.buscarLotePorDia(i);
+    public List<NotificationDto> buscarPorDias(int dias) {
+        List<Lote> lotes = loteRepository.buscarLotePorDia(dias);
 
         return lotes.stream()
                 .map(l -> new NotificationDto(l,l.getMarca().getInsumo().getNome()))
