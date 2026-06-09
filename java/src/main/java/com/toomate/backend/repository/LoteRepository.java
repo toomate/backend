@@ -14,6 +14,8 @@ import java.util.List;
 
 public interface LoteRepository extends JpaRepository<Lote, Integer> {
 
+        List<Lote> findAllByAtivoTrue();
+
 
     //validar cache
     @Query("select  COALESCE(SUM(L.quantidadeAtual), 0) from Lote L JOIN L.marca M JOIN M.insumo I WHERE I.idInsumo = :idInsumo")
