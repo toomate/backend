@@ -19,7 +19,7 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
   rabbitmq:
-    addresses: amqp://myuser:secret@localhost:5672/
+    addresses: amqp://myuser:secret@rabbitmq:5672/
     username: myuser
     password: secret
     virtual-host: /
