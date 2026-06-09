@@ -13,8 +13,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface LoteRepository extends JpaRepository<Lote, Integer> {
-
-        List<Lote> findAllByAtivoTrue();
+        
+List<Lote> findAllByAtivoTrueAndQuantidadeAtualGreaterThanZero();
 
 
     //validar cache
