@@ -67,7 +67,7 @@ public class LoteService implements LoteListener {
 
     @Cacheable(cacheNames = "lote", key = "'todos'")
     public List<Lote> listar() {
-        return loteRepository.findAllByAtivoTrueAndQuantidadeAtualGreaterThanZero();
+        return loteRepository.findAllByAtivoTrueAndQuantidadeAtualGreaterThan(0);
     }
 
     public Page<Lote> listarPaginado(Pageable pageable) {

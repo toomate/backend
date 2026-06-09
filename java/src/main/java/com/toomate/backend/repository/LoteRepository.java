@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface LoteRepository extends JpaRepository<Lote, Integer> {
         
-List<Lote> findAllByAtivoTrueAndQuantidadeAtualGreaterThanZero();
+List<Lote> findAllByAtivoTrueAndQuantidadeAtualGreaterThan(Integer quantidade);
 
 
     //validar cache
