@@ -117,7 +117,7 @@ public interface LoteRepository extends JpaRepository<Lote, Integer> {
             FROM Lote l
             JOIN l.marca m
             JOIN m.insumo i
-            WHERE l.quantidadeAtual >= 0
+            WHERE l.quantidadeAtual > 0
             AND i.ativo = true
             ORDER BY l.dataValidade""")
     List<EstoqueVencimento> buscarEstoqueVencimento();
