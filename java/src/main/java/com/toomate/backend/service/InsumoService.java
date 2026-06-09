@@ -32,6 +32,10 @@ public class InsumoService {
         return insumoRepository.findAll();
     }
 
+    public List<Insumo> listarAtivo() {
+        return insumoRepository.findAllByAtivoTrue();
+    }
+
     public List<Insumo> listarPorNome(String nome) {
         return insumoRepository.findByNomeContainingIgnoreCase(nome);
     }

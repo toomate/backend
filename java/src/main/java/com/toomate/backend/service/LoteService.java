@@ -58,11 +58,15 @@ public class LoteService implements LoteListener {
     @Override
     public void notificarMudanca(Insumo insumo) {
         log.info("MUDANÇA NO INSUMO " + insumo.getNome());
-        Double total = loteRepository.getEstoqueInsumo(insumo.getIdInsumo());
+        Double total = getEstoqueInsumo(insumo);
         log.info("QUANTIDADE TOTAL %f MINIMA %d".formatted(total, insumo.getQtdMinima()));
         if (total < insumo.getQtdMinima()) {
             producerRabbitMQ.enviarNotif(new NotificationDto(insumo, total));
         }
+    }
+
+    public Double getEstoqueInsumo(Insumo insumo) {
+        return loteRepository.getEstoqueInsumo(insumo.getIdInsumo());
     }
 
     @Cacheable(cacheNames = "lote", key = "'todos'")
