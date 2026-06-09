@@ -18,7 +18,7 @@ List<Lote> findAllByAtivoTrueAndQuantidadeAtualGreaterThan(Integer quantidade);
 
 
     //validar cache
-    @Query("select  COALESCE(SUM(L.quantidadeAtual), 0) from Lote L JOIN L.marca M JOIN M.insumo I WHERE I.idInsumo = :idInsumo AND l.ativo = true")
+    @Query("select  COALESCE(SUM(L.quantidadeAtual), 0) from Lote L JOIN L.marca M JOIN M.insumo I WHERE I.idInsumo = :idInsumo AND L.ativo = true")
     Double getEstoqueInsumo(@Param("idInsumo") Integer idInsumo);
 
     @Query("""
