@@ -59,6 +59,17 @@ public class LoteController {
         return ResponseEntity.status(200).body(lote);
     }
 
+    @GetMapping("/completo")
+    public ResponseEntity<List<LoteResponseDto>> listarCompleto() {
+        List<LoteResponseDto> lotes = LoteMapper.toDto(loteService.listarTodos());
+
+        if (lotes.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+
+        return ResponseEntity.status(200).body(lotes);
+    }
+
     @Operation(summary = "Listar lotes paginado",
             description = "Retorna uma página de lotes para uso em tabelas de listagem. Aceita filtro de período opcional (dataInicial e dataFinal).",
             responses = {

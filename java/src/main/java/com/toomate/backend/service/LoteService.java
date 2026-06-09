@@ -70,6 +70,13 @@ public class LoteService implements LoteListener {
         return loteRepository.findAllByAtivoTrueAndQuantidadeAtualGreaterThan(0);
     }
 
+    // Lista TODOS os lotes (inclusive já consumidos / fora de estoque). Usado pelo
+    // Admin para o cálculo de gastos históricos, que precisa de tudo que foi comprado.
+    // Sem cache de propósito: dados históricos entram direto no banco e o cache ficaria obsoleto.
+    public List<Lote> listarTodos() {
+        return loteRepository.findAll();
+    }
+
     public Page<Lote> listarPaginado(Pageable pageable) {
         return loteRepository.findAll(pageable);
     }
