@@ -10,10 +10,12 @@ import com.toomate.backend.exceptions.ErroUploadException;
 import com.toomate.backend.integration.S3Uploader;
 import com.toomate.backend.model.Arquivo;
 import com.toomate.backend.model.ArquivoRelacionamento;
+import com.toomate.backend.model.Boleto;
 import com.toomate.backend.model.Divida;
 import com.toomate.backend.model.Lote;
 import com.toomate.backend.model.Marca;
 import com.toomate.backend.repository.ArquivoRepository;
+import com.toomate.backend.repository.BoletoRepository;
 import com.toomate.backend.repository.DividaRepository;
 import com.toomate.backend.repository.LoteRepository;
 import jakarta.transaction.Transactional;
@@ -35,13 +37,16 @@ public class ArquivoService {
     private final ArquivoRelacionamentoService relacionamentoService;
     private final DividaRepository dividaRepository;
     private final LoteRepository loteRepository;
+    private final BoletoRepository boletoRepository;
 
     public ArquivoService(ArquivoRepository arquivoRepository, ArquivoRelacionamentoService relacionamentoService,
-                          DividaRepository dividaRepository, LoteRepository loteRepository) {
+                          DividaRepository dividaRepository, LoteRepository loteRepository,
+                          BoletoRepository boletoRepository) {
         this.arquivoRepository = arquivoRepository;
         this.relacionamentoService = relacionamentoService;
         this.dividaRepository = dividaRepository;
         this.loteRepository = loteRepository;
+        this.boletoRepository = boletoRepository;
     }
 
     public List<Arquivo> listar() {
@@ -55,6 +60,7 @@ public class ArquivoService {
 
         List<Integer> idsDivida = idsPorTipo(relacionamentos, TipoEntidade.DIVIDA);
         List<Integer> idsLote = idsPorTipo(relacionamentos, TipoEntidade.LOTE);
+        List<Integer> idsBoleto = idsPorTipo(relacionamentos, TipoEntidade.BOLETO);
 
         Map<Integer, Divida> dividasPorId = dividaRepository.findAllById(idsDivida).stream()
                 .collect(Collectors.toMap(Divida::getIdDivida, Function.identity()));
@@ -62,8 +68,11 @@ public class ArquivoService {
         Map<Integer, Lote> lotesPorId = loteRepository.findAllById(idsLote).stream()
                 .collect(Collectors.toMap(Lote::getIdLote, Function.identity()));
 
+        Map<Integer, Boleto> boletosPorId = boletoRepository.findAllById(idsBoleto).stream()
+                .collect(Collectors.toMap(Boleto::getIdBoleto, Function.identity()));
+
         return relacionamentos.stream()
-                .map(relacionamento -> montarComprovante(relacionamento, dividasPorId, lotesPorId))
+                .map(relacionamento -> montarComprovante(relacionamento, dividasPorId, lotesPorId, boletosPorId))
                 .toList();
     }
 
@@ -78,7 +87,8 @@ public class ArquivoService {
 
     private ArquivoComprovanteResponseDto montarComprovante(ArquivoRelacionamento relacionamento,
                                                             Map<Integer, Divida> dividasPorId,
-                                                            Map<Integer, Lote> lotesPorId) {
+                                                            Map<Integer, Lote> lotesPorId,
+                                                            Map<Integer, Boleto> boletosPorId) {
         Arquivo arquivo = relacionamento.getArquivo();
         String tipo = relacionamento.getTipoEntidade() == null ? "" : relacionamento.getTipoEntidade();
 
@@ -123,6 +133,21 @@ public class ArquivoService {
                 dto.setGrupo(fornecedor != null ? fornecedor : "Fornecedor não informado");
                 dto.setDataReferencia(lote.getDataEntrada());
                 dto.setValor(calcularValorLote(lote));
+            }
+        } else if (TipoEntidade.BOLETO.getTipo().equalsIgnoreCase(tipo)) {
+            if (dto.getCategoria() == null) {
+                dto.setCategoria(CategoriaComprovante.PAGAMENTO.name());
+            }
+            Boleto boleto = boletosPorId.get(relacionamento.getIdEntidade());
+            if (boleto != null) {
+                String categoriaBoleto = boleto.getCategoria();
+                dto.setTitulo(boleto.getDescricao() != null ? boleto.getDescricao() : "Boleto");
+                dto.setSubtitulo(categoriaBoleto);
+                dto.setGrupo(categoriaBoleto != null && !categoriaBoleto.isBlank() ? categoriaBoleto : "Outros");
+                dto.setDataReferencia(boleto.getDataPagamento() != null
+                        ? boleto.getDataPagamento() : boleto.getDataVencimento());
+                dto.setValor(boleto.getValor());
+                dto.setPago(boleto.getPago());
             }
         }
 
