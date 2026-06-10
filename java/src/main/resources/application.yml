@@ -3,7 +3,7 @@ spring:
   application:
     name: backend
   datasource:
-    url: jdbc:mysql://localhost:3306/toomate?useUnicode=true&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/toomate?useUnicode=true&serverTimezone=America/Sao_Paulo&useSSL=false&allowPublicKeyRetrieval=true
     username: toomate_user
     password: toomate_password
     driver-class-name: com.mysql.cj.jdbc.Driver
