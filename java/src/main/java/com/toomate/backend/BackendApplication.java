@@ -12,7 +12,7 @@ import jakarta.annotation.PostConstruct;
 @EnableAsync
 @EnableCaching
 @SpringBootApplication
-@EnableScheduling
+@EnableScheduling	
 public class BackendApplication {
 
 	@PostConstruct

@@ -221,9 +221,9 @@ public class RotinaService {
         for (var entry : necessidadePorInsumo.entrySet()) {
 
             Integer insumoId = entry.getKey();
-            Integer qtdNecessaria = entry.getValue();
-            Integer qtdOriginal = qtdNecessaria;
-
+            Double qtdNecessaria = Double.valueOf(entry.getValue());
+            Double qtdOriginal = qtdNecessaria;
+            Integer retiradas = 0;
             List<Lote> lotesDisponiveis =
                     loteService.lotePorInsumoId(insumoId);
 
@@ -235,29 +235,26 @@ public class RotinaService {
 
                 if (qtdNecessaria <= 0) break;
 
-                // 🔥 REGRA NOVA: unidade obrigatória e consistente
                 if (unidadeBase == null) {
                     unidadeBase = lote.getUnidadeMedida();
                 } else if (!unidadeBase.equals(lote.getUnidadeMedida())) {
-                    throw new EntradaInvalidaException(
-                            "Insumo " + nomePorInsumo.get(insumoId) +
-                                    " possui lotes com unidades diferentes"
-                    );
+                    continue;
                 }
 
                 int disponivel = lote.getQuantidadeAtual();
 
                 if (disponivel <= 0) continue;
 
-                int consumir = Math.min(disponivel, qtdNecessaria);
-
-                qtdNecessaria -= consumir;
+                for (int i = 0; i < disponivel && qtdNecessaria > 0; i++) {
+                    qtdNecessaria -= lote.getQuantidadeMedida();
+                    retiradas++;
+                }
 
                 LoteConsumidoResponseDto dto = new LoteConsumidoResponseDto();
                 dto.setLoteId(lote.getIdLote());
                 dto.setMarca(lote.getMarca().getNomeMarca());
                 dto.setValidade(lote.getDataValidade());
-                dto.setQuantidadeConsumida(consumir);
+                dto.setQuantidadeConsumida(lote.getQuantidadeAtual());
                 dto.setUnidadeMedida(lote.getUnidadeMedida());
 
                 lotesConsumidos.add(dto);
@@ -266,8 +263,8 @@ public class RotinaService {
             ItemBaixaResponseDto item = new ItemBaixaResponseDto();
             item.setInsumoId(insumoId);
             item.setNomeInsumo(nomePorInsumo.get(insumoId));
-            item.setQuantidadeNecessaria(qtdOriginal);
-            item.setUnidadeMedida(unidadeBase); // 🔥 AGORA FAZ SENTIDO
+            item.setQuantidadeNecessaria(retiradas);
+            item.setUnidadeMedida(unidadeBase);
             item.setLotes(lotesConsumidos);
 
             itens.add(item);

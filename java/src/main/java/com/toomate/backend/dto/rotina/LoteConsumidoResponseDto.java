@@ -8,6 +8,24 @@ public class LoteConsumidoResponseDto {
     private LocalDate validade;
     private Integer quantidadeConsumida;
     private String unidadeMedida;
+    private Integer quantidadeLotesRetirados;
+    private Integer quantidadeUnidadesConsumidas;
+
+    public Integer getQuantidadeLotesRetirados() {
+        return quantidadeLotesRetirados;
+    }
+
+    public void setQuantidadeLotesRetirados(Integer quantidadeLotesRetirados) {
+        this.quantidadeLotesRetirados = quantidadeLotesRetirados;
+    }
+
+    public Integer getQuantidadeUnidadesConsumidas() {
+        return quantidadeUnidadesConsumidas;
+    }
+
+    public void setQuantidadeUnidadesConsumidas(Integer quantidadeUnidadesConsumidas) {
+        this.quantidadeUnidadesConsumidas = quantidadeUnidadesConsumidas;
+    }
 
     public Integer getLoteId() {
         return loteId;
