@@ -26,7 +26,10 @@ public class VencimentoSchedule {
         this.loteService = loteService;
     }
 
-    @Scheduled(cron = "0 0 7 * * *")
+    @Scheduled(
+            cron = "0 0 */1 * * *",
+            zone = "America/Sao_Paulo"
+    )
     public void consultarBoletosSemana(){
         List<NotificationDto> lotes = loteService.buscarPorDias(7);
         lotes.addAll(loteService.buscarPorDias(0));

@@ -27,7 +27,7 @@ public class EstoqueSchedule {
         this.insumoService = insumoService;
     }
 
-    @Scheduled(cron = "0 */5 * * * *")
+    @Scheduled(cron = "0 */2 * * * *")
     public void consultarInsumosPoucoEstoque(){
         List<Insumo> ativos = insumoService.listar();
 

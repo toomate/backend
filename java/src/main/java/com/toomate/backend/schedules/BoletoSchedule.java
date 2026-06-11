@@ -27,7 +27,10 @@ public class BoletoSchedule {
         this.boletoService = boletoService;
     }
 
-    @Scheduled(cron = "0 0 7 * * *")
+    @Scheduled(
+            cron = "0 0 */1 * * *",
+            zone = "America/Sao_Paulo"
+    )
     public void consultarBoletosSemana(){
         List<Boleto> boletos = boletoService.buscarPorDias(7);
         boletos.addAll(boletoService.buscarPorDias(0));
